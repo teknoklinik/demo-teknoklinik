@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_servis_rapor_gonder_wizard_form" model="ir.ui.view">
+        <field name="name">servis.rapor.gonder.wizard.form</field>
+        <field name="model">servis.rapor.gonder.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h2>Rapor Gönder</h2>
+                    </div>
+
+                    <group>
+                        <group string="Servis Bilgileri">
+                            <field name="servis_kaydi_id" readonly="1"/>
+                            <field name="musteri_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Müşteri İletişim Bilgileri">
+                        <group>
+                            <field name="musteri_email" widget="char"/>
+                            <field name="email_degisti" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="musteri_telefon" widget="char"/>
+                            <field name="telefon_degisti" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <div class="row" style="margin-top: 10px;">
+                        <div class="col-12">
+                            <button name="action_guncelle_iletisim" string="Güncelle" type="object" class="btn-secondary btn-sm" attrs="{'invisible': [('email_degisti', '=', False), ('telefon_degisti', '=', False)]}"/>
+                        </div>
+                    </div>
+
+                    <group string="Gönderilecek Raporlar" style="margin-top: 20px;">
+                        <field name="gonder_kabul_raporu"/>
+                        <field name="gonder_teslim_raporu"/>
+                    </group>
+
+                    <group string="Gönderim Yöntemi">
+                        <field name="gonder_email"/>
+                        <field name="gonder_whatsapp"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_gonder" string="Gönder" type="object" class="btn-primary"/>
+                    <button string="İptal" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

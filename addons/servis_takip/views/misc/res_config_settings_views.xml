@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_servis_takip" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.servis.takip</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('settings')]" position="inside">
+                <div class="app_settings_block" string="Servis Yönetimi" data-string="Servis Yönetimi" data-key="servis_takip">
+
+                    <h2>Servis Yönetimi ve Ürün Parkı</h2>
+                    <div class="row mt16 o_settings_container">
+
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="urun_parki_kayit_politikasi" string="Ürün Parkı Kayıt Politikası"/>
+                                <div class="text-muted">
+                                    Servis kaydında yeni bir seri no girildiğinde Ürün Parkı'na nasıl işleneceğini seçin.
+                                </div>
+                                <div class="content-group mt16">
+                                    <field name="urun_parki_kayit_politikasi" widget="radio"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+    <record id="action_servis_config_settings" model="ir.actions.act_window">
+        <field name="name">Ayarlar</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module' : 'servis_takip'}</field>
+    </record>
+</odoo>

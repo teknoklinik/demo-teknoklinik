@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_urun_dokuman_popup_form" model="ir.ui.view">
+        <field name="name">urun.dokuman.form.popup</field>
+        <field name="model">urun.dokuman</field>
+        <field name="arch" type="xml">
+            <form string="Doküman Detayı" edit="not id">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="konu" placeholder="Örn: Garanti Belgesi" attrs="{'readonly': [('id', '!=', False)]}" required="1"/>
+                            <field name="dokuman_dosya" widget="binary" filename="dokuman_dosya_isim" string="Dosya Seçiniz" attrs="{'readonly': [('id', '!=', False)]}" required="1"/>
+                            <field name="dokuman_dosya_isim" invisible="1"/>
+                        </group>
+                    </group>
+                    <field name="urun_id" invisible="1"/>
+                </sheet>
+                <footer>
+                    <button name="action_save_and_reload" string="KAYDET VE GÜNCELLE" type="object" class="btn-primary" attrs="{'invisible': [('id', '!=', False)]}"/>
+
+                    <button string="KAPAT" class="btn-secondary" special="cancel" close="1"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_urun_notlar_popup_form" model="ir.ui.view">
+        <field name="name">urun.notu.form.popup</field>
+        <field name="model">urun.notu</field>
+        <field name="arch" type="xml">
+            <form string="Yeni Not Ekle" edit="not id">
+                <sheet>
+                    <group>
+                        <field name="konu" placeholder="Notun konusunu yazınız..." required="1" attrs="{'readonly': [('id', '!=', False)]}"/>
+                        <field name="aciklama" placeholder="Not içeriği..." required="1" attrs="{'readonly': [('id', '!=', False)]}"/>
+                    </group>
+                    <group invisible="1">
+                        <field name="urun_id"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_save_and_reload" string="KAYDET VE GÜNCELLE" type="object" class="btn-primary" attrs="{'invisible': [('id', '!=', False)]}"/>
+                    <button string="VAZGEÇ" special="cancel" class="btn-secondary" close="1"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_servis_kaydi_kanban" model="ir.ui.view">
+        <field name="name">servis.kaydi.kanban</field>
+        <field name="model">servis.kaydi</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_full" default_group_by="state" group_create="false" quick_create="false">
+                <field name="state"/>
+                <field name="color"/>
+                <field name="name"/>
+                <field name="musteri_id"/>
+                <field name="urun_modeli_id"/>
+                <field name="serviste_gecen_sure"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click_edit oe_semantic_html_override oe_kanban_card #{record.color.value ? 'oe_kanban_color_' + record.color.value : ''}">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_primary">
+                                        <span>
+                                            <t t-esc="record.name.value"/>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_manage_tools">
+                                    <a class="o_kanban_manage_toggle_button" href="#">
+                                        <i class="fa fa-ellipsis-v" role="img" aria-label="Settings"/>
+                                    </a>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <t t-if="widget.editable">
+                                            <li role="presentation">
+                                                <a role="menuitem" type="edit">Kaydı Düzenle</a>
+                                            </li>
+                                        </t>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="container o_kanban_card_content">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <strong>Müşteri:</strong>
+                                        <field name="musteri_id"/>
+                                        <br/>
+                                        <strong>Ürün:</strong>
+                                        <field name="urun_modeli_id"/>
+                                        <br/>
+                                        <strong>Servis Günü:</strong>
+                                        <field name="serviste_gecen_sure"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="o_kanban_record_body">
+                                    <field name="state" widget="label_selection" readonly="1" options="{'clickable': false}"/>
+                                </div>
+                                <div class="o_kanban_record_bottom_right">
+                                    <div class="pull-right">
+                                        <field name="activity_ids" widget="kanban_activity"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_servis_kaydi_form" model="ir.ui.view">
+        <field name="name">servis.kaydi.form</field>
+        <field name="model">servis.kaydi</field>
+        <field name="arch" type="xml">
+            <form string="Servis Kaydı">
+                <header>
+                    <button name="action_toggle_form_edit" string="Kaydı Düzenle" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', 'not in', ['teslim_edildi', 'iptal']), ('formu_duzenle', '=', True)]}"/>
+                    <button name="action_toggle_form_edit" string="Düzenlemeyi Tamamla" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', 'not in', ['teslim_edildi', 'iptal']), ('formu_duzenle', '=', False)]}"/>
+                </header>
+                <sheet>
+                    <field name="formu_duzenle" invisible="1"/>
+                    <field name="kayit_etiketi_renk" invisible="1"/>
+                    <field name="kayit_etiketi_icon" invisible="1"/>
+                    <field name="odeme_yapildi" invisible="1"/>
+                    <field name="color" invisible="1"/>
+                    <field name="tablo_duzenle" invisible="1"/>
+                    <field name="sure_asimi_var" invisible="1"/>
+
+                    <div class="row m-0 mb-2 shadow-sm" attrs="{'invisible': [('state', 'not in', ['iptal', 'teslim_edildi'])]}" style="border-radius: 10px; background: linear-gradient(135deg, #8a0f11 0%, #5e0a0b 100%); color: white !important; display: flex; align-items: center; justify-content: space-between; padding: 8px 20px; min-height: 50px;">
+                        <div style="flex-grow: 1;">
+                            <h3 class="m-0" style="font-weight: 200; font-size: 3rem; letter-spacing: 0.5px; color: white !important;">
+                                <field name="kayit_etiketi" readonly="1" nolabel="1"/>
+                            </h3>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="background: rgba(255, 255, 255, 0.12); padding: 2px 15px; border-radius: 30px; display: inline-block; border: 1px solid rgba(255, 255, 255, 0.2);">
+                                <field name="state" readonly="1" class="text-uppercase" style="font-size: 1.4rem; font-weight: 300; letter-spacing: 1px; color: white !important;"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row m-0 mb-2 shadow-sm" attrs="{'invisible': [('state', 'in', ['iptal', 'teslim_edildi'])]}" style="border-radius: 10px; background: linear-gradient(135deg, #1a5235 0%, #0d2e1e 100%); color: white !important; display: flex; align-items: center; justify-content: space-between; padding: 8px 20px; min-height: 50px;">
+                        <div style="flex-grow: 1;">
+                            <h3 class="m-0" style="font-weight: 200; font-size: 3rem; letter-spacing: 0.5px; color: white !important;">
+                                <field name="kayit_etiketi" readonly="1" nolabel="1"/>
+                            </h3>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="background: rgba(255, 255, 255, 0.12); padding: 2px 15px; border-radius: 30px; display: inline-block; border: 1px solid rgba(255, 255, 255, 0.2);">
+                                <field name="state" readonly="1" class="text-uppercase" style="font-size: 1.4rem; font-weight: 300; letter-spacing: 1px; color: white !important;"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="alert alert-danger shadow-sm d-flex align-items-center justify-content-between" role="alert" attrs="{'invisible': [('sure_asimi_var', '=', False)]}" style="border: 2px solid #ff0000; border-radius: 12px; padding: 15px 25px; background: linear-gradient(135deg, #fff5f5 0%, #feb2b2 100%); color: #9b2c2c; margin-bottom: 20px;">
+
+                        <div class="d-flex align-items-center">
+                            <i class="fa fa-clock-o mr-3" style="font-size: 2.5rem; color: #9b2c2c !important;"/>
+                            <div>
+                                <h4 class="m-0" style="font-weight: 800; letter-spacing: 0.5px; color: #9b2c2c !important;">KRİTİK SÜRE AŞIMI!</h4>
+                                <p class="m-0" style="font-size: 1.1rem; color: #9b2c2c !important;">
+                                    Cihaz <strong>
+                                    <field name="serviste_gecen_sure" readonly="1" nolabel="1"/>
+                                </strong> süredir serviste. 21 günlük yasal süre aşılmıştır!
+                            </p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="badge badge-danger" style="font-size: 1rem; padding: 8px 15px; border-radius: 20px; background-color: #dc3545; color: white;">ACİL İŞLEM GEREKLİ</span>
+                    </div>
+                </div>
+
+                <button name="action_urun_aktar_wizard" string="ÜRÜN PARKINDAN AKTAR" type="object" icon="fa-arrow-circle-down" context="{'skip_required_check': True}" class="btn-primary py-3 px-4 shadow-sm font-weight-bold" style="background: linear-gradient(135deg, #004d99 0%, #007bff 100%); 
+                            border: none; 
+                            border-radius: 8px; 
+                            text-transform: uppercase; 
+                            letter-spacing: 1px;
+                            transition: all 0.3s ease;" attrs="{'invisible': [('state','not in',['kayit_yapildi'])]}"/>
+                <group>
+                    <group string="Müşteri Bilgileri">
+                        <field name="musteri_tipi" attrs="{'readonly': [('formu_duzenle', '=', False), ('state', 'in', ['teslim_edildi', 'iptal'])]}"/>
+                        <field name="musteri_id" attrs="{'readonly': [('formu_duzenle', '=', False), ('state', 'in', ['teslim_edildi', 'iptal'])]}" context="{'default_is_company': musteri_tipi == 'sirket'}"/>
+                    </group>
+                    <group string="Servis Süresi">
+                        <field name="kayit_tarihi" string="Ürün Giriş Tarihi" readonly="1"/>
+                        <field name="teslim_tarihi" string="Servis Çıkış Tarihi" attrs="{'invisible': [('state', 'not in', ('teslim_edildi', 'iptal'))]}"/>
+                        <field name="serviste_gecen_sure" string="Serviste Geçen Gün" readonly="1"/>
+                    </group>
+                    <group string="Ürün Bilgileri">
+                        <field name="urun_turu_id" attrs="{'readonly': [('formu_duzenle', '=', False), ('state', 'in', ['teslim_edildi', 'iptal'])]}"/>
+
+                        <field name="urun_marka_id" domain="[('tur_id', '=', urun_turu_id)]" attrs="{'readonly': ['|', ('urun_turu_id', '=', False), '&amp;', ('formu_duzenle', '=', False), ('state', 'in', ['teslim_edildi', 'iptal'])]}" />
+
+                        <field name="urun_modeli_id" domain="[('marka_id', '=', urun_marka_id)]" attrs="{'readonly': ['|', ('urun_marka_id', '=', False), '&amp;', ('formu_duzenle', '=', False), ('state', 'in', ['teslim_edildi', 'iptal'])]}"/>
+
+                        <field name="seri_no" attrs="{'readonly': [('formu_duzenle', '=', False), ('state', 'in', ['teslim_edildi', 'iptal'])]}" />
+                        <field name="barkod_no" attrs="{'readonly': [('formu_duzenle', '=', False), ('state', 'in', ['teslim_edildi', 'iptal'])]}"/>
+                    </group>
+                    <group string="Garanti">
+                        <group>
+                            <field name="garanti_baslama" style="min-width: 100px !important;" attrs="{'readonly': [('formu_duzenle', '=', False), ('state', 'in', ['teslim_edildi', 'iptal'])]}"/>
+                            <field name="garanti_suresi" attrs="{'readonly': [('formu_duzenle', '=', False), ('state', 'in', ['teslim_edildi', 'iptal'])]}"/>
+                        </group>
+                        <group>
+                            <field name="garanti_bitis" readonly="1" force_save="1"/>
+
+                            <field name="garanti_durumu" invisible="1"/>
+
+                            <div colspan="2" class="mt-2 mb-2" attrs="{'invisible': [('garanti_durumu', '=', 'belirsiz')]}">
+                                <div attrs="{'invisible': [('garanti_durumu', '!=', 'yok')]}" class="alert alert-danger shadow-sm d-flex align-items-center justify-content-center" style="font-size: 1.1em; font-weight: 700; border: 1.5px solid #dc3545; border-radius: 8px; padding: 8px; color: #721c24; background-color: #f8d7da; max-width: 350px; margin: 0 auto;">
+                                    <i class="fa fa-exclamation-triangle mr-2" style="font-size: 1.2em;"/>
+                                    <span>GARANTİSİ YOK</span>
+                                </div>
+
+                                <div attrs="{'invisible': [('garanti_durumu', '!=', 'devam')]}" class="alert alert-success shadow-sm d-flex align-items-center justify-content-center" style="font-size: 1.1em; font-weight: 700; border: 1.5px solid #28a745; border-radius: 8px; padding: 8px; color: #155724; background-color: #d4edda; max-width: 350px; margin: 0 auto;">
+                                    <i class="fa fa-check-circle mr-2" style="font-size: 1.2em;"/>
+                                    <span>GARANTİSİ DEVAM EDİYOR</span>
+                                </div>
+                            </div>
+                        </group>
+                        <group string="Etiket" colspan="2">
+                            <field name="etiket_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" placeholder="Etiketler..." attrs="{'readonly': [('formu_duzenle', '=', False), ('state', 'in', ['teslim_edildi', 'iptal'])]}"/>
+                        </group>
+                    </group>
+                </group>
+
+
+                <notebook>
+                    <page string="Arıza Detayları">
+                        <separator string="Müşteri Şikayetleri ve Notları"/>
+                        <field name="ariza_detay_ids" attrs="{'readonly': ['&amp;',('formu_duzenle', '=', False), ('state', 'in', ['teslim_edildi', 'iptal'])]}">
+                            <tree string="Arıza Detayları" editable="bottom">
+                                <field name="ariza_tanimi_id" string="Arıza Tipi" options="{'no_create': True, 'no_create_edit': True}"/>
+                                <field name="musteri_notu" string="Müşteri Notu"/>
+                            </tree>
+                        </field>
+                    </page>
+
+                    <page string="Yapılan İşlemler" name="yapilan_islemler" attrs="{'invisible': [('state', '!=', 'islemde')]}">
+                        <field name="servis_islem_satirlari" widget="one2many" mode="tree" nolabel="1" force_save="1" context="{'default_servis_kaydi_id': active_id, 'form_view_ref': 'servis_takip.view_servis_islem_satiri_popup_form'}" options="{'reload_on_button': True}">
+
+                            <tree default_order="tarih asc" create="1" delete="1" attrs="{'delete': [('tablo_duzenle', '=', True)]}">
+
+                                <field name="tablo_duzenle" invisible="1"/>
+
+                                <field name="islem_tipi_id" options="{'no_create': True}" attrs="{'readonly': [('tablo_duzenle', '=', False)]}"/>
+                                <field name="tarih" readonly="1" force_save="1"/>
+                                <field name="bitis_tarihi" readonly="1" force_save="1"/>
+                                <field name="gecen_sure" readonly="1" force_save="1"/>
+                                <field name="aciklama" attrs="{'readonly': [('tablo_duzenle', '=', False)]}"/>
+                                <field name="personel_id" options="{'no_create': True, 'no_open': True}" readonly="1" widget="many2one_avatar_user"/>
+                            </tree>
+                        </field>
+                    </page>
+
+                    <page string="Durum Satırı" name="durum_gecmisi">
+                        <field name="durum_satirlari" widget="one2many" mode="tree" context="{'default_servis_kaydi_id': active_id, 'form_view_ref': 'servis_takip.view_servis_durum_satiri_popup_form'}" attrs="{'readonly': ['&amp;',('formu_duzenle', '=', False), ('state', 'in', ['teslim_edildi', 'iptal'])]}">
+                            <tree default_order="tarih asc" create="1" delete="0">
+                                <field name="tablo_duzenle" invisible="1"/>
+                                <field name="state" attrs="{'readonly': [('tablo_duzenle', '=', False)]}" options="{'no_create': True, 'no_open': True}"/>
+                                <field name="tarih" readonly="1"/>
+                                <field name="bitis_tarihi" readonly="1"/>
+                                <field name="gecen_sure" readonly="1"/>
+                                <field name="aciklama" attrs="{'readonly': [('tablo_duzenle', '=', False)]}"/>
+                                <field name="personel_id" readonly="1" widget="many2one_avatar_user"/>
+                            </tree>
+                        </field>
+                    </page>
+
+                    <page string="Parça ve Hizmetler" name="teknik_rapor">
+                        <div class="o_row mb-3 mt-2" style="display: flex; gap: 10px;">
+                            <button name="action_buton_teklif" string="TEKLİF OLUŞTUR / GÜNCELLE" type="object" class="btn-info" icon="fa-shopping-cart"/>
+                            <button name="action_buton_fatura" type="object" class="btn-warning" style="padding: 10px 15px;">
+                                <i class="fa fa-file-text-o mr-2"/>
+                                <span> FATURA OLUŞTUR / GÜNCELLE</span>
+                            </button>
+                        </div>
+                        <field name="teknik_rapor_satirlari" widget="section_and_note_one2many" mode="tree" nolabel="1" attrs="{'readonly': ['&amp;',('formu_duzenle', '=', False), ('state', 'in', ['teslim_edildi', 'iptal'])]}">
+                            <tree editable="bottom" default_order="sequence">
+                                <field name="sequence" widget="handle"/>
+                                <field name="ornek_tur" string="Tür"/>
+                                <field name="ornek_urun_id" string="Ürün" options="{'no_create': True}"/>
+                                <field name="ornek_aciklama" string="Açıklama"/>
+                                <field name="ornek_miktar" string="Miktar"/>
+                                <field name="ornek_birim_fiyat" string="Birim Fi."/>
+                                <field name="ornek_vergiler" string="Vergiler" widget="many2many_tags" optional="show"/>
+                                <field name="ornek_ara_toplam" string="Ara Toplam" sum="Ara Toplam" readonly="1"/>
+                                <field name="currency_id" invisible="1"/>
+                            </tree>
+                        </field>
+                        <group name="antet_toplamlar" col="6" class="mt-2">
+                            <group colspan="4">
+                            </group>
+                            <group class="oe_subtotal_footer oe_right" colspan="2" name="servis_total">
+                                <field name="vergi_haric_tutar" widget="monetary" options="{'currency_field': 'company_currency_id'}"/>
+                                <field name="toplam_vergi" widget="monetary" options="{'currency_field': 'company_currency_id'}"/>
+                                <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                    <label for="genel_toplam" style="font-weight: bold; font-size: 1.2em;"/>
+                                </div>
+                                <field name="genel_toplam" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'company_currency_id'}" style="font-weight: bold; font-size: 1.2em; color: #2c3e50;"/>
+                            </group>
+                        </group>
+                    </page>
+
+                    <page string="Teknisyen Notu" name="teknisyen_notu">
+                        <field name="teknisyen_notu" placeholder="Teknisyen tarafından yapılan işlemler ve notlar..."/>
+                    </page>
+
+                    <page string="Dokümanlar" name="page_dokumanlar">
+                        <field name="dokuman_yukle_ids" context="{'default_servis_kaydi_id': active_id, 'form_view_ref': 'servis_takip.view_servis_kaydi_dokuman_popup_form'}" options="{'no_create_edit': True, 'no_open': True}" attrs="{'readonly': ['&amp;',('formu_duzenle', '=', False), ('state', 'in', ['teslim_edildi', 'iptal'])]}">
+                            <tree string="Dokümanlar" create="true" edit="false" delete="true">
+                                <field name="konu" readonly="1"/>
+                                <field name="dokuman_dosya_isim" string="Dosya Adı" readonly="1"/>
+                                <field name="dokuman_dosya" widget="binary" filename="dokuman_dosya_isim" invisible="1"/>
+                                <field name="dokuman_tarihi" string="Tarih" readonly="1"/>
+                                <field name="dokuman_personel_id" string="Yükleyen" widget="many2one_avatar_user" readonly="1"/>
+                                <button name="action_preview_document" string="Önizle" type="object" icon="fa-eye" class="btn-link" title="Dokümanı Görüntüle"/>
+                            </tree>
+                        </field>
+                    </page>
+
+                    <page string="Notlar" name="notlar">
+                        <field name="notlar_ids" context="{'default_servis_kaydi_id': active_id, 'form_view_ref': 'modul_teknik_servis.view_servis_kaydi_notlar_popup_form'}" options="{'no_create_edit': True}" attrs="{'readonly': ['&amp;',('formu_duzenle', '=', False), ('state', 'in', ['teslim_edildi', 'iptal'])]}">
+                            <tree string="Notlar">
+                                <field name="konu"/>
+                                <field name="aciklama" string="Açıklama Özeti"/>
+                                <field name="not_kayit_tarihi" string="Tarih"/>
+                                <field name="not_personel_id" string="İlgili Personel" widget="many2one_avatar_user"/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+
+                <!-- Rapor İşlemleri Bölümü - Ekranın Sağ Yarısı -->
+                <div style="margin-top: 30px; margin-left: 50%; padding-left: 30px;">
+                    <h5 style="color: #2C3E50; font-weight: 600; margin-bottom: 20px; font-size: 14px;">RAPOR İŞLEMLERİ</h5>
+                    <div style="display: flex; gap: 20px; align-items: flex-start;">
+
+                        <div style="display: flex; flex-direction: column; align-items: center; width: 180px;">
+                            <button name="action_kabul_raporu_pdf" type="object" class="btn-info" style="width: 100% !important; height: 100px !important; font-weight: bold; border-radius: 5px; margin-bottom: 5px;">
+                                <i class="fa fa-file-pdf-o" style="font-size: 24px; display: block; margin-bottom: 5px;"/>
+                                <span>Kabul Raporu</span>
+                            </button>
+
+                            <button name="action_imza_al_kabul" type="object" class="btn-warning" style="width: 100% !important; height: 50px !important; font-weight: bold; border-radius: 5px;">
+                                <i class="fa fa-pencil-square-o mr-2"/>
+                                <span>İmza Al</span>
+                            </button>
+                            <div style="border-right: 1px solid #ddd; width: 100%; height: 10px; margin-top: 10px;"/>
+                        </div>
+
+                        <div style="display: flex; flex-direction: column; align-items: center; width: 180px;" attrs="{'invisible': [('state','not in',['odeme_bekliyor','teslim_edildi', 'islem_tamamlandi'])]}">
+                            <button name="action_teslim_raporu_pdf" type="object" class="btn-success" style="width: 100% !important; height: 100px !important; font-weight: bold; border-radius: 5px; margin-bottom: 5px;">
+                                <i class="fa fa-file-pdf-o" style="font-size: 24px; display: block; margin-bottom: 5px;"/>
+                                <span>Teslim Raporu</span>
+                            </button>
+
+                            <button name="action_imza_al_teslim" type="object" class="btn-warning" style="width: 100% !important; height: 50px !important; font-weight: bold; border-radius: 5px;">
+                                <i class="fa fa-pencil-square-o mr-2"/>
+                                <span>İmza Al</span>
+                            </button>
+
+                            <div style="display: flex; gap: 5px; align-items: center; justify-content: center; margin-top: 15px; width: 100%;">
+                                <field name="rapor_parca_hizmet_ekle" widget="boolean"/>
+                                <label for="rapor_parca_hizmet_ekle" string="Parça ve Hizmetleri Rapora Ekle" style="font-size: 11px; color: #666;"/>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; flex-direction: column; align-items: center; width: 180px;">
+                            <button name="action_open_rapor_gonder_wizard" type="object" class="btn-primary" style="width: 100% !important; height: 100px !important; font-weight: bold; border-radius: 5px;">
+                                <i class="fa fa-paper-plane" style="font-size: 24px; display: block; margin-bottom: 5px;"/>
+                                <span>Rapor Gönder</span>
+                            </button>
+                            <div style="font-size: 11px; color: #666; margin-top: 15px; text-align: center;">E-Posta &amp; WhatsApp</div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </sheet>
+            <div class="oe_chatter">
+                <field name="message_follower_ids" widget="mail_followers"/>
+                <field name="activity_ids" widget="mail_activity"/>
+                <field name="message_ids" widget="mail_thread"/>
+            </div>
+        </form>
+    </field>
+</record>
+<record id="view_servis_kaydi_search" model="ir.ui.view">
+    <field name="name">servis.kaydi.search</field>
+    <field name="model">servis.kaydi</field>
+    <field name="arch" type="xml">
+        <search string="Servis Kaydı Arama">
+            <field name="name" string="Referans No"/>
+            <field name="musteri_id" string="Müşteri/Şirket Adı"/>
+            <field name="urun_turu_id" string="Ürün Türü"/>
+            <field name="urun_marka_id" string="Ürün Markası"/>
+            <field name="urun_modeli_id" string="Ürün Modeli"/>
+            <field name="seri_no" string="Seri Numarası"/>
+
+            <separator/>
+            <filter string="Açık Kayıtlar" name="filter_acik" domain="[('state', 'not in', ['teslim_edildi', 'iptal'])]"/>
+            <filter string="Kapalı Kayıtlar" name="filter_kapali" domain="[('state', 'in', ['teslim_edildi', 'iptal'])]"/>
+
+            <group expand="0" string="Grupla">
+                <filter string="Müşteri" name="group_by_customer" context="{'group_by': 'musteri_id'}"/>
+                <filter string="Durum" name="group_by_state" context="{'group_by': 'state'}"/>
+                <filter string="Ürün Markası" name="group_by_brand" context="{'group_by': 'urun_marka_id'}"/>
+            </group>
+        </search>
+    </field>
+</record>
+</odoo>

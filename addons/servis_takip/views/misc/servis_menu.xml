@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_servis_root" name="Servis Yönetimi" action="action_servis_kaydi_tum" sequence="10"/>
+
+    <menuitem id="menu_urun_parki" name="Ürün Parkı" parent="menu_servis_root" action="action_urun_parki" sequence="30"/>
+
+    <menuitem id="menu_servis_yapilandirma" name="Yapılandırma" parent="menu_servis_root" sequence="100" groups="base.group_system"/>
+
+    <menuitem id="menu_urun_tanimlari_ana" name="Ürün Ağacı" parent="menu_servis_yapilandirma" action="action_urun_modeli" sequence="10"/>
+
+    <menuitem id="menu_ariza_tanimlari" name="Arıza Tanımları" parent="menu_servis_yapilandirma" action="action_servis_ariza_tanimi" sequence="20"/>
+
+    <menuitem id="menu_servis_islem_tipi" name="İşlem Tipleri" parent="menu_servis_yapilandirma" action="action_servis_islem_tipi" sequence="30"/>
+
+    <menuitem id="menu_servis_etiket" name="Etiketler" parent="menu_servis_yapilandirma" action="action_servis_etiket" sequence="40"/>
+
+    <menuitem id="menu_servis_durum_tanimi" name="Durum Tanımları" parent="menu_servis_yapilandirma" action="action_servis_durum_tanimi" sequence="50"/>
+
+    <menuitem id="menu_servis_settings" name="Ayarlar" parent="menu_servis_yapilandirma" action="action_servis_config_settings" sequence="60"/>
+
+</odoo>

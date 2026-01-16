@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_kabul_rapor_form" model="ir.ui.view">
+        <field name="name">kabul.rapor.form</field>
+        <field name="model">kabul.rapor</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Kabul Numarası"/>
+                        <h1>
+                            <field name="name" placeholder="Örn: KBL-1001"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Müşteri Bilgileri">
+                            <field name="musteri_id"/>
+                            <field name="create_date" string="Kayıt Tarihi" readonly="1"/>
+                        </group>
+                        <group string="Cihaz Bilgileri">
+                            <field name="urun_id"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Arıza ve Muayene">
+                            <group>
+                                <group string="Müşteri Şikayeti">
+                                    <field name="ariza_aciklama" widget="text" colspan="2"/>
+                                </group>
+                                <group string="Teknisyen Muayenesi">
+                                    <field name="ilk_muayene_notu" widget="text" colspan="2"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                    <group string="Onay">
+                        <field name="musteri_imzasi" widget="signature" string="Müşteri İmzası"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <template id="report_kabul_raporu_template">
+        <t t-call="web.html_container">
+            <t t-set="title" t-value="docs[0].name"/>
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-family: 'Helvetica'; font-size: 13px;">
+
+                        <div class="row mb-4">
+                            <div class="col-7">
+                                <h2 style="font-weight: bold; color: #2C3E50;">KABUL RAPORU</h2>
+                                <h5 class="text-muted">No: <span t-field="o.name"/>
+                                </h5>
+                            </div>
+                            <div class="col-5 text-right">
+                                <div style="margin-bottom: 10px;">
+                                    <strong>Belge Tarihi:</strong>
+                                    <span t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
+                                </div>
+                                <div style="display: inline-block; min-width: 150px;">
+                                    <div t-attf-style="padding: 8px 15px; border-radius: 4px; font-size: 13px; font-weight: bold; text-align: center; border: 1px solid #ccc; background-color: #E2EFDA; color: #375623;">
+                                        KABUL HAZIR
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <div style="border: 1px solid #dee2e6; padding: 12px; border-radius: 5px; min-height: 150px; background-color: #fcfcfc;">
+                                    <strong style="color: #2C3E50; border-bottom: 2px solid #3498DB; display: block; margin-bottom: 8px;">Müşteri Bilgileri</strong>
+                                    <div>
+                                        <strong>Adı:</strong>
+                                        <span t-field="o.musteri_id.name"/>
+                                        <br/>
+                                        <strong>Tel:</strong>
+                                        <span t-field="o.musteri_id.phone"/>
+                                        <br/>
+                                        <strong>Mobil Tel:</strong>
+                                        <span t-field="o.musteri_id.mobile"/>
+                                        <br/>
+                                        <strong>E-Posta:</strong>
+                                        <span t-field="o.musteri_id.email"/>
+                                        <br/>
+                                        <strong>Adres:</strong>
+                                        <span t-field="o.musteri_id.street"/>
+                                        <span t-if="o.musteri_id.city" t-field="o.musteri_id.city"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div style="border: 1px solid #dee2e6; padding: 12px; border-radius: 5px; min-height: 150px; background-color: #fcfcfc;">
+                                    <strong style="color: #2C3E50; border-bottom: 2px solid #E67E22; display: block; margin-bottom: 8px;">Cihaz Bilgileri</strong>
+                                    <div>
+                                        <strong>Tür:</strong>
+                                        <span t-field="o.urun_turu_id.name"/>
+                                        <br/>
+                                        <strong>Marka/Model:</strong>
+                                        <span t-field="o.urun_marka_id.name"/>
+ /                                        <span t-field="o.urun_modeli_id.name"/>
+                                        <br/>
+                                        <strong>Seri No:</strong>
+                                        <span t-field="o.seri_no"/>
+                                        <br/>
+                                        <strong>Giriş Tarihi:</strong>
+                                        <span t-field="o.kayit_tarihi" t-options='{"widget": "date"}'/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4" t-if="o.ariza_detay_ids">
+                            <h4 style="font-size: 14px; font-weight: bold; color: #333;">MÜŞTERİ ŞIKAYETI</h4>
+                            <table class="table table-sm table-bordered">
+                                <thead style="background-color: #f8f9fa;">
+                                    <tr>
+                                        <th style="width: 30%;">Arıza Tipi</th>
+                                        <th style="width: 70%;">Müşteri Notu</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.ariza_detay_ids" t-as="detay">
+                                        <td>
+                                            <span t-field="detay.ariza_tanimi_id"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="detay.musteri_notu"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <t t-if="o.teknisyen_notu">
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <div style="border: 1px solid #eee; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                                        <strong style="color: #2C3E50;">Teknisyen Notu:</strong>
+                                        <div style="margin-top: 5px; white-space: pre-line;">
+                                            <span t-field="o.teknisyen_notu"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                        <div class="row mt-5">
+                            <div class="col-6 text-center">
+                                <div style="border: 1px solid #eee; padding: 10px; border-radius: 5px;">
+                                    <strong>Teknisyen</strong>
+                                    <br/>
+                                    <br/>
+                                    <div style="height: 40px; border-bottom: 1px solid #ccc; margin-bottom: 5px;"></div>
+                                    <span style="font-size: 11px;">Kaşe / İmza</span>
+                                </div>
+                            </div>
+                            <div class="col-6 text-center">
+                                <div style="border: 1px solid #eee; padding: 10px; border-radius: 5px;">
+                                    <strong>Müşteri Onayı</strong>
+                                    <br/>
+                                    <br/>
+                                    <t t-if="o.kabul_musteri_imzasi">
+                                        <img t-att-src="'data:image/png;base64,' + o.kabul_musteri_imzasi.decode()" style="height: 40px; max-width: 200px;"/>
+                                    </t>
+                                    <t t-else="">
+                                        <div style="height: 40px; border-bottom: 1px solid #ccc;"></div>
+                                    </t>
+                                    <br/>
+                                    <span t-field="o.musteri_id.name" style="font-size: 11px; font-weight: bold;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

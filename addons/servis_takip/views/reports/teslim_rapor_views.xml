@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_teslim_rapor_form" model="ir.ui.view">
+        <field name="name">teslim.rapor.form</field>
+        <field name="model">teslim.rapor</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Teslim Numarası"/>
+                        <h1>
+                            <field name="name" placeholder="Örn: TSL-1001"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Müşteri Bilgileri">
+                            <field name="musteri_id"/>
+                            <field name="create_date" string="Kayıt Tarihi" readonly="1"/>
+                        </group>
+                        <group string="Cihaz Bilgileri">
+                            <field name="urun_id"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Parçalar ve Hizmetler">
+                            <field name="line_ids">
+                                <tree editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="qty"/>
+                                    <field name="price_unit"/>
+                                    <field name="price_subtotal" readonly="1" force_save="1"/>
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right" colspan="2" name="total_amount">
+                                <field name="amount_untaxed" widget="monetary" string="Ara Toplam"/>
+                                <field name="amount_tax" widget="monetary" string="KDV (%20)"/>
+                                <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                    <label for="amount_total" string="Genel Toplam"/>
+                                </div>
+                                <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary"/>
+                            </group>
+                            <div class="oe_clear"/>
+                        </page>
+                    </notebook>
+                    <group string="Onay">
+                        <field name="musteri_imzasi" widget="signature" string="Müşteri İmzası"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <template id="report_teslim_raporu_template">
+        <t t-call="web.html_container">
+            <t t-set="title" t-value="docs[0].name"/>
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-family: 'Helvetica'; font-size: 13px;">
+
+                        <div class="row mb-4">
+                            <div class="col-7">
+                                <h2 style="font-weight: bold; color: #2C3E50;">TESLİM RAPORU</h2>
+                                <h5 class="text-muted">No: <span t-field="o.name"/>
+                                </h5>
+                            </div>
+                            <div class="col-5 text-right">
+                                <div style="margin-bottom: 10px;">
+                                    <strong>Belge Tarihi:</strong>
+                                    <span t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
+                                </div>
+                                <div style="display: inline-block; min-width: 150px;">
+                                    <div t-attf-style="padding: 8px 15px; border-radius: 4px; font-size: 13px; font-weight: bold; text-align: center; border: 1px solid #ccc; background-color: #{'#E2EFDA' if o.state == 'teslim_edildi' else '#FCE4D6'}; color: #{'#375623' if o.state == 'teslim_edildi' else '#833C0C'};">
+                                        <t t-if="o.state == 'teslim_edildi'">TESLİM EDİLDİ</t>
+                                        <t t-else="">TESLİM EDİLECEK</t>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <div style="border: 1px solid #dee2e6; padding: 12px; border-radius: 5px; min-height: 150px; background-color: #fcfcfc;">
+                                    <strong style="color: #2C3E50; border-bottom: 2px solid #3498DB; display: block; margin-bottom: 8px;">Müşteri Bilgileri</strong>
+                                    <div>
+                                        <strong>Adı:</strong>
+                                        <span t-field="o.musteri_id.name"/>
+                                        <br/>
+                                        <strong>Tel:</strong>
+                                        <span t-field="o.musteri_id.phone"/>
+                                        <br/>
+                                        <strong>Mobil Tel:</strong>
+                                        <span t-field="o.musteri_id.mobile"/>
+                                        <br/>
+                                        <strong>E-Posta:</strong>
+                                        <span t-field="o.musteri_id.email"/>
+                                        <br/>
+                                        <strong>Adres:</strong>
+                                        <span t-field="o.musteri_id.street"/>
+                                        <span t-if="o.musteri_id.city" t-field="o.musteri_id.city"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div style="border: 1px solid #dee2e6; padding: 12px; border-radius: 5px; min-height: 150px; background-color: #fcfcfc;">
+                                    <strong style="color: #2C3E50; border-bottom: 2px solid #E67E22; display: block; margin-bottom: 8px;">Cihaz Bilgileri</strong>
+                                    <div>
+                                        <strong>Tür:</strong>
+                                        <span t-field="o.urun_turu_id.name"/>
+                                        <br/>
+                                        <strong>Marka/Model:</strong>
+                                        <span t-field="o.urun_marka_id.name"/>
+ /                                        <span t-field="o.urun_modeli_id.name"/>
+                                        <br/>
+                                        <strong>Seri No:</strong>
+                                        <span t-field="o.seri_no"/>
+                                        <br/>
+                                        <strong>Giriş Tarihi:</strong>
+                                        <span t-field="o.kayit_tarihi" t-options='{"widget": "date"}'/>
+                                        <br/>
+                                        <strong>Teslim Tarihi:</strong>
+                                        <span t-field="o.teslim_tarihi" t-options='{"widget": "date"}'/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4" t-if="o.ariza_detay_ids">
+                            <h4 style="font-size: 14px; font-weight: bold; color: #333;">MÜŞTERI ŞİKAYETLERİ</h4>
+                            <table class="table table-sm table-bordered">
+                                <thead style="background-color: #f8f9fa;">
+                                    <tr>
+                                        <th style="width: 30%;">Arıza Tipi</th>
+                                        <th style="width: 50%;">Müşteri Notu</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.ariza_detay_ids" t-as="detay">
+                                        <td>
+                                            <span t-field="detay.ariza_tanimi_id"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="detay.musteri_notu"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mt-4" t-if="o.servis_islem_satirlari">
+                            <h4 style="font-size: 14px; font-weight: bold; color: #333; text-transform: uppercase;">TEKNİSYEN İŞLEM NOTLARI</h4>
+                            <table class="table table-sm table-bordered">
+                                <thead style="background-color: #f8f9fa;">
+                                    <tr>
+                                        <th style="width: 30%;">İşlem Tipi</th>
+                                        <th style="width: 50%;">Yapılan İşlem Açıklaması</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.servis_islem_satirlari" t-as="islem">
+                                        <td>
+                                            <span t-field="islem.islem_tipi_id.name"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="islem.aciklama"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mt-4" t-if="o.teknik_rapor_satirlari and o.rapor_parca_hizmet_ekle">
+                            <h4 style="font-size: 14px; font-weight: bold; color: #333; text-transform: uppercase;">Yapılan İşlemler / Parçalar</h4>
+
+                            <table class="table table-sm table-bordered" style="margin-bottom: 0;">
+                                <thead style="background-color: #f8f9fa;">
+                                    <tr>
+                                        <th style="width: 55%;">Açıklama</th>
+                                        <th class="text-right" style="width: 10%;">Adet</th>
+                                        <th class="text-right" style="width: 15%;">Birim Fiyat</th>
+                                        <th class="text-right" style="width: 20%;">Ara Toplam</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.teknik_rapor_satirlari" t-as="line">
+                                        <td>
+                                            <span t-field="line.ornek_urun_id.name"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-field="line.ornek_miktar"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-field="line.ornek_birim_fiyat" t-options='{"widget": "monetary", "display_currency": o.company_currency_id}'/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-field="line.ornek_ara_toplam" t-options='{"widget": "monetary", "display_currency": o.company_currency_id}'/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="row justify-content-end" style="margin-top: 10px;">
+                                <div class="col-4">
+                                    <table class="table table-sm" style="border-top: 1px solid #dee2e6;">
+                                        <tr>
+                                            <td style="border:0;">Ara Toplam:</td>
+                                            <td class="text-right" style="border:0;">
+                                                <span t-field="o.vergi_haric_tutar" t-options='{"widget": "monetary", "display_currency": o.company_currency_id}'/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border:0;">Vergiler:</td>
+                                            <td class="text-right" style="border:0;">
+                                                <span t-field="o.toplam_vergi" t-options='{"widget": "monetary", "display_currency": o.company_currency_id}'/>
+                                            </td>
+                                        </tr>
+                                        <tr style="font-size: 15px; border-top: 2px solid #333;">
+                                            <td style="border:0;">
+                                                <strong>GENEL TOPLAM:</strong>
+                                            </td>
+                                            <td class="text-right" style="border:0;">
+                                                <strong>
+                                                    <span t-field="o.genel_toplam" t-options='{"widget": "monetary", "display_currency": o.company_currency_id}'/>
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <t t-if="o.teknisyen_notu">
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <div style="border: 1px solid #eee; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                                        <strong style="color: #2C3E50;">Teknisyen Notu:</strong>
+                                        <div style="margin-top: 5px; white-space: pre-line;">
+                                            <span t-field="o.teknisyen_notu"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                        <div class="row mt-5">
+                            <div class="col-6 text-center">
+                                <div style="border: 1px solid #eee; padding: 10px; border-radius: 5px;">
+                                    <strong>Teknisyen</strong>
+                                    <br/>
+                                    <br/>
+                                    <div style="height: 40px; border-bottom: 1px solid #ccc; margin-bottom: 5px;"></div>
+                                    <span style="font-size: 11px;">Kaşe / İmza</span>
+                                </div>
+                            </div>
+                            <div class="col-6 text-center">
+                                <div style="border: 1px solid #eee; padding: 10px; border-radius: 5px;">
+                                    <strong>Müşteri Onayı</strong>
+                                    <br/>
+                                    <br/>
+                                    <t t-if="o.teslim_musteri_imzasi">
+                                        <img t-att-src="'data:image/png;base64,' + o.teslim_musteri_imzasi.decode()" style="height: 40px; max-width: 200px;"/>
+                                    </t>
+                                    <t t-else="">
+                                        <div style="height: 40px; border-bottom: 1px solid #ccc;"></div>
+                                    </t>
+                                    <br/>
+                                    <span t-field="o.musteri_id.name" style="font-size: 11px; font-weight: bold;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

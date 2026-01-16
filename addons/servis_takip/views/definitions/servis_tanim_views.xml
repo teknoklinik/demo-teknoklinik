@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_servis_ariza_tanimi_tree" model="ir.ui.view">
+        <field name="name">servis.ariza.tanimi.tree</field>
+        <field name="model">servis.ariza.tanimi</field>
+        <field name="arch" type="xml">
+            <tree string="Arıza Tanımları" delete="1">
+                <field name="name"/>
+                <field name="aktif"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_servis_ariza_tanimi_form" model="ir.ui.view">
+        <field name="name">servis.ariza.tanimi.form</field>
+        <field name="model">servis.ariza.tanimi</field>
+        <field name="arch" type="xml">
+            <form string="Arıza Tanımı">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="aktif"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_servis_islem_tipi_tree" model="ir.ui.view">
+        <field name="name">servis.islem.tipi.tree</field>
+        <field name="model">servis.islem.tipi</field>
+        <field name="arch" type="xml">
+            <tree string="İşlem Tipleri" delete="1">
+                <field name="name"/>
+                <field name="aktif"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_servis_islem_tipi_form" model="ir.ui.view">
+        <field name="name">servis.islem.tipi.form</field>
+        <field name="model">servis.islem.tipi</field>
+        <field name="arch" type="xml">
+            <form string="İşlem Tipi">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="aktif"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_servis_etiket_tree" model="ir.ui.view">
+        <field name="name">servis.etiket.tree</field>
+        <field name="model">servis.etiket</field>
+        <field name="arch" type="xml">
+            <tree string="Servis Etiketleri" editable="bottom">
+                <field name="name"/>
+                <field name="color" widget="color_picker"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_servis_durum_tanimi_tree" model="ir.ui.view">
+        <field name="name">servis.durum.tanimi.tree</field>
+        <field name="model">servis.durum.tanimi</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom" create="1" delete="1">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="key" />
+                <field name="color" widget="color_picker"/>
+            </tree>
+        </field>
+    </record>
+</odoo>

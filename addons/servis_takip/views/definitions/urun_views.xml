@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_urun_modeli_tree" model="ir.ui.view">
+        <field name="name">urun.modeli.tree</field>
+        <field name="model">urun.modeli</field>
+        <field name="arch" type="xml">
+            <tree string="Ürün Tanımları" editable="bottom">
+                <field name="display_id" string="ID" readonly="1" width="20px"/>
+                <field name="tur_id" string="Ürün Türü" options="{'no_create_edit': True, 'no_open': True}"/>
+                <field name="marka_id" string="Marka" domain="[('tur_id', '=', tur_id)]" options="{'no_create_edit': True, 'no_quick_create': False}}"/>
+                <field name="name" string="Model Adı" placeholder="Örn: LaserJet Pro M404n"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_urun_modeli" model="ir.actions.act_window">
+        <field name="name">Ürün Ağacı</field>
+        <field name="res_model">urun.modeli</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Yeni bir ürün tanımı ekleyin.
+            </p>
+            <p>
+                Buradan Tür, Marka ve Model eşleşmelerini tek bir listeden yönetebilirsiniz.
+            </p>
+        </field>
+    </record>
+
+    <record id="view_urun_markasi_tree" model="ir.ui.view">
+        <field name="name">urun.markasi.tree</field>
+        <field name="model">urun.markasi</field>
+        <field name="arch" type="xml">
+            <tree string="Ürün Markaları" editable="bottom">
+                <field name="tur_id" options="{'no_create_edit': True}"/>
+                <field name="name" string="Marka Adı"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_urun_markasi" model="ir.actions.act_window">
+        <field name="name">Markalar</field>
+        <field name="res_model">urun.markasi</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <record id="view_urun_turu_tree" model="ir.ui.view">
+        <field name="name">urun.turu.tree</field>
+        <field name="model">urun.turu</field>
+        <field name="arch" type="xml">
+            <tree string="Ürün Türleri" editable="bottom">
+                <field name="name" string="Ürün Türü Adı"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_urun_turu" model="ir.actions.act_window">
+        <field name="name">Ürün Türleri</field>
+        <field name="res_model">urun.turu</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <record id="view_urun_modeli_search" model="ir.ui.view">
+        <field name="name">urun.modeli.search</field>
+        <field name="model">urun.modeli</field>
+        <field name="arch" type="xml">
+            <search string="Ürün Arama">
+                <field name="name" string="Model"/>
+                <field name="marka_id"/>
+                <field name="tur_id"/>
+                <group expand="0" string="Grupla">
+                    <filter string="Ürün Türüne Göre" name="group_by_tur" context="{'group_by': 'tur_id'}"/>
+                    <filter string="Markaya Göre" name="group_by_marka" context="{'group_by': 'marka_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo>

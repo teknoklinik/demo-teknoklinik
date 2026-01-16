@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_servis_urun_aktar_wizard_form" model="ir.ui.view">
+        <field name="name">servis.urun.aktar.wizard.form</field>
+        <field name="model">servis.urun.aktar.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Ürün Parkı">
+                <style>
+                /* Odoo'nun kart içine girme efektini ve butonlarını pasifleştir */
+                .o_kanban_view .o_kanban_record { cursor: default !important; }
+                .o_kanban_button_add, .o-kanban-button-new, .o_cp_buttons { display: none !important; }
+                
+                /* Kart Tasarımı */
+                .custom_card_box {
+                    border: 2px solid #dee2e6;
+                    border-radius: 12px;
+                    background: white;
+                    display: flex;
+                    align-items: center;
+                    min-height: 100px;
+                    transition: all 0.3s ease;
+                }
+                
+                /* Seçildiğinde Kartın Rengi Değişsin */
+                .card_selected {
+                    border-color: #714B98 !important;
+                    background-color: #fcfaff !important;
+                    box-shadow: 0 4px 10px rgba(113, 75, 152, 0.1);
+                }
+
+                .selection_area {
+                    padding: 15px;
+                    border-right: 1px solid #eee;
+                    text-align: center;
+                    min-width: 70px;
+                }
+                
+                .info_area { padding: 10px 20px; flex-grow: 1; }
+                </style>
+
+                <sheet>
+                    <div class="row mb-8">
+                        <div class="col-6">
+                            <label for="arama_tipi" class="font-weight-bold"/>
+                            <field name="arama_tipi" options="{'no_open': True}"/>
+                            <field name="arama_metni" placeholder="Yazın ve Enter'a basın..."/>
+                        </div>
+                    </div>
+                    <separator string="BULUNAN ÜRÜN KAYITLARI" class="mt-4 mb-3"/>
+
+                    <field name="urun_line_ids" mode="kanban" nolabel="1">
+                        <kanban create="false" delete="false">
+                            <field name="urun_real_id" invisible="1"/>
+                            <field name="urun_tipi"/>
+                            <field name="id"/>
+                            <field name="secildi"/>
+                            <field name="name"/>
+                            <field name="musteri_adi"/>
+                            <field name="serial_no"/>
+                            <field name="marka_model"/>
+                            <field name="garanti_durumu"/>
+                            <templates>
+                                <t t-name="kanban-box">
+                                    <div t-attf-class="mb-3 #{record.secildi.raw_value ? 'card_selected' : ''} custom_card_box" style="width: 400px;">
+
+                                        <div class="selection_area">
+                                            <field name="secildi" widget="boolean_toggle"/>
+                                            <div class="small mt-2 font-weight-bold text-muted">SEÇ</div>
+                                        </div>
+
+                                        <div class="info_area">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div class="d-flex align-items-center mt-1">
+                                                    <i class="fa fa-barcode mr-2" style="color: #714B98; font-size: 14px;" title="Seri Numarası"/>
+                                                    <strong style="color: #714B98; font-size: 15px;">
+                                                        <span class="mr-1">S/N:</span>
+                                                        <field name="serial_no"/>
+                                                    </strong>
+                                                </div>
+                                                <span class="badge badge-light border" style="font-size: 13px; padding: 5px 12px; border-radius: 6px; color: #444; background-color: #f8f9fa;">
+                                                    <field name="urun_tipi"/>
+                                                </span>
+                                            </div>
+                                            <div class="mt-1" style="font-size: 14px; font-weight: bold; color: #333;">
+                                                <i class="fa fa-shopping-bag mr-1 text-muted" style="font-size: 13px;"/>
+                                                <field name="name"/>
+                                            </div>
+
+                                            <div class="mt-1" style="font-size: 14px; font-weight: bold; color: #333;">
+                                                <i class="fa fa-cog mr-1 text-muted" style="font-size: 13px;"/>
+                                                <field name="marka_model"/>
+                                            </div>
+                                            <div class="mt-2 text-muted" style="font-size: 13px;">
+                                                <div>
+                                                    <i class="fa fa-user-circle mr-1"/>
+                                                    <field name="musteri_adi"/>
+                                                </div>
+                                            </div>
+                                            <div colspan="2" class="mt-2 mb-2 text-left" attrs="{'invisible': [('garanti_durumu', '=', 'belirsiz')]}">
+                                                <div attrs="{'invisible': [('garanti_durumu', '!=', 'yok')]}" style="display: inline-flex; align-items: center; font-size: 11px; font-weight: 700; border: 1px solid #dc3545; border-radius: 4px; padding: 3px 10px; color: #dc3545; background-color: #fff5f5;">
+                                                    <i class="fa fa-exclamation-triangle mr-1"/>
+                                                    <span>GARANTİSİ YOK</span>
+                                                </div>
+
+                                                <div attrs="{'invisible': [('garanti_durumu', '!=', 'devam')]}" style="display: inline-flex; align-items: center; font-size: 11px; font-weight: 700; border: 1px solid #28a745; border-radius: 4px; padding: 3px 10px; color: #28a745; background-color: #f6fff8;">
+                                                    <i class="fa fa-check-circle mr-1"/>
+                                                    <span>GARANTİSİ DEVAM EDİYOR</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <t t-if="record.secildi.raw_value">
+                                            <div style="position: absolute; right: 8px; top: 8px;">
+                                                <i class="fa fa-check-circle text-primary" style="font-size: 18px;"/>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </t>
+                            </templates>
+                        </kanban>
+                    </field>
+                </sheet>
+
+                <footer>
+                    <button name="action_urun_aktar" string="➔ SEÇİLEN ÜRÜNÜ SERVİS KAYDINA AKTAR" type="object" class="btn-primary" style="background-color: #714B98 !important; border: none;"/>
+                    <button string="İPTAL" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

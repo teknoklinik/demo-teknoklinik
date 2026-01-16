@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="servis_kaydi_action" model="ir.actions.act_window">
+        <field name="name">Servis Kayıtları</field>
+        <field name="res_model">servis.kaydi</field>
+        <field name="view_mode">tree,kanban,form</field>
+    </record>
+
+    <record id="action_urun_durum_takibi" model="ir.actions.act_window">
+        <field name="name">Ürün Durum Takibi</field>
+        <field name="res_model">servis.kaydi</field>
+        <field name="view_mode">tree,kanban,form</field>
+    </record>
+
+    <record id="action_servis_ariza_tanimi" model="ir.actions.act_window">
+        <field name="name">Arıza Tanımları</field>
+        <field name="res_model">servis.ariza.tanimi</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_servis_islem_tipi" model="ir.actions.act_window">
+        <field name="name">İşlem Tipleri</field>
+        <field name="res_model">servis.islem.tipi</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_servis_etiket" model="ir.actions.act_window">
+        <field name="name">Etiketler</field>
+        <field name="res_model">servis.etiket</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Yeni bir servis etiketi oluşturun.</p>
+        </field>
+    </record>
+
+    <record id="action_servis_kaydi_acik" model="ir.actions.act_window">
+        <field name="name">Servis Kayıtları</field>
+        <field name="res_model">servis.kaydi</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('state', 'not in', ['teslim_edildi', 'iptal'])]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Açık servis kaydı bulunamadı.</p>
+        </field>
+    </record>
+
+    <record id="action_servis_kaydi_kapali" model="ir.actions.act_window">
+        <field name="name">Kapalı Kayıtlar</field>
+        <field name="res_model">servis.kaydi</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('state', 'in', ['teslim_edildi', 'iptal'])]</field>
+    </record>
+
+    <record id="action_servis_kaydi_tum" model="ir.actions.act_window">
+        <field name="name">Servis Yönetimi</field>
+        <field name="res_model">servis.kaydi</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{'search_default_filter_acik': 1}</field>
+    </record>
+
+    <record id="action_servis_durum_tanimi" model="ir.actions.act_window">
+        <field name="name">Durum Tanımları</field>
+        <field name="res_model">servis.durum.tanimi</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Yeni bir servis durumu ekleyin!
+            </p>
+        </field>
+    </record>
+
+    <record id="action_kabul_raporu_pdf" model="ir.actions.report">
+        <field name="name">Kabul Raporu</field>
+        <field name="model">servis.kaydi</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">servis_takip.report_kabul_raporu_template</field>
+        <field name="report_file">servis_takip.report_kabul_raporu_template</field>
+        <field name="print_report_name">object.name + ' - Kabul Raporu'</field>
+    </record>
+
+    <record id="action_teslim_raporu_pdf" model="ir.actions.report">
+        <field name="name">Teslim Raporu</field>
+        <field name="model">servis.kaydi</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">servis_takip.report_teslim_raporu_template</field>
+        <field name="report_file">servis_takip.report_teslim_raporu_template</field>
+        <field name="print_report_name">object.name + ' - Teslim Raporu'</field>
+    </record>
+
+    <record id="model_servis_kaydi_action_copy" model="ir.actions.server">
+        <field name="name">Kopyala</field>
+        <field name="model_id" ref="model_servis_kaydi"/>
+        <field name="binding_model_id" ref="model_servis_kaydi"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+            action = records.action_copy_records()
+        </field>
+    </record>
+
+    <record id="action_servis_rapor_gonder_wizard" model="ir.actions.act_window">
+        <field name="name">Rapor Gönder</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">servis.rapor.gonder.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_servis_kaydi_id': active_id}</field>
+    </record>
+</odoo>

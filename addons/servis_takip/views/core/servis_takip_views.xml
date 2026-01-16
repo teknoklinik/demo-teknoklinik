@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_servis_kaydi_durum_tree" model="ir.ui.view">
+        <field name="name">servis.kaydi.durum.tree</field>
+        <field name="model">servis.kaydi</field>
+        <field name="arch" type="xml">
+            <tree string="Ürün Durum Takibi" decoration-success="state == 'teslim_edildi'" decoration-danger="state == 'iptal'">
+                <field name="color" widget="color_picker" string="Renk" width="20px" />
+                <field name="state" widget="badge" options="{'color_field': 'color'}"/>
+                <field name="name" optional="show"/>
+                <field name="musteri_id" string="Müşteri/Şirket Adı" optional="show"/>
+                <field name="urun_turu_id" optional="show"/>
+                <field name="urun_marka_id" optional="show"/>
+                <field name="urun_modeli_id" optional="show"/>
+                <field name="seri_no" optional="show"/>
+                <field name="serviste_gecen_sure" string="Serviste Geçen Süre" optional="show"/>
+                <field name="kayit_tarihi" string="Servise Giriş Tarihi" widget="date" optional="show"/>
+                <field name="teslim_tarihi" string="Servisten Çıkış Tarihi" widget="date" optional="show"/>
+                <field name="servis_form_kapali_mi" string="Form Kapalı Mı?" optional="show"/>
+            </tree>
+        </field>
+    </record>
+</odoo>
