@@ -10,7 +10,6 @@ SERVIS_DURUM_SELECTION = [
     ('onay_bekliyor', 'Onay Bekleniyor'),
     ('islemde', 'İşlemde'),
     ('islem_tamamlandi', 'İşlem Tamamlandı'),
-    ('odeme_bekliyor', 'Ödeme Bekliyor'),
     ('teslim_edildi', 'Teslim Edildi'),
     ('iptal', 'İptal Edildi'),
 ]
@@ -21,7 +20,6 @@ DURUM_RENK_MAP = {
     'onay_bekliyor': 2,       # Turuncu (Karar/Bekleme noktası)
     'islemde': 8,             # Koyu Mavi (Aktif çalışma/Efor)
     'islem_tamamlandi': 5,    # Mor (Teknik iş bitti, sonraki adıma hazır)
-    'odeme_bekliyor': 2,      # Turuncu (Finansal bekleme)
     'teslim_edildi': 10,      # Yeşil (Başarıyla kapandı)
     'iptal': 1,               # Kırmızı (Negatif kapanış)
 }

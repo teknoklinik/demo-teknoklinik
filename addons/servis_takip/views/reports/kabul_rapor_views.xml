@@ -142,6 +142,29 @@
                                 </div>
                             </div>
                         </t>
+
+                        <div class="mt-4" t-if="o.aksesuar_ids">
+                            <h4 style="font-size: 14px; font-weight: bold; color: #333;">AKSESUARLAR</h4>
+                            <table class="table table-sm table-bordered">
+                                <thead style="background-color: #f8f9fa;">
+                                    <tr>
+                                        <th style="width: 70%;">Aksesuar Adı</th>
+                                        <th style="width: 30%;">Miktar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.aksesuar_ids" t-as="aksesuar">
+                                        <td>
+                                            <span t-field="aksesuar.aksesuar_id.name"/>
+                                        </td>
+                                        <td class="text-center">
+                                            <span t-field="aksesuar.miktar"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
                         <div class="row mt-5">
                             <div class="col-6 text-center">
                                 <div style="border: 1px solid #eee; padding: 10px; border-radius: 5px;">

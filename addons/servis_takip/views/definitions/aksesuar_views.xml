@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_servis_aksesuar_form" model="ir.ui.view">
+        <field name="name">servis.aksesuar.form</field>
+        <field name="model">servis.aksesuar</field>
+        <field name="arch" type="xml">
+            <form string="Aksesuar">
+                <sheet>
+                    <group>
+                        <field name="name" required="1"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_servis_aksesuar_list" model="ir.ui.view">
+        <field name="name">servis.aksesuar.list</field>
+        <field name="model">servis.aksesuar</field>
+        <field name="arch" type="xml">
+            <list string="Aksesuarlar">
+                <field name="name"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_servis_aksesuar_search" model="ir.ui.view">
+        <field name="name">servis.aksesuar.search</field>
+        <field name="model">servis.aksesuar</field>
+        <field name="arch" type="xml">
+            <search string="Aksesuarlar">
+                <field name="name" string="Aksesuar Adı"/>
+                <separator/>
+                <filter name="active" string="Aktif" domain="[('active', '=', True)]"/>
+                <filter name="inactive" string="Pasif" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_servis_aksesuar" model="ir.actions.act_window">
+        <field name="name">Aksesuarlar</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">servis.aksesuar</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_servis_aksesuar_search"/>
+    </record>
+</odoo>

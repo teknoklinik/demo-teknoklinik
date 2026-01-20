@@ -1,12 +1,13 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_servis_kaydi_user,Servis Kaydı Kullanıcı Erişimi,model_servis_kaydi,base.group_user,1,1,1,1
-access_servis_odeme_wizard_user,Servis Odeme Onay Wizard Access,model_servis_odeme_wizard,base.group_user,1,1,1,0
 access_servis_kaydi_ariza_detay,Servis Kaydı Arıza Detay Kullanıcı Erişimi,model_servis_kaydi_ariza_detay,base.group_user,1,1,1,1
 access_servis_ariza_tanimi_user,Servis Arıza Tanımı Kullanıcı Erişimi,model_servis_ariza_tanimi,base.group_user,1,1,1,0
 access_servis_kaydi_teknik_rapor_satir,Servis Teknik Rapor Satırı,model_servis_kaydi_teknik_rapor_satir,base.group_user,1,1,1,1
 access_servis_durum_satiri_user,Servis Durum Geçmişi Satırı,model_servis_durum_satiri,base.group_user,1,1,1,0
 access_servis_kaydi_notlar,Servis Kaydı Notlar Erişimi,model_servis_kaydi_notlar,base.group_user,1,1,1,1
 access_servis_kaydi_dokuman,Servis Kaydı Doküman Yükle Erişimi,model_servis_kaydi_dokuman,base.group_user,1,1,1,1
+access_servis_kaydi_aksesuar,Servis Kaydı Aksesuarları Erişimi,model_servis_kaydi_aksesuar,base.group_user,1,1,1,1
+access_servis_aksesuar,Servis Aksesuarları Erişimi,model_servis_aksesuar,base.group_user,1,1,1,1
 access_servis_islem_tipi_user,Servis İşlem Tipi Kullanıcı Erişimi,model_servis_islem_tipi,base.group_user,1,1,1,1
 access_servis_islem_satiri_user,Servis İşlem Satırı Kullanıcı Erişimi,model_servis_islem_satiri,base.group_user,1,1,1,1
 access_servis_etiket_user,Servis Etiket Erişimi,model_servis_etiket,base.group_user,1,1,1,1

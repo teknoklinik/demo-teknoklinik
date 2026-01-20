@@ -81,7 +81,6 @@
                     <field name="formu_duzenle" invisible="1"/>
                     <field name="kayit_etiketi_renk" invisible="1"/>
                     <field name="kayit_etiketi_icon" invisible="1"/>
-                    <field name="odeme_yapildi" invisible="1"/>
                     <field name="color" invisible="1"/>
                     <field name="tablo_duzenle" invisible="1"/>
                     <field name="sure_asimi_var" invisible="1"/>
@@ -200,7 +199,7 @@
                         <separator string="Müşteri Şikayetleri ve Notları"/>
                         <field name="ariza_detay_ids" readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']">
                             <list string="Arıza Detayları" editable="bottom">
-                                <field name="ariza_tanimi_id" string="Arıza Tipi" options="{'no_create': True, 'no_create_edit': True}"/>
+                                <field name="ariza_tanimi_id" string="Arıza Tipi" options="{'no_create': False, 'no_create_edit': False}"/>
                                 <field name="musteri_notu" string="Müşteri Notu"/>
                             </list>
                         </field>
@@ -271,6 +270,15 @@
                         </field>
                     </page>
 
+                    <page string="Aksesuarlar" name="aksesuarlar">
+                        <field name="aksesuar_ids" readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']" nolabel="1">
+                            <list string="Aksesuarlar" editable="bottom" class="o_list_compact">
+                                <field name="aksesuar_id" options="{'no_create_edit': False, 'no_create': False}" required="1" width="70%"/>
+                                <field name="miktar" width="30%"/>
+                            </list>
+                        </field>
+                    </page>
+
                     <page string="Notlar" name="notlar">
                         <field name="notlar_ids" context="{'default_servis_kaydi_id': id, 'form_view_ref': 'modul_teknik_servis.view_servis_kaydi_notlar_popup_form'}" options="{'no_create_edit': True}" readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']">
                             <list string="Notlar">
@@ -298,7 +306,7 @@
                             <div style="border-right: 1px solid #ddd; width: 100%; height: 10px; margin-top: 10px;"/>
                         </div>
 
-                        <div style="display: flex; flex-direction: column; align-items: center; width: 180px;" invisible="state not in ['odeme_bekliyor','teslim_edildi', 'islem_tamamlandi']">
+                        <div style="display: flex; flex-direction: column; align-items: center; width: 180px;" invisible="state not in ['teslim_edildi', 'islem_tamamlandi']">
                             <button name="action_teslim_raporu_pdf" type="object" class="btn-success" style="width: 100% !important; height: 100px !important; font-weight: bold; border-radius: 5px; margin-bottom: 5px;">
                                 <i class="fa fa-file-pdf-o" style="font-size: 24px; display: block; margin-bottom: 5px;"/>
                                 <span>Teslim Raporu</span>

@@ -73,6 +73,7 @@ class ServisKaydi(models.Model):
     ariza_detay_ids = fields.One2many('servis.kaydi.ariza.detay', 'servis_kaydi_id', string='Detaylar')
     teknik_rapor_satirlari = fields.One2many('servis.kaydi.teknik.rapor.satir', 'servis_kaydi_id', string="Parça ve Hizmetler", copy=True)
     notlar_ids = fields.One2many('servis.kaydi.notlar', 'servis_kaydi_id', string='Notlar', copy=True)
+    aksesuar_ids = fields.One2many('servis.kaydi.aksesuar', 'servis_kaydi_id', string='Aksesuarlar', copy=True)
     dokuman_yukle_ids = fields.One2many('servis.kaydi.dokuman', 'servis_kaydi_id', string='Dokümanlar', copy=True)
     teknisyen_notu = fields.Text(string='Teknisyen Notu', help='Teknisyen tarafından yapılan işlemler ve notlar')
     rapor_parca_hizmet_ekle = fields.Boolean(string='Parça ve Hizmetleri Rapora Ekle', default=True, help='İşaretlenirse raporda parça ve hizmetler gösterilir')
@@ -82,7 +83,6 @@ class ServisKaydi(models.Model):
     vergi_haric_tutar = fields.Monetary(string='Vergi Hariç Tutar:', compute='_compute_toplamlar', store=True, currency_field='company_currency_id')
     toplam_vergi = fields.Monetary(string='Vergiler:', compute='_compute_toplamlar', store=True, currency_field='company_currency_id')
     genel_toplam = fields.Monetary(string='Toplam:', compute='_compute_toplamlar', store=True, currency_field='company_currency_id')
-    odeme_yapildi = fields.Boolean(string="Ödeme Tamamlandı", default=False, copy=False) 
 
     # --- Garanti Bilgileri ---
     garanti_baslama = fields.Date(string="Garanti Başlama Tarihi")
@@ -589,7 +589,7 @@ class ServisKaydi(models.Model):
     def get_views(self, views, options=None):
         res = super().get_views(views, options=options)
         if 'form' in res['views']:
-            allowed_states = ['islem_tamamlandi', 'odeme_bekliyor', 'teslim_edildi']
+            allowed_states = ['islem_tamamlandi', 'teslim_edildi']
         return res
     
     def action_copy_records(self):
