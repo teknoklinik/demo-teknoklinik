@@ -17,7 +17,7 @@ class ServisUrun(models.Model):
                 ('marka_id', '=', self.marka_id.id),
                 ('model_id', '=', self.model_id.id),
                 ('serial_no', '=', self.serial_no),
-                ('id', '!=', self._origin.id if self._origin else False)
+                ('id', '!=', self.id if self.id else False)
             ], limit=1)
 
             if existing_record:
@@ -51,6 +51,7 @@ class ServisUrun(models.Model):
                     ))
     # *Ürün Kodu: Sequence ile otomatik artan
     name = fields.Char(string='Ürün Kodu', required=True, copy=False, readonly=True, index=True, default='Yeni')
+    active = fields.Boolean(default=True)
     
     # *Temel Bilgiler
     tur_id = fields.Many2one('urun.turu', string='Ürün Türü', required=True)
@@ -147,11 +148,14 @@ class ServisUrun(models.Model):
             }
 
     # Ürün Kodu Otomatik Artış (URN0000001)
-    @api.model
-    def create(self, vals):
-        if vals.get('name', 'Yeni') == 'Yeni':
-            vals['name'] = self.env['ir.sequence'].next_by_code('servis.urun.sequence') or 'Yeni'
-        return super(ServisUrun, self).create(vals)
+    def create(self, vals_list):
+        if not isinstance(vals_list, list):
+            vals_list = [vals_list]
+        for vals in vals_list:
+            if isinstance(vals, dict):
+                if vals.get('name', 'Yeni') == 'Yeni':
+                    vals['name'] = self.env['ir.sequence'].next_by_code('servis.urun.sequence') or 'Yeni'
+        return super(ServisUrun, self).create(vals_list)
     
     
 

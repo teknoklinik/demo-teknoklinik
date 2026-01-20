@@ -34,6 +34,17 @@ class TeslimRapor(models.Model):
 
     # Müşteri imzası için binary alan
     musteri_imzasi = fields.Binary(string='Müşteri İmzası', copy=False)
+    teslim_musteri_imzasi = fields.Binary(string='Teslim Müşteri İmzası', copy=False)
+    
+    # Ürün detayları
+    seri_no = fields.Char(string='Seri No')
+    teslim_tarihi = fields.Date(string='Teslim Tarihi')
+    
+    # Arıza detay satırları
+    ariza_detay_ids = fields.One2many('teslim.rapor.ariza', 'rapor_id', string='Arıza Detayları')
+    
+    # Servis işlem satırları
+    servis_islem_satirlari = fields.One2many('teslim.rapor.islem', 'rapor_id', string='Servis İşlem Satırları')
 
     @api.depends('company_id')
     def _compute_company_currency_id(self):
@@ -67,5 +78,23 @@ class TeslimRaporLine(models.Model):
     def _compute_subtotal(self):
         for line in self:
             line.price_subtotal = line.qty * line.price_unit
+
+
+class TeslimRaporAriza(models.Model):
+    _name = 'teslim.rapor.ariza'
+    _description = 'Teslim Rapor Arıza Detayları'
+
+    rapor_id = fields.Many2one('teslim.rapor', string='Teslim Rapor', ondelete='cascade')
+    ariza_tanimi_id = fields.Many2one('servis.ariza.tanimi', string='Arıza Tanımı')
+    musteri_notu = fields.Text(string='Müşteri Notu')
+
+
+class TeslimRaporIslem(models.Model):
+    _name = 'teslim.rapor.islem'
+    _description = 'Teslim Rapor Servis İşlem Satırları'
+
+    rapor_id = fields.Many2one('teslim.rapor', string='Teslim Rapor', ondelete='cascade')
+    islem_aciklama = fields.Text(string='İşlem Açıklaması')
+    islem_tarihi = fields.Date(string='İşlem Tarihi')
 
 

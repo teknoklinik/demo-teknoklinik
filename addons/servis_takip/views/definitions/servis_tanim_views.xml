@@ -4,10 +4,10 @@
         <field name="name">servis.ariza.tanimi.tree</field>
         <field name="model">servis.ariza.tanimi</field>
         <field name="arch" type="xml">
-            <tree string="Arıza Tanımları" delete="1">
+            <list string="Arıza Tanımları" delete="1">
                 <field name="name"/>
                 <field name="aktif"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -30,10 +30,10 @@
         <field name="name">servis.islem.tipi.tree</field>
         <field name="model">servis.islem.tipi</field>
         <field name="arch" type="xml">
-            <tree string="İşlem Tipleri" delete="1">
+            <list string="İşlem Tipleri" delete="1">
                 <field name="name"/>
                 <field name="aktif"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -56,10 +56,10 @@
         <field name="name">servis.etiket.tree</field>
         <field name="model">servis.etiket</field>
         <field name="arch" type="xml">
-            <tree string="Servis Etiketleri" editable="bottom">
+            <list string="Servis Etiketleri" editable="bottom">
                 <field name="name"/>
                 <field name="color" widget="color_picker"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -67,12 +67,12 @@
         <field name="name">servis.durum.tanimi.tree</field>
         <field name="model">servis.durum.tanimi</field>
         <field name="arch" type="xml">
-            <tree editable="bottom" create="1" delete="1">
+            <list editable="bottom" create="1" delete="1">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="key" />
                 <field name="color" widget="color_picker"/>
-            </tree>
+            </list>
         </field>
     </record>
 </odoo>

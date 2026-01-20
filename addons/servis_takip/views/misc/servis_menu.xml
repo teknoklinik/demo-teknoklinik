@@ -16,6 +16,5 @@
 
     <menuitem id="menu_servis_durum_tanimi" name="Durum Tanımları" parent="menu_servis_yapilandirma" action="action_servis_durum_tanimi" sequence="50"/>
 
-    <menuitem id="menu_servis_settings" name="Ayarlar" parent="menu_servis_yapilandirma" action="action_servis_config_settings" sequence="60"/>
-
+    <menuitem id="menu_servis_ayarlari" name="Ayarlar" action="action_servis_config_settings" parent="menu_servis_yapilandirma" sequence="100"/>
 </odoo>

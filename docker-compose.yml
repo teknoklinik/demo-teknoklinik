@@ -1,7 +1,7 @@
 services:
   # Odoo Uygulama Servisi
   web:
-    image: odoo:16.0 # Kullanmak istediğiniz Odoo sürümü
+    image: odoo:19.0 # Kullanmak istediğiniz Odoo sürümü
     depends_on:
       - db
     ports:
@@ -20,10 +20,12 @@ services:
       - ODOO_EXTRA_ADDONS=/mnt/extra-addons
       # Kurulum ve debug için
       - HOST=db
+      # Master Password - Veritabanı yönetimi için
+      - ODOO_ADMIN_PASSWD=admin123
 
   # PostgreSQL Veritabanı Servisi
   db:
-    image: postgres:14 # Odoo ile uyumlu bir PostgreSQL sürümü
+    image: postgres:18 # Odoo 19 ile uyumlu en güncel PostgreSQL sürümü
     environment:
       # web servisi ile aynı ayarlar olmalı
       - POSTGRES_DB=postgres
@@ -31,7 +33,7 @@ services:
       - POSTGRES_PASSWORD=super_secret_password # BURAYI MUTLAKA DEĞİŞTİRİN
     volumes:
       # Veritabanı verilerinin kalıcı olarak saklanması için volume
-      - odoo-db-data:/var/lib/postgresql/data
+      - odoo-db-data:/var/lib/postgresql
 
 # Kalıcı Veri Volume'ü Tanımları
 volumes:

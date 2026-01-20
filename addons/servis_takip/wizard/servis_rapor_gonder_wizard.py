@@ -25,7 +25,7 @@ class ServisRaporGonderWizard(models.TransientModel):
         for record in self:
             if record.musteri_id:
                 record.email_degisti = record.musteri_email != record.musteri_id.email
-                record.telefon_degisti = record.musteri_telefon != record.musteri_id.mobile
+                record.telefon_degisti = record.musteri_telefon != record.musteri_id.phone
             else:
                 record.email_degisti = False
                 record.telefon_degisti = False
@@ -37,7 +37,7 @@ class ServisRaporGonderWizard(models.TransientModel):
             # Müşteri bilgilerini doldur
             if self.servis_kaydi_id.musteri_id:
                 self.musteri_email = self.servis_kaydi_id.musteri_id.email
-                self.musteri_telefon = self.servis_kaydi_id.musteri_id.mobile
+                self.musteri_telefon = self.servis_kaydi_id.musteri_id.phone
 
             # Kabul raporu varsa işaretle
             kabul_rapor = self.env['kabul.rapor'].search([
@@ -59,8 +59,8 @@ class ServisRaporGonderWizard(models.TransientModel):
         vals = {}
         if self.musteri_email != self.musteri_id.email:
             vals['email'] = self.musteri_email
-        if self.musteri_telefon != self.musteri_id.mobile:
-            vals['mobile'] = self.musteri_telefon
+        if self.musteri_telefon != self.musteri_id.phone:
+            vals['phone'] = self.musteri_telefon
         
         if vals:
             self.musteri_id.write(vals)

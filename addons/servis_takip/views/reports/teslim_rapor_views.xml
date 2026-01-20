@@ -25,12 +25,12 @@
                     <notebook>
                         <page string="Parçalar ve Hizmetler">
                             <field name="line_ids">
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field name="product_id"/>
                                     <field name="qty"/>
                                     <field name="price_unit"/>
                                     <field name="price_subtotal" readonly="1" force_save="1"/>
-                                </tree>
+                                </list>
                             </field>
                             <group class="oe_subtotal_footer oe_right" colspan="2" name="total_amount">
                                 <field name="amount_untaxed" widget="monetary" string="Ara Toplam"/>
@@ -87,9 +87,6 @@
                                         <br/>
                                         <strong>Tel:</strong>
                                         <span t-field="o.musteri_id.phone"/>
-                                        <br/>
-                                        <strong>Mobil Tel:</strong>
-                                        <span t-field="o.musteri_id.mobile"/>
                                         <br/>
                                         <strong>E-Posta:</strong>
                                         <span t-field="o.musteri_id.email"/>

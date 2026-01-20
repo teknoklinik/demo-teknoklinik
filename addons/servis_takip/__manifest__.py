@@ -1,6 +1,6 @@
 {
     'name': 'Servis Yönetimi',
-    'version': '16.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Müşteriye ait ürünlerin teknik servis ve onarım süreçlerini takip eder.',
     'description': """
 Servis Yönetimi Modülü
@@ -21,7 +21,8 @@ teslimatına kadar tüm teknik servis süreçlerini yönetmenizi sağlar.
         'product',   
         'account',
         'mail',
-        'sale',   
+        'sale',  
+        'base_setup', 
     ],
     'data': [
         # 1. GÜVENLİK/ACL (Her zaman en başta olmalı)
@@ -30,7 +31,6 @@ teslimatına kadar tüm teknik servis süreçlerini yönetmenizi sağlar.
         # 2. VERİ ve SEQUENCE (Kayıt numaraları için)
         'data/sequences/servis_kaydi_sequence.xml',
         'data/sequences/rapor_sequence.xml',
-        'data/defaults/servis_durum_data.xml', 
         
         # 3. VIEWS - TANIMLAR (Definitions)
         'views/definitions/urun_views.xml',
@@ -40,7 +40,7 @@ teslimatına kadar tüm teknik servis süreçlerini yönetmenizi sağlar.
         # 4. VIEWS - MISC
         'views/misc/urun_popups.xml',
         'views/misc/servis_popups.xml',
-        'views/misc/res_config_settings_views.xml',
+        'views/misc/res_config_settings_views.xml',  # TODO: Fix Odoo 19 compatibility
 
         # 5. VIEWS - CORE (Ana işlemler)
         'views/core/servis_actions.xml',

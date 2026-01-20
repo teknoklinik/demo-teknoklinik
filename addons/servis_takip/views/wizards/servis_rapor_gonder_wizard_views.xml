@@ -30,7 +30,7 @@
 
                     <div class="row" style="margin-top: 10px;">
                         <div class="col-12">
-                            <button name="action_guncelle_iletisim" string="Güncelle" type="object" class="btn-secondary btn-sm" attrs="{'invisible': [('email_degisti', '=', False), ('telefon_degisti', '=', False)]}"/>
+                            <button name="action_guncelle_iletisim" string="Güncelle" type="object" class="btn-secondary btn-sm" invisible="email_degisti == False and telefon_degisti == False"/>
                         </div>
                     </div>
 

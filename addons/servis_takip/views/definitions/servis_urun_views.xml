@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
     <record id="seq_servis_urun" model="ir.sequence">
         <field name="name">Servis Ürün Kodu</field>
         <field name="code">servis.urun.sequence</field>
@@ -12,27 +11,25 @@
     <record id="action_urun_parki" model="ir.actions.act_window">
         <field name="name">Ürün Parkı</field>
         <field name="res_model">servis.urun</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
-    <record id="view_servis_urun_tree" model="ir.ui.view">
-        <field name="name">servis.urun.tree</field>
+    <record id="view_servis_urun_list" model="ir.ui.view">
+        <field name="name">servis.urun.list</field>
         <field name="model">servis.urun</field>
         <field name="arch" type="xml">
-            <tree string="Ürün Parkı" multi_edit="1" sample="1">
+            <list string="Ürün Parkı" multi_edit="1" sample="1">
                 <field name="name" string="Ürün Kodu" readonly="1"/>
                 <field name="tur_id" optional="show"/>
                 <field name="marka_id" optional="show"/>
                 <field name="model_id" optional="show"/>
                 <field name="serial_no" optional="show"/>
                 <field name="musteri_id" optional="show"/>
-
                 <field name="garanti_bitis" widget="remaining_days" optional="show"/>
                 <field name="garanti_durumu" string="Garanti Durumu" widget="badge" decoration-danger="garanti_durumu == 'yok'" decoration-success="garanti_durumu == 'devam'" decoration-info="garanti_durumu == 'belirsiz'"/>
-
                 <field name="barcode" optional="hide"/>
                 <field name="location" optional="hide"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -51,15 +48,13 @@
                     <group>
                         <group string="Ürün Temel Bilgileri">
                             <field name="tur_id" options="{'no_create_edit': True}"/>
-
-                            <field name="marka_id" options="{'no_create_edit': True}" domain="[('tur_id', '=', tur_id)]" context="{'default_tur_id': tur_id}" attrs="{'readonly': [('tur_id', '=', False)]}"/>
-
-                            <field name="model_id" options="{'no_create_edit': True}" domain="[('marka_id', '=', marka_id)]" context="{'default_marka_id': marka_id, 'default_tur_id': tur_id}" attrs="{'readonly': [('marka_id', '=', False)]}"/>
+                            <field name="marka_id" options="{'no_create_edit': True}" domain="[('tur_id', '=', tur_id)]" context="{'default_tur_id': tur_id}"/>
+                            <field name="model_id" options="{'no_create_edit': True}" domain="[('marka_id', '=', marka_id)]" context="{'default_marka_id': marka_id, 'default_tur_id': tur_id}"/>
                         </group>
                         <group string="Kimlik Bilgileri">
                             <field name="serial_no" placeholder="S/N Numarası"/>
                             <field name="barcode" placeholder="Barkod Okutun"/>
-                            <field name="location" placeholder=""/>
+                            <field name="location"/>
                         </group>
                     </group>
 
@@ -69,7 +64,7 @@
                             <field name="musteri_id" context="{'default_is_company': musteri_tipi == 'sirket'}"/>
                         </group>
                         <group>
-                            <field name="etiket_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create': True, 'no_create_edit': True}" placeholder="Etiket seçin..."/>
+                            <field name="etiket_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create': True}" placeholder="Etiket seçin..."/>
                         </group>
                     </group>
 
@@ -83,41 +78,39 @@
                                 <group>
                                     <field name="garanti_bitis" readonly="1"/>
                                     <field name="garanti_durumu" invisible="1"/>
-                                    <div colspan="2" class="mt-2 mb-2" attrs="{'invisible': [('garanti_durumu', '=', 'belirsiz')]}">
-                                        <div attrs="{'invisible': [('garanti_durumu', '!=', 'yok')]}" class="alert alert-danger shadow-sm d-flex align-items-center justify-content-center" style="font-size: 1.1em; font-weight: 700; border: 1.5px solid #dc3545; border-radius: 8px; padding: 8px; color: #721c24; background-color: #f8d7da; max-width: 350px; margin: 0 auto;">
-                                            <i class="fa fa-exclamation-triangle mr-2" style="font-size: 1.2em;"/>
-                                            <span>GARANTİSİ YOK</span>
+                                    <div colspan="2" class="mt-2 mb-2" invisible="garanti_durumu == 'belirsiz'">
+                                        <div invisible="garanti_durumu != 'yok'" class="alert alert-danger text-center p-2">
+                                            <i class="fa fa-exclamation-triangle mr-2"/>
+GARANTİSİ YOK
                                         </div>
-
-                                        <div attrs="{'invisible': [('garanti_durumu', '!=', 'devam')]}" class="alert alert-success shadow-sm d-flex align-items-center justify-content-center" style="font-size: 1.1em; font-weight: 700; border: 1.5px solid #28a745; border-radius: 8px; padding: 8px; color: #155724; background-color: #d4edda; max-width: 350px; margin: 0 auto;">
-                                            <i class="fa fa-check-circle mr-2" style="font-size: 1.2em;"/>
-                                            <span>GARANTİSİ DEVAM EDİYOR</span>
+                                        <div invisible="garanti_durumu != 'devam'" class="alert alert-success text-center p-2">
+                                            <i class="fa fa-check-circle mr-2"/>
+GARANTİSİ DEVAM EDİYOR
                                         </div>
                                     </div>
-
                                 </group>
                             </group>
                         </page>
                         <page string="Dokümanlar" name="page_dokumanlar">
-                            <field name="dokuman_ids" context="{'default_urun_id': active_id, 'form_view_ref': 'servis_takip.view_urun_dokuman_popup_form'}" options="{'no_create_edit': True, 'no_open': True}">
-                                <tree string="Ürün Dokümanları" create="true" edit="false" delete="true">
+                            <field name="dokuman_ids" context="{'default_urun_id': id}">
+                                <list string="Ürün Dokümanları" create="true" edit="false" delete="true">
                                     <field name="konu" readonly="1"/>
-                                    <field name="dokuman_dosya_isim" />
-                                    <field name="dokuman_dosya" widget="binary" filename="dokuman_dosya_isim" string="Dosya" readonly="1" invisible="1"/>
+                                    <field name="dokuman_dosya_isim" column_invisible="True"/>
+                                    <field name="dokuman_dosya" widget="binary" filename="dokuman_dosya_isim" string="Dosya" readonly="1"/>
                                     <field name="dokuman_tarihi" string="Yükleme Tarihi" readonly="1"/>
                                     <field name="dokuman_personel_id" widget="many2one_avatar_user" readonly="1"/>
-                                    <button name="action_preview_document" string="Önizle" type="object" icon="fa-eye" class="btn-link" title="Dokümanı Görüntüle"/>
-                                </tree>
+                                    <button name="action_preview_document" string="Önizle" type="object" icon="fa-eye" class="btn-link"/>
+                                </list>
                             </field>
                         </page>
                         <page string="Notlar" name="page_notlar">
-                            <field name="note_ids" context="{'default_urun_id': active_id, 'form_view_ref': 'servis_takip.view_urun_notlar_popup_form'}" options="{'no_create_edit': True}">
-                                <tree string="Notlar">
+                            <field name="note_ids" context="{'default_urun_id': id}">
+                                <list string="Notlar" editable="bottom">
                                     <field name="konu"/>
                                     <field name="aciklama"/>
                                     <field name="not_kayit_tarihi" string="Tarih"/>
                                     <field name="not_personel_id" string="Personel" widget="many2one_avatar_user"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                     </notebook>
@@ -125,31 +118,4 @@
             </form>
         </field>
     </record>
-
-    <record id="view_servis_urun_search" model="ir.ui.view">
-        <field name="name">servis.urun.search</field>
-        <field name="model">servis.urun</field>
-        <field name="arch" type="xml">
-            <search string="Ürün Arama">
-                <field name="name" string="Ürün/Seri/Barkod" filter_domain="['|', '|', ('name', 'ilike', self), ('serial_no', 'ilike', self), ('barcode', 'ilike', self)]"/>
-
-                <field name="serial_no"/>
-                <field name="barcode"/>
-                <field name="location"/>
-                <field name="tur_id"/>
-                <field name="marka_id"/>
-                <field name="model_id"/>
-                <field name="musteri_id"/>
-
-                <filter string="Müşterisi Olanlar" name="has_partner" domain="[('musteri_id', '!=', False)]"/>
-
-                <group expand="0" string="Grupla">
-                    <filter string="Marka" name="group_by_marka" context="{'group_by': 'marka_id'}"/>
-                    <filter string="Ürün Türü" name="group_by_tur" context="{'group_by': 'tur_id'}"/>
-                    <filter string="Müşteri" name="group_by_partner" context="{'group_by': 'musteri_id'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-
 </odoo>

@@ -4,8 +4,8 @@
         <field name="name">servis.kaydi.durum.tree</field>
         <field name="model">servis.kaydi</field>
         <field name="arch" type="xml">
-            <tree string="Ürün Durum Takibi" decoration-success="state == 'teslim_edildi'" decoration-danger="state == 'iptal'">
-                <field name="color" widget="color_picker" string="Renk" width="20px" />
+            <list string="Ürün Durum Takibi" decoration-success="state == 'teslim_edildi'" decoration-danger="state == 'iptal'">
+                <field name="color" widget="color_picker" string="Renk" width="20px" column_invisible="1"/>
                 <field name="state" widget="badge" options="{'color_field': 'color'}"/>
                 <field name="name" optional="show"/>
                 <field name="musteri_id" string="Müşteri/Şirket Adı" optional="show"/>
@@ -17,7 +17,20 @@
                 <field name="kayit_tarihi" string="Servise Giriş Tarihi" widget="date" optional="show"/>
                 <field name="teslim_tarihi" string="Servisten Çıkış Tarihi" widget="date" optional="show"/>
                 <field name="servis_form_kapali_mi" string="Form Kapalı Mı?" optional="show"/>
-            </tree>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_servis_kaydi_search" model="ir.ui.view">
+        <field name="name">servis.kaydi.search</field>
+        <field name="model">servis.kaydi</field>
+        <field name="arch" type="xml">
+            <search string="Servis Kayıtları">
+                <filter string="Açık Kayıtlar" name="filter_acik" domain="[('servis_form_kapali_mi', '=', 'acik')]"/>
+                <filter string="Kapalı Kayıtlar" name="filter_kapali" domain="[('servis_form_kapali_mi', '=', 'kapali')]"/>
+
+                <field name="name"/>
+            </search>
         </field>
     </record>
 </odoo>

@@ -340,6 +340,37 @@ class ServisKaydi(models.Model):
     # --- CRUD ---
     @api.model_create_multi
     def create(self, vals_list):
+        # skip_required_check varsa kontrol yapma
+        if not self.env.context.get('skip_required_check'):
+            for vals in vals_list:
+                # Eğer hiçbir required alan dolduysa kontrol et
+                # (Boş kayıt oluşturuluyorsa kontrol etme - button'dan oluşturulabilir)
+                has_any_required = (
+                    vals.get('musteri_id') or vals.get('urun_turu_id') or 
+                    vals.get('urun_marka_id') or vals.get('urun_modeli_id') or 
+                    vals.get('seri_no')
+                )
+                
+                if has_any_required:
+                    eksikler = []
+                    if not vals.get('musteri_id'):
+                        eksikler.append("Müşteri")
+                    if not vals.get('urun_turu_id'):
+                        eksikler.append("Ürün Türü")
+                    if not vals.get('urun_marka_id'):
+                        eksikler.append("Ürün Markası")
+                    if not vals.get('urun_modeli_id'):
+                        eksikler.append("Ürün Modeli")
+                    if not vals.get('seri_no'):
+                        eksikler.append("Seri No")
+                    
+                    if eksikler:
+                        from odoo.exceptions import UserError
+                        raise UserError(
+                            _("Aşağıdaki alanlar doldurulmadan devam edemezsiniz:\n• %s")
+                            % "\n• ".join(eksikler)
+                        )
+        
         for vals in vals_list:
             # 1. İsim atama
             if vals.get('name', 'Yeni') == 'Yeni':
@@ -428,7 +459,7 @@ class ServisKaydi(models.Model):
         if not vals:
             return res
 
-        # ⛔️ Zorunlu alanlarla alakası yoksa → kontrol etme
+        # ⛔️ Required alanlarla alakası yoksa kontrol etme
         kontrol_alanlari = {
             'musteri_id',
             'urun_turu_id',
@@ -439,8 +470,20 @@ class ServisKaydi(models.Model):
 
         if kontrol_alanlari.isdisjoint(vals.keys()):
             return res
+        
+        # ⛔️ Eğer başka alanlar da dolu değilse (onchange sırasında) kontrol etme
+        # (button'a basıldığında geçici save olup required alanlar boş kalabilir)
+        has_required = False
+        for rec in self:
+            if (rec.musteri_id and rec.urun_turu_id and rec.urun_marka_id 
+                and rec.urun_modeli_id and rec.seri_no):
+                has_required = True
+                break
+        
+        if not has_required:
+            return res
 
-        # ✅ SADECE GERÇEK DURUMDA KONTROL
+        # ✅ SADECE REQUIRED ALANLAR DEĞİŞİYORSA KONTROL ET
         self._check_zorunlu_alanlar()
 
         return res
@@ -670,7 +713,6 @@ class ServisKaydi(models.Model):
                 'name': line.ornek_aciklama or line.ornek_urun_id.display_name,
                 'product_uom_qty': line.ornek_miktar,
                 'price_unit': line.ornek_birim_fiyat,
-                'tax_id': [(6, 0, line.ornek_vergiler.ids)],
             }))
 
         # Hata aldığın yer burasıydı, şimdi daha güvenli sorguluyoruz

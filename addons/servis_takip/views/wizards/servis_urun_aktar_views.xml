@@ -50,7 +50,7 @@
 
                     <field name="urun_line_ids" mode="kanban" nolabel="1">
                         <kanban create="false" delete="false">
-                            <field name="urun_real_id" invisible="1"/>
+                            <field name="urun_real_id"/>
                             <field name="urun_tipi"/>
                             <field name="id"/>
                             <field name="secildi"/>
@@ -60,7 +60,10 @@
                             <field name="marka_model"/>
                             <field name="garanti_durumu"/>
                             <templates>
-                                <t t-name="kanban-box">
+                                <div t-name="card">
+                                    <!-- Hidden input to preserve urun_real_id -->
+                                    <input type="hidden" t-att-value="record.urun_real_id.raw_value"/>
+
                                     <div t-attf-class="mb-3 #{record.secildi.raw_value ? 'card_selected' : ''} custom_card_box" style="width: 400px;">
 
                                         <div class="selection_area">
@@ -96,13 +99,13 @@
                                                     <field name="musteri_adi"/>
                                                 </div>
                                             </div>
-                                            <div colspan="2" class="mt-2 mb-2 text-left" attrs="{'invisible': [('garanti_durumu', '=', 'belirsiz')]}">
-                                                <div attrs="{'invisible': [('garanti_durumu', '!=', 'yok')]}" style="display: inline-flex; align-items: center; font-size: 11px; font-weight: 700; border: 1px solid #dc3545; border-radius: 4px; padding: 3px 10px; color: #dc3545; background-color: #fff5f5;">
+                                            <div colspan="2" class="mt-2 mb-2 text-left" invisible="garanti_durumu == 'belirsiz'">
+                                                <div invisible="garanti_durumu != 'yok'" style="display: inline-flex; align-items: center; font-size: 11px; font-weight: 700; border: 1px solid #dc3545; border-radius: 4px; padding: 3px 10px; color: #dc3545; background-color: #fff5f5;">
                                                     <i class="fa fa-exclamation-triangle mr-1"/>
                                                     <span>GARANTİSİ YOK</span>
                                                 </div>
 
-                                                <div attrs="{'invisible': [('garanti_durumu', '!=', 'devam')]}" style="display: inline-flex; align-items: center; font-size: 11px; font-weight: 700; border: 1px solid #28a745; border-radius: 4px; padding: 3px 10px; color: #28a745; background-color: #f6fff8;">
+                                                <div invisible="garanti_durumu != 'devam'" style="display: inline-flex; align-items: center; font-size: 11px; font-weight: 700; border: 1px solid #28a745; border-radius: 4px; padding: 3px 10px; color: #28a745; background-color: #f6fff8;">
                                                     <i class="fa fa-check-circle mr-1"/>
                                                     <span>GARANTİSİ DEVAM EDİYOR</span>
                                                 </div>
@@ -115,14 +118,14 @@
                                             </div>
                                         </t>
                                     </div>
-                                </t>
+                                </div>
                             </templates>
                         </kanban>
                     </field>
                 </sheet>
 
                 <footer>
-                    <button name="action_urun_aktar" string="➔ SEÇİLEN ÜRÜNÜ SERVİS KAYDINA AKTAR" type="object" class="btn-primary" style="background-color: #714B98 !important; border: none;"/>
+                    <button name="action_urun_aktar" string="➔ SEÇİLEN ÜRÜNÜ SERVİS KAYDINA AKTAR" type="object" class="btn-primary" style="background-color: #714B98 !important; border: none;" context="{'skip_required_check': True}"/>
                     <button string="İPTAL" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>

@@ -1,3 +1,4 @@
+
 from odoo import models, fields, api
 
 class KabulRapor(models.Model):
@@ -70,5 +71,3 @@ class KabulRaporLine(models.Model):
     def _compute_subtotal(self):
         for line in self:
             line.price_subtotal = line.qty * line.price_unit
-
-

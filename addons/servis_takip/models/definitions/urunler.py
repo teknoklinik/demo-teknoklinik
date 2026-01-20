@@ -37,9 +37,9 @@ class UrunModeli(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        """ Kayıt oluşturulduğunda ID'yi display_id alanına yazar """
         records = super(UrunModeli, self).create(vals_list)
         for record in records:
+            # display_id'yi id oluştuktan sonra güvenli bir şekilde yazalım
             record.display_id = record.id
         return records
 

@@ -8,16 +8,16 @@
                 <sheet>
                     <field name="tablo_duzenle" invisible="1"/>
 
-                    <div class="d-flex justify-content-end" style="margin-bottom: 10px;" attrs="{'invisible': [('id', '=', False)]}">
-                        <button name="action_tabloyu_ac_popup" string="Düzenlemeyi Aç" type="object" class="btn-primary" icon="fa-unlock" attrs="{'invisible': [('tablo_duzenle', '=', True)]}"/>
+                    <div class="d-flex justify-content-end" style="margin-bottom: 10px;" invisible="id == False">
+                        <button name="action_tabloyu_ac_popup" string="Düzenlemeyi Aç" type="object" class="btn-primary" icon="fa-unlock" invisible="tablo_duzenle == True"/>
 
-                        <button name="action_tabloyu_kilitle_popup" string="Değişiklikleri Kaydet" type="object" class="btn-success" icon="fa-lock" attrs="{'invisible': [('tablo_duzenle', '=', False)]}"/>
+                        <button name="action_tabloyu_kilitle_popup" string="Değişiklikleri Kaydet" type="object" class="btn-success" icon="fa-lock" invisible="tablo_duzenle == False"/>
                     </div>
 
                     <group>
                         <group>
                             <field name="servis_kaydi_id" invisible="1"/>
-                            <field name="islem_tipi_id" required="1" options="{'no_create': True, 'no_open': True}" attrs="{'readonly': [('id', '!=', False), ('tablo_duzenle', '=', False)]}"/>
+                            <field name="islem_tipi_id" required="1" options="{'no_create': True, 'no_open': True}" readonly="id != False and tablo_duzenle == False"/>
 
                             <field name="personel_id" readonly="1" force_save="1"/>
                         </group>
@@ -27,11 +27,11 @@
                         </group>
                     </group>
                     <group>
-                        <field name="aciklama" placeholder="İşlem açıklamasını buraya yazınız..." attrs="{'readonly': [('id', '!=', False), ('tablo_duzenle', '=', False)]}"/>
+                        <field name="aciklama" placeholder="İşlem açıklamasını buraya yazınız..." readonly="id != False and tablo_duzenle == False"/>
                     </group>
                 </sheet>
                 <footer>
-                    <button string="KAYDET VE GÜNCELLE" name="action_save_and_refresh" type="object" class="btn-primary" attrs="{'invisible': [('id', '!=', False)]}"/>
+                    <button string="KAYDET VE GÜNCELLE" name="action_save_and_refresh" type="object" class="btn-primary" invisible="id != False"/>
                 </footer>
             </form>
         </field>
@@ -44,14 +44,14 @@
             <form string="Durum Satırı Ekle">
                 <sheet>
                     <field name="tablo_duzenle" invisible="1"/>
-                    <div class="d-flex justify-content-end" style="margin-bottom: 10px;" attrs="{'invisible': [('id', '=', False)]}">
-                        <button name="action_tabloyu_ac_popup" string="Düzenlemeyi Aç" type="object" class="btn-primary" icon="fa-unlock" attrs="{'invisible': [('tablo_duzenle', '=', True)]}"/>
-                        <button name="action_tabloyu_kilitle_popup" string="Değişiklikleri Kaydet" type="object" class="btn-success" icon="fa-lock" attrs="{'invisible': [('tablo_duzenle', '=', False)]}"/>
+                    <div class="d-flex justify-content-end" style="margin-bottom: 10px;" invisible="id == False">
+                        <button name="action_tabloyu_ac_popup" string="Düzenlemeyi Aç" type="object" class="btn-primary" icon="fa-unlock" invisible="tablo_duzenle == True"/>
+                        <button name="action_tabloyu_kilitle_popup" string="Değişiklikleri Kaydet" type="object" class="btn-success" icon="fa-lock" invisible="tablo_duzenle == False"/>
                     </div>
                     <group>
                         <group>
                             <field name="servis_kaydi_id" invisible="1"/>
-                            <field name="state" required="1" attrs="{'readonly': [('id', '!=', False), ('tablo_duzenle', '=', False)]}"/>
+                            <field name="state" required="1" readonly="id != False and tablo_duzenle == False"/>
                         </group>
                         <group>
                             <field name="tarih" readonly="1" force_save="1"/>
@@ -59,11 +59,11 @@
                         </group>
                     </group>
                     <group>
-                        <field name="aciklama" placeholder="Durum notu..." attrs="{'readonly': [('id', '!=', False), ('tablo_duzenle', '=', False)]}"/>
+                        <field name="aciklama" placeholder="Durum notu..." readonly="id != False and tablo_duzenle == False"/>
                     </group>
                 </sheet>
                 <footer>
-                    <button string="KAYDET VE GÜNCELLE" name="action_save_and_refresh" type="object" class="btn-primary" attrs="{'invisible': [('id', '!=', False)]}"/>
+                    <button string="KAYDET VE GÜNCELLE" name="action_save_and_refresh" type="object" class="btn-primary" invisible="id != False"/>
                 </footer>
             </form>
         </field>
@@ -76,14 +76,14 @@
             <form string="Doküman Detayı" edit="not id">
                 <sheet>
                     <group>
-                        <field name="konu" placeholder="Örn: Cihaz Teslim Tutanağı" attrs="{'readonly': [('id', '!=', False)]}"/>
-                        <field name="dokuman_dosya" widget="binary" filename="dokuman_dosya_isim" string="Dosyanızı Seçin" attrs="{'readonly': [('id', '!=', False)]}"/>
+                        <field name="konu" placeholder="Örn: Cihaz Teslim Tutanağı" readonly="id != False"/>
+                        <field name="dokuman_dosya" widget="binary" filename="dokuman_dosya_isim" string="Dosyanızı Seçin" readonly="id != False"/>
                         <field name="dokuman_dosya_isim" invisible="1"/>
                     </group>
                     <field name="servis_kaydi_id" invisible="1"/>
                 </sheet>
                 <footer>
-                    <button name="action_save_and_reload" string="KAYDET VE GÜNCELLE" type="object" class="btn-primary" attrs="{'invisible': [('id', '!=', False)]}"/>
+                    <button name="action_save_and_reload" string="KAYDET VE GÜNCELLE" type="object" class="btn-primary" invisible="id != False"/>
                 </footer>
             </form>
         </field>
@@ -96,15 +96,15 @@
             <form string="Yeni Not Ekle" edit="not id">
                 <sheet>
                     <group>
-                        <field name="konu" placeholder="Notun konusunu yazınız..." required="1" attrs="{'readonly': [('id', '!=', False)]}"/>
-                        <field name="aciklama" placeholder="Not içeriği..." required="1" attrs="{'readonly': [('id', '!=', False)]}"/>
+                        <field name="konu" placeholder="Notun konusunu yazınız..." required="1" readonly="id != False"/>
+                        <field name="aciklama" placeholder="Not içeriği..." required="1" readonly="id != False"/>
                     </group>
                     <group invisible="1">
                         <field name="servis_kaydi_id"/>
                     </group>
                 </sheet>
                 <footer>
-                    <button name="action_save_and_reload" string="KAYDET VE GÜNCELLE" type="object" class="btn-primary" attrs="{'invisible': [('id', '!=', False)]}"/>
+                    <button name="action_save_and_reload" string="KAYDET VE GÜNCELLE" type="object" class="btn-primary" invisible="id != False"/>
                 </footer>
             </form>
         </field>

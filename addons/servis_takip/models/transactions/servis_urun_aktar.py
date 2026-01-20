@@ -123,7 +123,7 @@ class ServisUrunAktarWizardLine(models.TransientModel):
     _description = 'Ürün Aktarma Satırı'
 
     wizard_id = fields.Many2one('servis.urun.aktar.wizard', ondelete='cascade')
-    urun_real_id = fields.Integer(readonly=True)
+    urun_real_id = fields.Integer("Ürün Gerçek ID")
     urun_tipi = fields.Char("Ürün Tipi")
     name = fields.Char("Ürün Adı")
     musteri_adi = fields.Char("Müşteri")

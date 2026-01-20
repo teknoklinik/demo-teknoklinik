@@ -78,9 +78,6 @@
                                         <strong>Tel:</strong>
                                         <span t-field="o.musteri_id.phone"/>
                                         <br/>
-                                        <strong>Mobil Tel:</strong>
-                                        <span t-field="o.musteri_id.mobile"/>
-                                        <br/>
                                         <strong>E-Posta:</strong>
                                         <span t-field="o.musteri_id.email"/>
                                         <br/>
