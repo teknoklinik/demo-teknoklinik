@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <menuitem id="menu_servis_root" name="Servis Yönetimi" action="action_servis_kaydi_tum" sequence="10"/>
+    <menuitem id="menu_servis_root" name="Servis Yönetimi" action="action_servis_kaydi_tum" web_icon="servis_takip,static/description/icon.png" sequence="10"/>
 
     <menuitem id="menu_urun_parki" name="Ürün Parkı" parent="menu_servis_root" action="action_urun_parki" sequence="30"/>
 

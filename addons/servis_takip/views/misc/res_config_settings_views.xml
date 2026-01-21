@@ -6,15 +6,17 @@
         <field name="inherit_id" ref="base.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
-                <div class="app_settings_block" string="Servis Yönetimi" data-string="Servis Yönetimi" data-key="servis_takip">
+                <div class="app_settings_block" string="Servis Yönetimi" data-string="Servis Yönetimi" data-key="servis_takip" app="servis_takip">
 
-                    <h2>Servis Yönetimi Ayarları</h2>
-                    <div class="row mt16 o_settings_container">
-                        <div class="col-12 col-lg-6 o_setting_box">
+                    <field name="is_advanced_service_features" invisible="1"/>
+
+                    <h2>Servis Operasyonları</h2>
+                    <div class="row mt16 o_settings_container" name="servis_takip_container">
+                        <div class="col-12 col-lg-6 o_setting_box" id="servis_policy_setting">
                             <div class="o_setting_right_pane">
                                 <label for="urun_parki_kayit_politikasi"/>
                                 <div class="text-muted">
-                                    Yeni seri numaraları için kayıt politikasını seçin.
+                                    Yeni cihazlar için kayıt politikasını belirleyin.
                                 </div>
                                 <div class="content-group mt16">
                                     <field name="urun_parki_kayit_politikasi" widget="radio"/>

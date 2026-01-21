@@ -100,6 +100,24 @@ class ServisKaydi(models.Model):
     kabul_musteri_imzasi = fields.Binary(string='Kabul Müşteri İmzası', copy=False)
     teslim_musteri_imzasi = fields.Binary(string='Teslim Müşteri İmzası', copy=False)
 
+    # --- Ayarlardan gelen değerler ---
+    show_urun_parkina_aktar_button = fields.Boolean(
+        string='Ürün Parkına Aktar Butonu Göster',
+        compute='_compute_show_urun_parkina_aktar_button',
+        store=False
+    )
+
+    @api.depends()
+    def _compute_show_urun_parkina_aktar_button(self):
+        """Ayarlardan ürün parkı kayıt politikasını kontrol et"""
+        kayit_politikasi = self.env['ir.config_parameter'].sudo().get_param(
+            'servis_takip.urun_parki_kayit_politikasi',
+            default='kayit_et'
+        )
+        for record in self:
+            # Eğer 'kayit_etme' ise butonu göster
+            record.show_urun_parkina_aktar_button = (kayit_politikasi == 'kayit_etme')
+
     @api.depends('garanti_bitis')
     def _compute_garanti_durumu(self):
         today = date.today()
@@ -851,4 +869,65 @@ class ServisKaydi(models.Model):
                 'default_rapor_tipi': 'teslim',
             }
         }
+
+    def action_urun_parkina_aktar(self):
+        """Ürün bilgilerini ürün parkına aktar veya kontrol et"""
+        self.ensure_one()
+        
+        # Gerekli ürün bilgilerinin tamamlandığını kontrol et
+        if not all([self.urun_turu_id, self.urun_marka_id, self.urun_modeli_id, self.seri_no]):
+            raise UserError(_('Ürün parkına aktar işlemi için lütfen Ürün Türü, Marka, Model ve Seri No bilgilerini doldurunuz.'))
+        
+        # Ürün parkında arama yap
+        urun_parki = self.env['servis.urun'].search([
+            ('tur_id', '=', self.urun_turu_id.id),
+            ('marka_id', '=', self.urun_marka_id.id),
+            ('model_id', '=', self.urun_modeli_id.id),
+            ('serial_no', '=', self.seri_no),
+        ], limit=1)
+        
+        if urun_parki:
+            # Ürün parkında kayıtlı - müşteri kontrolü yap
+            if urun_parki.musteri_id and urun_parki.musteri_id.id != self.musteri_id.id:
+                raise UserError(_(
+                    f"Bu ürün başka bir müşteriye kayıtlı!\n\n"
+                    f"Kayıtlı Müşteri: {urun_parki.musteri_id.name}\n"
+                    f"Mevcut Müşteri: {self.musteri_id.name}\n\n"
+                    f"Lütfen ürün parkında başka müşteri için kayıtlı bilgisini kontrol edin."
+                ))
+            elif urun_parki.musteri_id and urun_parki.musteri_id.id == self.musteri_id.id:
+                # Aynı müşteri için zaten kayıtlı
+                raise UserError(_(
+                    f"Bu ürün ürün parkında zaten kayıtlı!\n\n"
+                    f"Ürün Parkı ID: {urun_parki.name}\n"
+                    f"Müşteri: {urun_parki.musteri_id.name}\n"
+                    f"Seri No: {urun_parki.serial_no}"
+                ))
+            else:
+                # Ürün parkında kayıtlı ancak müşteri atanmamış
+                urun_parki.write({'musteri_id': self.musteri_id.id})
+                raise UserError(_(
+                    f"Ürün parkında zaten var! Müşteri bilgisi güncellendi.\n\n"
+                    f"Ürün Parkı ID: {urun_parki.name}"
+                ))
+        else:
+            # Ürün parkında yok - yeni kayıt oluştur
+            yeni_urun = self.env['servis.urun'].create({
+                'tur_id': self.urun_turu_id.id,
+                'marka_id': self.urun_marka_id.id,
+                'model_id': self.urun_modeli_id.id,
+                'serial_no': self.seri_no,
+                'musteri_id': self.musteri_id.id,
+            })
+            
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('Başarılı'),
+                    'message': _(f'Ürün parkına başarıyla eklendi!\n\nÜrün Parkı ID: {yeni_urun.name}'),
+                    'type': 'success',
+                    'sticky': False,
+                }
+            }
                 

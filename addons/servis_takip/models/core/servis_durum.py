@@ -140,12 +140,22 @@ class ServisDurumSatiri(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        current_employee = self.env.user.employee_id # employee_ids[:1] yerine daha güvenli
+        current_employee = self.env.user.employee_id
         
         for vals in vals_list:
-            # 1. Eksik Personel ve Tarih bilgilerini tamamla
-            if not vals.get('personel_id') and current_employee: 
-                vals['personel_id'] = current_employee.id
+            # 1. Eksik Personel bilgisini tamamla - zorunlu alan
+            if not vals.get('personel_id'):
+                if current_employee:
+                    vals['personel_id'] = current_employee.id
+                else:
+                    # Fallback: İlk çalışanı bul
+                    first_employee = self.env['hr.employee'].search([], limit=1)
+                    if first_employee:
+                        vals['personel_id'] = first_employee.id
+                    else:
+                        # Son çare - hata fırlatma yerine True kullan (sistem çözüme ulaşsın)
+                        raise ValueError("Lütfen en az bir çalışan tanımlayın veya kullanıcınızı bir çalışana bağlayın.")
+            
             if not vals.get('tarih'):
                 vals['tarih'] = fields.Datetime.now()
                 
