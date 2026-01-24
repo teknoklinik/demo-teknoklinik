@@ -20,7 +20,5 @@
 
     <menuitem id="menu_deger_okuma_tanimi" name="Değer Okuma" parent="menu_servis_yapilandirma" action="action_deger_okuma_tanimi" sequence="70"/>
 
-    <menuitem id="menu_marka_raporlama_tanimi" name="Marka Raporlama" parent="menu_servis_yapilandirma" action="action_marka_raporlama_tanimi" sequence="80"/>
-
     <menuitem id="menu_servis_ayarlari" name="Ayarlar" action="action_servis_config_settings" parent="menu_servis_yapilandirma" sequence="100"/>
 </odoo>

@@ -11,7 +11,6 @@ access_servis_aksesuar,Servis Aksesuarları Erişimi,model_servis_aksesuar,base.
 access_servis_kaydi_deger_okuma,Servis Kaydı Değer Okumaları Erişimi,model_servis_kaydi_deger_okuma,base.group_user,1,1,1,1
 access_deger_okuma_tanimi,Değer Okuma Tanımı Erişimi,model_deger_okuma_tanimi,base.group_user,1,1,1,1
 access_servis_kaydi_marka_raporlama,Servis Kaydı Marka Raporlamaları Erişimi,model_servis_kaydi_marka_raporlama,base.group_user,1,1,1,1
-access_marka_raporlama_tanimi,Marka Raporlama Tanımı Erişimi,model_marka_raporlama_tanimi,base.group_user,1,1,1,1
 access_servis_islem_tipi_user,Servis İşlem Tipi Kullanıcı Erişimi,model_servis_islem_tipi,base.group_user,1,1,1,1
 access_servis_islem_satiri_user,Servis İşlem Satırı Kullanıcı Erişimi,model_servis_islem_satiri,base.group_user,1,1,1,1
 access_servis_etiket_user,Servis Etiket Erişimi,model_servis_etiket,base.group_user,1,1,1,1

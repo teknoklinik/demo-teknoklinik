@@ -17,6 +17,12 @@
                 <field name="kayit_tarihi" string="Servise Giriş Tarihi" widget="date" optional="show"/>
                 <field name="teslim_tarihi" string="Servisten Çıkış Tarihi" widget="date" optional="show"/>
                 <field name="servis_form_kapali_mi" string="Form Kapalı Mı?" optional="show"/>
+                <field name="mgs_giris_aciklama" string="MGS Giriş" optional="hide"/>
+                <field name="mgs_cikis_aciklama" string="MGS Çıkış" optional="hide"/>
+                <field name="mgs_hakedis_aciklama" string="MGS Hakediş" optional="hide"/>
+                <field name="kargo_giris_aciklama" string="Kargo Giriş" optional="hide"/>
+                <field name="kargo_cikis_aciklama" string="Kargo Çıkış" optional="hide"/>
+                <field name="kargo_hakedis_aciklama" string="Kargo Hakediş" optional="hide"/>
             </list>
         </field>
     </record>

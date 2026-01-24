@@ -76,6 +76,15 @@ class ServisKaydi(models.Model):
     aksesuar_ids = fields.One2many('servis.kaydi.aksesuar', 'servis_kaydi_id', string='Aksesuarlar', copy=True)
     deger_okuma_ids = fields.One2many('servis.kaydi.deger.okuma', 'servis_kaydi_id', string='Değer Okuma', copy=True)
     marka_raporlama_ids = fields.One2many('servis.kaydi.marka.raporlama', 'servis_kaydi_id', string='Marka Raporlama', copy=True)
+    
+    # --- Marka Raporlama Açıklama Alanları (Tree View için) ---
+    mgs_giris_aciklama = fields.Char(string='MGS Giriş', compute='_compute_marka_raporlama_alanlar')
+    mgs_cikis_aciklama = fields.Char(string='MGS Çıkış', compute='_compute_marka_raporlama_alanlar')
+    mgs_hakedis_aciklama = fields.Char(string='MGS Hakediş', compute='_compute_marka_raporlama_alanlar')
+    kargo_giris_aciklama = fields.Char(string='Kargo Giriş', compute='_compute_marka_raporlama_alanlar')
+    kargo_cikis_aciklama = fields.Char(string='Kargo Çıkış', compute='_compute_marka_raporlama_alanlar')
+    kargo_hakedis_aciklama = fields.Char(string='Kargo Hakediş', compute='_compute_marka_raporlama_alanlar')
+    
     dokuman_yukle_ids = fields.One2many('servis.kaydi.dokuman', 'servis_kaydi_id', string='Dokümanlar', copy=True)
     teknisyen_notu = fields.Text(string='Teknisyen Notu', help='Teknisyen tarafından yapılan işlemler ve notlar')
     rapor_parca_hizmet_ekle = fields.Boolean(string='Parça ve Hizmetleri Rapora Ekle', default=True, help='İşaretlenirse raporda parça ve hizmetler gösterilir')
@@ -117,6 +126,33 @@ class ServisKaydi(models.Model):
         for record in self:
             # Eğer 'kayit_etme' ise butonu göster
             record.show_urun_parkina_aktar_button = (kayit_politikasi == 'kayit_etme')
+
+    @api.depends('marka_raporlama_ids', 'marka_raporlama_ids.durum', 'marka_raporlama_ids.aciklama')
+    def _compute_marka_raporlama_alanlar(self):
+        """Marka raporlama satırlarından durumlar ve açıklamalar çek"""
+        durum_mapla = {
+            'mgs_giris': 'mgs_giris_aciklama',
+            'mgs_cikis': 'mgs_cikis_aciklama',
+            'mgs_hakedis': 'mgs_hakedis_aciklama',
+            'kargo_giris': 'kargo_giris_aciklama',
+            'kargo_cikis': 'kargo_cikis_aciklama',
+            'kargo_hakedis': 'kargo_hakedis_aciklama',
+        }
+        
+        for record in self:
+            # Tüm alanları boş resetle
+            record.mgs_giris_aciklama = ''
+            record.mgs_cikis_aciklama = ''
+            record.mgs_hakedis_aciklama = ''
+            record.kargo_giris_aciklama = ''
+            record.kargo_cikis_aciklama = ''
+            record.kargo_hakedis_aciklama = ''
+            
+            # Marka raporlama satırlarından açıklamaları doldur
+            for satir in record.marka_raporlama_ids:
+                if satir.durum in durum_mapla:
+                    alan_adi = durum_mapla[satir.durum]
+                    setattr(record, alan_adi, satir.aciklama or '')
 
     @api.depends('garanti_bitis')
     def _compute_garanti_durumu(self):

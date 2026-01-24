@@ -301,7 +301,7 @@
                     <page string="Marka Raporlama" name="marka_raporlama">
                         <field name="marka_raporlama_ids" readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']" nolabel="1">
                             <list string="Marka Raporlama" editable="bottom" class="o_list_compact">
-                                <field name="marka_raporlama_tanimi_id" string="Marka Raporlama" options="{'no_create_edit': False, 'no_create': False}" required="1" width="30%"/>
+                                <field name="durum" string="Marka Raporlama" required="1" width="30%"/>
                                 <field name="aciklama" string="Açıklama" width="50%"/>
                                 <field name="tarih" readonly="1" width="10%"/>
                                 <field name="personel_id" readonly="1" widget="many2one_avatar_user" width="10%"/>
