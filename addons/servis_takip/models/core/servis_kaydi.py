@@ -199,16 +199,37 @@ class ServisKaydi(models.Model):
     teslim_edildi_by_id = fields.Many2one('res.users', string='Teslim Eden Kullanıcı', readonly=True, copy=False)
     serviste_gecen_sure = fields.Char(string='Serviste Geçen Süre', compute='_compute_serviste_gecen_sure')
     sure_asimi_var = fields.Boolean(compute="_compute_sure_asimi", store=False)
+    sure_asimi_mesaji = fields.Char(string='Süre Aşımı Mesajı', compute='_compute_sure_asimi_mesaji', store=False)
 
     def _compute_sure_asimi(self):
+        # Ayarlardan servis süre aşımı limitini al (default: 21 gün)
+        sure_asimi_limiti = int(self.env['ir.config_parameter'].sudo().get_param(
+            'servis_takip.servis_sure_asimi_limiti',
+            default='21'
+        ))
+        
         for rec in self:
             if rec.kayit_tarihi and rec.state not in ['teslim_edildi', 'iptal']:
                 # Giriş tarihinden bugüne ne kadar zaman geçtiğini hesapla
                 fark = datetime.now() - rec.kayit_tarihi
-                # Eğer geçen süre 21 günden büyükse True dön
-                rec.sure_asimi_var = fark.days >= 5
+                # Eğer geçen süre ayarlanan limitten büyükse True dön
+                rec.sure_asimi_var = fark.days >= sure_asimi_limiti
             else:
                 rec.sure_asimi_var = False
+
+    @api.depends('sure_asimi_var')
+    def _compute_sure_asimi_mesaji(self):
+        """Ayarlardan gelen limite göre dinamik mesaj oluştur"""
+        sure_asimi_limiti = int(self.env['ir.config_parameter'].sudo().get_param(
+            'servis_takip.servis_sure_asimi_limiti',
+            default='21'
+        ))
+        
+        for rec in self:
+            if rec.sure_asimi_var:
+                rec.sure_asimi_mesaji = f"{sure_asimi_limiti} gün limitini aştınız!"
+            else:
+                rec.sure_asimi_mesaji = ""
     
     servis_form_kapali_mi = fields.Selection([
         ('acik', 'Açık'),

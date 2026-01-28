@@ -15,3 +15,10 @@ class ResConfigSettings(models.TransientModel):
     ], string="Yeni Ürün Parkı Kayıt Politikası", 
        default='kayit_et',
        config_parameter='servis_takip.urun_parki_kayit_politikasi')
+
+    servis_sure_asimi_limiti = fields.Integer(
+        string="Servis Süre Aşımı Sınırı (Gün)",
+        default=21,
+        config_parameter='servis_takip.servis_sure_asimi_limiti',
+        help="Bu günden daha fazla süredir serviste olan cihazlar için uyarı gösterilir"
+    )

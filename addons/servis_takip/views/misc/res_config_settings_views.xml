@@ -10,7 +10,7 @@
 
                     <field name="is_advanced_service_features" invisible="1"/>
 
-                    <h2>Servis Operasyonları</h2>
+                    <h2>Servis Yönetimi Operasyonları</h2>
                     <div class="row mt16 o_settings_container" name="servis_takip_container">
                         <div class="col-12 col-lg-6 o_setting_box" id="servis_policy_setting">
                             <div class="o_setting_right_pane">
@@ -20,6 +20,18 @@
                                 </div>
                                 <div class="content-group mt16">
                                     <field name="urun_parki_kayit_politikasi" widget="radio"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box" id="servis_duration_setting">
+                            <div class="o_setting_right_pane">
+                                <label for="servis_sure_asimi_limiti">Süre Aşımı Sınırı</label>
+                                <div class="text-muted">
+                                    Bu günden daha fazla süredir serviste olan cihazlar için uyarı gösterilir.
+                                </div>
+                                <div class="content-group mt16">
+                                    <field name="servis_sure_asimi_limiti" class="oe_inline" style="width: 100px"/>
+                                    <span class="ml8">gün</span>
                                 </div>
                             </div>
                         </div>

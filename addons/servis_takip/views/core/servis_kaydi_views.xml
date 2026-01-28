@@ -132,7 +132,7 @@
                                 <p class="m-0" style="font-size: 1.1rem; color: #9b2c2c !important;">
                                     Cihaz <strong>
                                     <field name="serviste_gecen_sure" readonly="1" nolabel="1"/>
-                                </strong> süredir serviste. 21 günlük yasal süre aşılmıştır!
+                                </strong> süredir serviste. <field name="sure_asimi_mesaji" readonly="1" nolabel="1"/>
                             </p>
                         </div>
                     </div>
