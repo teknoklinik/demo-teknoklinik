@@ -298,17 +298,6 @@
                         </field>
                     </page>
 
-                    <page string="Marka Raporlama" name="marka_raporlama">
-                        <field name="marka_raporlama_ids" readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']" nolabel="1">
-                            <list string="Marka Raporlama" editable="bottom" class="o_list_compact">
-                                <field name="durum" string="Marka Raporlama" required="1" width="30%"/>
-                                <field name="aciklama" string="Açıklama" width="50%"/>
-                                <field name="tarih" readonly="1" width="10%"/>
-                                <field name="personel_id" readonly="1" widget="many2one_avatar_user" width="10%"/>
-                            </list>
-                        </field>
-                    </page>
-
                     <page string="Notlar" name="notlar">
                         <field name="notlar_ids" context="{'default_servis_kaydi_id': id, 'form_view_ref': 'modul_teknik_servis.view_servis_kaydi_notlar_popup_form'}" options="{'no_create_edit': True}" readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']">
                             <list string="Notlar">
@@ -318,6 +307,15 @@
                                 <field name="not_personel_id" string="İlgili Personel" widget="many2one_avatar_user"/>
                             </list>
                         </field>
+                    </page>
+
+                    <page string="Raporlama" name="ozel_notebook_1" invisible="ozel_notebook_1_gozuksun == False">
+                        <div style="margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid #e0e0e0;">
+                            <h2 style="margin: 0; color: #2c3e50; font-weight: 600;">
+                                <field name="ozel_notebook_1_label" readonly="1" nolabel="1" class="oe_inline"/>
+                            </h2>
+                        </div>
+                        <field name="ozel_notebook_1_satiri_ids" nolabel="1" context="{'default_notebook_type': 'notebook_1'}" mode="list"/>
                     </page>
                 </notebook>
 
@@ -370,6 +368,19 @@
                 <field name="message_ids" widget="mail_thread"/>
             </div>
         </form>
+    </field>
+</record>
+
+<!-- List view for Ozel Notebook Satiri -->
+<record id="view_servis_ozel_notebook_satiri_list" model="ir.ui.view">
+    <field name="name">servis.ozel.notebook.satiri.list</field>
+    <field name="model">servis.ozel.notebook.satiri</field>
+    <field name="arch" type="xml">
+        <list editable="bottom" string="Satırlar">
+            <field name="kolon" string="Değer"/>
+            <field name="aciklama" string="Açıklama"/>
+            <field name="personel_id" readonly="1" string="Kullanıcı"/>
+        </list>
     </field>
 </record>
 

@@ -10,7 +10,6 @@ access_servis_kaydi_aksesuar,Servis Kaydı Aksesuarları Erişimi,model_servis_k
 access_servis_aksesuar,Servis Aksesuarları Erişimi,model_servis_aksesuar,base.group_user,1,1,1,1
 access_servis_kaydi_deger_okuma,Servis Kaydı Değer Okumaları Erişimi,model_servis_kaydi_deger_okuma,base.group_user,1,1,1,1
 access_deger_okuma_tanimi,Değer Okuma Tanımı Erişimi,model_deger_okuma_tanimi,base.group_user,1,1,1,1
-access_servis_kaydi_marka_raporlama,Servis Kaydı Marka Raporlamaları Erişimi,model_servis_kaydi_marka_raporlama,base.group_user,1,1,1,1
 access_servis_islem_tipi_user,Servis İşlem Tipi Kullanıcı Erişimi,model_servis_islem_tipi,base.group_user,1,1,1,1
 access_servis_islem_satiri_user,Servis İşlem Satırı Kullanıcı Erişimi,model_servis_islem_satiri,base.group_user,1,1,1,1
 access_servis_etiket_user,Servis Etiket Erişimi,model_servis_etiket,base.group_user,1,1,1,1
@@ -29,3 +28,5 @@ access_servis_urun_aktar_wizard,servis.urun.aktar.wizard,model_servis_urun_aktar
 access_servis_urun_aktar_wizard_line,servis.urun.aktar.wizard.line,model_servis_urun_aktar_wizard_line,base.group_user,1,1,1,1
 access_servis_rapor_gonder_wizard,servis.rapor.gonder.wizard,model_servis_rapor_gonder_wizard,base.group_user,1,1,1,1
 access_imza_al_wizard,imza.al.wizard,model_imza_al_wizard,base.group_user,1,1,1,1
+access_servis_ozellestirme,servis.ozellestirme,model_servis_ozellestirme,base.group_system,1,1,1,1
+access_servis_ozel_notebook_satiri,servis.ozel.notebook.satiri,model_servis_ozel_notebook_satiri,base.group_user,1,1,1,1

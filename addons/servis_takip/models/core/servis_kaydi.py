@@ -75,19 +75,28 @@ class ServisKaydi(models.Model):
     notlar_ids = fields.One2many('servis.kaydi.notlar', 'servis_kaydi_id', string='Notlar', copy=True)
     aksesuar_ids = fields.One2many('servis.kaydi.aksesuar', 'servis_kaydi_id', string='Aksesuarlar', copy=True)
     deger_okuma_ids = fields.One2many('servis.kaydi.deger.okuma', 'servis_kaydi_id', string='Değer Okuma', copy=True)
-    marka_raporlama_ids = fields.One2many('servis.kaydi.marka.raporlama', 'servis_kaydi_id', string='Marka Raporlama', copy=True)
-    
-    # --- Marka Raporlama Açıklama Alanları (Tree View için) ---
-    mgs_giris_aciklama = fields.Char(string='MGS Giriş', compute='_compute_marka_raporlama_alanlar')
-    mgs_cikis_aciklama = fields.Char(string='MGS Çıkış', compute='_compute_marka_raporlama_alanlar')
-    mgs_hakedis_aciklama = fields.Char(string='MGS Hakediş', compute='_compute_marka_raporlama_alanlar')
-    kargo_giris_aciklama = fields.Char(string='Kargo Giriş', compute='_compute_marka_raporlama_alanlar')
-    kargo_cikis_aciklama = fields.Char(string='Kargo Çıkış', compute='_compute_marka_raporlama_alanlar')
-    kargo_hakedis_aciklama = fields.Char(string='Kargo Hakediş', compute='_compute_marka_raporlama_alanlar')
-    
     dokuman_yukle_ids = fields.One2many('servis.kaydi.dokuman', 'servis_kaydi_id', string='Dokümanlar', copy=True)
     teknisyen_notu = fields.Text(string='Teknisyen Notu', help='Teknisyen tarafından yapılan işlemler ve notlar')
     rapor_parca_hizmet_ekle = fields.Boolean(string='Parça ve Hizmetleri Rapora Ekle', default=True, help='İşaretlenirse raporda parça ve hizmetler gösterilir')
+    
+    # --- Özel Notebook Alanları ---
+    ozel_notebook_1_label = fields.Char(string='Özel 1 Label', compute='_compute_ozel_notebook_labels', store=True)
+    ozel_notebook_1_gozuksun = fields.Boolean(compute='_compute_ozel_notebook_visibility', store=True)
+    ozel_notebook_1_satiri_ids = fields.One2many(
+        'servis.ozel.notebook.satiri',
+        'servis_kaydi_id',
+        string='Özel Notebook 1 Satırları',
+        domain=[('notebook_type', '=', 'notebook_1')]
+    )
+
+    # 6 Özel Alan Değerleri (Computed - Listede görüntülenecek)
+    ozel_alan_1_degeri = fields.Text(string='Özel Alan 1', compute='_compute_ozel_alan_degerleri', store=True)
+    ozel_alan_2_degeri = fields.Text(string='Özel Alan 2', compute='_compute_ozel_alan_degerleri', store=True)
+    ozel_alan_3_degeri = fields.Text(string='Özel Alan 3', compute='_compute_ozel_alan_degerleri', store=True)
+    ozel_alan_4_degeri = fields.Text(string='Özel Alan 4', compute='_compute_ozel_alan_degerleri', store=True)
+    ozel_alan_5_degeri = fields.Text(string='Özel Alan 5', compute='_compute_ozel_alan_degerleri', store=True)
+    ozel_alan_6_degeri = fields.Text(string='Özel Alan 6', compute='_compute_ozel_alan_degerleri', store=True)
+    
     # --- Finansal Alanlar ---
     company_id = fields.Many2one('res.company', string='Şirket', default=lambda self: self.env.company)
     company_currency_id = fields.Many2one('res.currency', string='Para Birimi', compute='_compute_company_currency_id', store=True)
@@ -127,32 +136,75 @@ class ServisKaydi(models.Model):
             # Eğer 'kayit_etme' ise butonu göster
             record.show_urun_parkina_aktar_button = (kayit_politikasi == 'kayit_etme')
 
-    @api.depends('marka_raporlama_ids', 'marka_raporlama_ids.durum', 'marka_raporlama_ids.aciklama')
-    def _compute_marka_raporlama_alanlar(self):
-        """Marka raporlama satırlarından durumlar ve açıklamalar çek"""
-        durum_mapla = {
-            'mgs_giris': 'mgs_giris_aciklama',
-            'mgs_cikis': 'mgs_cikis_aciklama',
-            'mgs_hakedis': 'mgs_hakedis_aciklama',
-            'kargo_giris': 'kargo_giris_aciklama',
-            'kargo_cikis': 'kargo_cikis_aciklama',
-            'kargo_hakedis': 'kargo_hakedis_aciklama',
-        }
-        
+    @api.depends()
+    def _compute_ozel_notebook_labels(self):
+        """Özelleştirme modelinden özel notebook etiketlerini al"""
+        ozellestirme = self.env['servis.ozellestirme'].get_ozellestirme()
         for record in self:
-            # Tüm alanları boş resetle
-            record.mgs_giris_aciklama = ''
-            record.mgs_cikis_aciklama = ''
-            record.mgs_hakedis_aciklama = ''
-            record.kargo_giris_aciklama = ''
-            record.kargo_cikis_aciklama = ''
-            record.kargo_hakedis_aciklama = ''
+            record.ozel_notebook_1_label = ozellestirme.ozel_notebook_1_adi or 'Özel 1'
+
+    @api.depends()
+    def _compute_ozel_notebook_visibility(self):
+        """Özelleştirme modelinden özel notebook görünürlüğünü al"""
+        ozellestirme = self.env['servis.ozellestirme'].get_ozellestirme()
+        for record in self:
+            record.ozel_notebook_1_gozuksun = ozellestirme.ozel_notebook_1_gozuksun
+
+    @api.depends('ozel_notebook_1_satiri_ids')
+    def _compute_ozel_alan_degerleri(self):
+        """Her özel alan için değerleri işle (alanları tuple yaparak özet oluştur)"""
+        for record in self:
+            # Özelleştirme ayarlarını al
+            ozellestirme = self.env['servis.ozellestirme'].get_ozellestirme()
             
-            # Marka raporlama satırlarından açıklamaları doldur
-            for satir in record.marka_raporlama_ids:
-                if satir.durum in durum_mapla:
-                    alan_adi = durum_mapla[satir.durum]
-                    setattr(record, alan_adi, satir.aciklama or '')
+            # Alan isimleri (listede görünen adlandırma)
+            alan_adlari = {
+                'alan1': ozellestirme.ozel_alan_1_liste_adi or 'Özel Alan 1',
+                'alan2': ozellestirme.ozel_alan_2_liste_adi or 'Özel Alan 2',
+                'alan3': ozellestirme.ozel_alan_3_liste_adi or 'Özel Alan 3',
+                'alan4': ozellestirme.ozel_alan_4_liste_adi or 'Özel Alan 4',
+                'alan5': ozellestirme.ozel_alan_5_liste_adi or 'Özel Alan 5',
+                'alan6': ozellestirme.ozel_alan_6_liste_adi or 'Özel Alan 6',
+            }
+            
+            # Notebook satırlarından değerleri topla
+            nilai_dict = {'alan1': [], 'alan2': [], 'alan3': [], 'alan4': [], 'alan5': [], 'alan6': []}
+            
+            for satir in record.ozel_notebook_1_satiri_ids:
+                if satir.kolon in nilai_dict and satir.aciklama:
+                    nilai_dict[satir.kolon].append(satir.aciklama)
+            
+            # Compute fields'larını doldur (alan adı: değerler)
+            record.ozel_alan_1_degeri = ', '.join(nilai_dict.get('alan1', [])) or ''
+            record.ozel_alan_2_degeri = ', '.join(nilai_dict.get('alan2', [])) or ''
+            record.ozel_alan_3_degeri = ', '.join(nilai_dict.get('alan3', [])) or ''
+            record.ozel_alan_4_degeri = ', '.join(nilai_dict.get('alan4', [])) or ''
+            record.ozel_alan_5_degeri = ', '.join(nilai_dict.get('alan5', [])) or ''
+            record.ozel_alan_6_degeri = ', '.join(nilai_dict.get('alan6', [])) or ''
+
+    @api.model
+    def fields_get(self, allfields=None, attributes=None):
+        """Özel alan sütun başlıklarını dinamik olarak güncelle"""
+        result = super().fields_get(allfields, attributes)
+        
+        # Özelleştirme ayarlarını al
+        ozellestirme = self.env['servis.ozellestirme'].get_ozellestirme()
+        
+        # Computed field'ların string property'sini dinamik olarak ayarla
+        if 'ozel_alan_1_degeri' in result:
+            result['ozel_alan_1_degeri']['string'] = ozellestirme.ozel_alan_1_liste_adi or 'Özel Alan 1'
+        if 'ozel_alan_2_degeri' in result:
+            result['ozel_alan_2_degeri']['string'] = ozellestirme.ozel_alan_2_liste_adi or 'Özel Alan 2'
+        if 'ozel_alan_3_degeri' in result:
+            result['ozel_alan_3_degeri']['string'] = ozellestirme.ozel_alan_3_liste_adi or 'Özel Alan 3'
+        if 'ozel_alan_4_degeri' in result:
+            result['ozel_alan_4_degeri']['string'] = ozellestirme.ozel_alan_4_liste_adi or 'Özel Alan 4'
+        if 'ozel_alan_5_degeri' in result:
+            result['ozel_alan_5_degeri']['string'] = ozellestirme.ozel_alan_5_liste_adi or 'Özel Alan 5'
+        if 'ozel_alan_6_degeri' in result:
+            result['ozel_alan_6_degeri']['string'] = ozellestirme.ozel_alan_6_liste_adi or 'Özel Alan 6'
+        
+        return result
 
     @api.depends('garanti_bitis')
     def _compute_garanti_durumu(self):

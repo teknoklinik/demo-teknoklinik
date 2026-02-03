@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Özelleştirme Action - Server Action with get_formview_action -->
+    <record id="action_servis_ozellestirme_open_form" model="ir.actions.server">
+        <field name="name">Raporlama Özelleştirmesi</field>
+        <field name="model_id" ref="model_servis_ozellestirme"/>
+        <field name="state">code</field>
+        <field name="code">
+# Senin Python fonksiyonunu çağırıp dönen ID'li formu açıyoruz
+action = env['servis.ozellestirme'].get_ozellestirme().get_formview_action()
+        </field>
+    </record>
+
+    <!-- Özelleştirme Form View -->
+    <record id="view_servis_ozellestirme_form" model="ir.ui.view">
+        <field name="name">servis.ozellestirme.form</field>
+        <field name="model">servis.ozellestirme</field>
+        <field name="arch" type="xml">
+            <form string="Raporlama Özelleştirmesi" create="false" delete="false" edit="true">
+                <style>
+                    .breadcrumb { display: none !important; }
+                    .oe_view_manager .oe_form_header { display: none !important; }
+                </style>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Raporlama Alanını Özelleştir</h1>
+                        <div style="margin-top: 15px;">
+                            <button string="💾 Kaydet" type="object" name="kaydet_ve_yenile" class="btn btn-primary" style="padding: 8px 20px; font-size: 14px; font-weight: 600;"/>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info" role="alert" style="margin-bottom: 30px; padding: 15px; border-radius: 8px;">
+                        <p style="margin: 0; font-size: 14px;">
+                            <strong>Servis kaydı formunda</strong> görünen raporlama alanlarını özelleştirebilirsiniz. 
+                            Alan adlarını değiştirebilir ve görünürlüğünü kontrol edebilirsiniz.
+                        </p>
+                    </div>
+
+                    <!-- 3 Kutu Layout (Settings Tarzı) -->
+                    <div class="row mt16" style="margin: 0;">
+                        <!-- Raporlama Sekme -->
+                        <div class="col-12 col-lg-4" style="padding: 0 12px 20px 0; margin-bottom: 20px;">
+                            <div style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; background: #fafafa; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+                                <div style="margin: 0 0 15px 0; color: #2c3e50; font-size: 16px; font-weight: 600;">
+                                    <span style="color: #2c3e50; font-weight: 600; font-size: 16px;">Raporlama</span>
+                                </div>
+                                <div style="color: #7f8c8d; font-size: 13px; margin-bottom: 15px; line-height: 1.5;">
+                                    Raporlama sekmesinin görünürlüğünü kontrol edin.
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <field name="ozel_notebook_1_gozuksun" widget="boolean" nolabel="1"/>
+                                    <span style="font-size: 13px; color: #2c3e50;">Formlarda Görünür Olsun</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Özel Alan Adlarını Özelleştir -->
+                    <separator string="Özel Alan Adları" style="margin-top: 30px; margin-bottom: 20px;"/>
+                    <div class="row mt16" style="margin: 0;">
+                        <div class="col-12 col-lg-6" style="padding: 0 12px 20px 0; margin-bottom: 20px;">
+                            <div style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; background: #f9f9f9;">
+                                <h4 style="margin: 0 0 15px 0; color: #2c3e50; font-weight: 600;">Dropdown'da Görünen Adlar</h4>
+                                <div style="margin-bottom: 12px;">
+                                    <label for="ozel_alan_1_adi" class="o_form_label" style="font-size: 12px; font-weight: 600; color: #7f8c8d;">Özel Alan 1</label>
+                                    <field name="ozel_alan_1_adi" placeholder="Örneğin: Marka Garanti Sistemi" style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; margin-top: 4px;"/>
+                                </div>
+                                <div style="margin-bottom: 12px;">
+                                    <label for="ozel_alan_2_adi" class="o_form_label" style="font-size: 12px; font-weight: 600; color: #7f8c8d;">Özel Alan 2</label>
+                                    <field name="ozel_alan_2_adi" placeholder="Özel Alan 2" style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; margin-top: 4px;"/>
+                                </div>
+                                <div style="margin-bottom: 12px;">
+                                    <label for="ozel_alan_3_adi" class="o_form_label" style="font-size: 12px; font-weight: 600; color: #7f8c8d;">Özel Alan 3</label>
+                                    <field name="ozel_alan_3_adi" placeholder="Özel Alan 3" style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; margin-top: 4px;"/>
+                                </div>
+                                <div style="margin-bottom: 12px;">
+                                    <label for="ozel_alan_4_adi" class="o_form_label" style="font-size: 12px; font-weight: 600; color: #7f8c8d;">Özel Alan 4</label>
+                                    <field name="ozel_alan_4_adi" placeholder="Özel Alan 4" style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; margin-top: 4px;"/>
+                                </div>
+                                <div style="margin-bottom: 12px;">
+                                    <label for="ozel_alan_5_adi" class="o_form_label" style="font-size: 12px; font-weight: 600; color: #7f8c8d;">Özel Alan 5</label>
+                                    <field name="ozel_alan_5_adi" placeholder="Özel Alan 5" style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; margin-top: 4px;"/>
+                                </div>
+                                <div style="margin-bottom: 12px;">
+                                    <label for="ozel_alan_6_adi" class="o_form_label" style="font-size: 12px; font-weight: 600; color: #7f8c8d;">Özel Alan 6</label>
+                                    <field name="ozel_alan_6_adi" placeholder="Özel Alan 6" style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; margin-top: 4px;"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6" style="padding: 0 0 20px 0; margin-bottom: 20px;">
+                            <div style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; background: #f9f9f9;">
+                                <h4 style="margin: 0 0 15px 0; color: #2c3e50; font-weight: 600;">Listede Görünen Adlandırma</h4>
+                                <div style="margin-bottom: 12px;">
+                                    <label for="ozel_alan_1_liste_adi" class="o_form_label" style="font-size: 12px; font-weight: 600; color: #7f8c8d;">Alan 1 Listede</label>
+                                    <field name="ozel_alan_1_liste_adi" placeholder="Özel Alan 1" style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; margin-top: 4px;"/>
+                                </div>
+                                <div style="margin-bottom: 12px;">
+                                    <label for="ozel_alan_2_liste_adi" class="o_form_label" style="font-size: 12px; font-weight: 600; color: #7f8c8d;">Alan 2 Listede</label>
+                                    <field name="ozel_alan_2_liste_adi" placeholder="Özel Alan 2" style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; margin-top: 4px;"/>
+                                </div>
+                                <div style="margin-bottom: 12px;">
+                                    <label for="ozel_alan_3_liste_adi" class="o_form_label" style="font-size: 12px; font-weight: 600; color: #7f8c8d;">Alan 3 Listede</label>
+                                    <field name="ozel_alan_3_liste_adi" placeholder="Özel Alan 3" style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; margin-top: 4px;"/>
+                                </div>
+                                <div style="margin-bottom: 12px;">
+                                    <label for="ozel_alan_4_liste_adi" class="o_form_label" style="font-size: 12px; font-weight: 600; color: #7f8c8d;">Alan 4 Listede</label>
+                                    <field name="ozel_alan_4_liste_adi" placeholder="Özel Alan 4" style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; margin-top: 4px;"/>
+                                </div>
+                                <div style="margin-bottom: 12px;">
+                                    <label for="ozel_alan_5_liste_adi" class="o_form_label" style="font-size: 12px; font-weight: 600; color: #7f8c8d;">Alan 5 Listede</label>
+                                    <field name="ozel_alan_5_liste_adi" placeholder="Özel Alan 5" style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; margin-top: 4px;"/>
+                                </div>
+                                <div style="margin-bottom: 12px;">
+                                    <label for="ozel_alan_6_liste_adi" class="o_form_label" style="font-size: 12px; font-weight: 600; color: #7f8c8d;">Alan 6 Listede</label>
+                                    <field name="ozel_alan_6_liste_adi" placeholder="Özel Alan 6" style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; margin-top: 4px;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

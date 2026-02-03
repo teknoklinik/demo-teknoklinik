@@ -1,6 +1,6 @@
 {
     'name': 'Servis Yönetimi',
-    'version': '19.0.1.0.0',
+    'version': '19.0.1.0.1',
     'summary': 'Müşteriye ait ürünlerin teknik servis ve onarım süreçlerini takip eder.',
     'description': """
 Servis Yönetimi Modülü
@@ -45,7 +45,7 @@ teslimatına kadar tüm teknik servis süreçlerini yönetmenizi sağlar.
         # 4. VIEWS - MISC
         'views/misc/urun_popups.xml',
         'views/misc/servis_popups.xml',
-        'views/misc/res_config_settings_views.xml',  # TODO: Fix Odoo 19 compatibility
+        'views/misc/res_config_settings_views.xml',  # Ayarlar
 
         # 5. VIEWS - CORE (Ana işlemler)
         'views/core/servis_actions.xml',
@@ -59,9 +59,10 @@ teslimatına kadar tüm teknik servis süreçlerini yönetmenizi sağlar.
         # 7. VIEWS - WIZARD'LAR
         'views/wizards/servis_urun_aktar_views.xml',
         'views/wizards/servis_rapor_gonder_wizard_views.xml',
+        'views/wizards/servis_ozellestirme_views.xml',  # Özelleştirme
         
         # 8. MENÜLER (En son yüklenmeli çünkü tüm Action ID'leri yukarıda tanımlandı)
-        'views/misc/servis_menu.xml',        
+        'views/misc/servis_menu.xml',
     ],
     'demo': [
         # 'demo/servis_demo.xml', 
