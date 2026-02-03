@@ -1,44 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Product Template Form View - Dövizli Satış Fiyatı Alanlarını Ekle -->
     <record id="product_template_form_view_inherit_multi_currency" model="ir.ui.view">
         <field name="name">product.template.form.inherit.multi.currency</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_only_form_view"/>
         <field name="arch" type="xml">
-            <!-- Satış Fiyatından sonra dövizli satış fiyat alanlarını ekle -->
+
+            <xpath expr="//field[@name='taxes_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='supplier_taxes_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
             <xpath expr="//field[@name='list_price']" position="after">
                 <div class="row mt-3 mb-3">
                     <div class="col-lg-6">
-                        <label for="custom_list_price" string="Dövizli Satış Fiyatı"/>
+                        <label for="taxes_id" string="Satış Vergileri"/>
+                        <field name="taxes_id" widget="many2many_tags" placeholder="Vergi seçiniz" domain="[('type_tax_use', '=', 'sale')]" context="{'default_type_tax_use': 'sale', 'search_default_sale': 1}"/>
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="price_with_tax" string="Vergiler Dahil Fiyat"/>
+                        <field name="price_with_tax" widget="float" class="oe_inline" style="flex: 1; margin-right: 5px; display: inline-block; width: calc(100% - 30px);"/>
+                    </div>
+                </div>
+
+                <div class="row mt-3 mb-3">
+                    <div class="col-lg-6">
+                        <label for="custom_list_price" string="Satış Fiyatı Döviz"/>
                         <div class="o_row">
-                            <field name="custom_list_price" class="oe_inline" widget="float" placeholder="Döviz cinsinden fiyat" style="flex: 1; margin-right: 10px;"/>
-                            <field name="custom_currency_id" class="oe_inline" options="{'no_create': True, 'no_open': True}" placeholder="Para Birimi Seçin" style="flex: 0 0 150px;"/>
+                            <field name="custom_list_price" class="oe_inline" widget="float" placeholder="Döviz" style="flex: 1; margin-right: 10px;"/>
+                            <field name="custom_currency_id" class="oe_inline" options="{'no_create': True, 'no_open': True}" style="flex: 0 0 150px;"/>
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <p class="text-muted" style="font-size: 12px; margin-top: 20px;">
-                            💡                            <strong>Otomatik Dönüşüm:</strong> Döviz cinsinden fiyat girin. 
-                            Odoo otomatik olarak bugünün kurunu kullanarak TL cinsinden Satış Fiyatını hesaplayacaktır.
+                          💡                            <strong>Otomatik Dönüşüm:</strong> Fiyat girildiğinde kurlar üzerinden otomatik hesaplama yapılır.
                         </p>
                     </div>
                 </div>
             </xpath>
 
-            <!-- Maliyet Fiyatından sonra dövizli maliyet alanlarını ekle -->
             <xpath expr="//field[@name='standard_price']" position="after">
                 <div class="row mt-3 mb-3">
                     <div class="col-lg-6">
-                        <label for="custom_cost_price" string="Dövizli Maliyet Fiyatı"/>
+                        <label for="cost_taxes_id" string="Maliyet Vergileri"/>
+                        <field name="cost_taxes_id" widget="many2many_tags" placeholder="Vergi seçiniz" domain="[('type_tax_use', '=', 'purchase')]" context="{'default_type_tax_use': 'purchase', 'search_default_purchase': 1}"/>
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="cost_with_tax" string="Vergiler Dahil Maliyet"/>
+                        <field name="cost_with_tax" widget="float" class="oe_inline" style="flex: 1; margin-right: 5px; display: inline-block; width: calc(100% - 30px);"/>
+                    </div>
+                </div>
+
+                <div class="row mt-3 mb-3">
+                    <div class="col-lg-6">
+                        <label for="custom_cost_price" string="Maliyet Döviz"/>
                         <div class="o_row">
-                            <field name="custom_cost_price" class="oe_inline" widget="float" placeholder="Döviz cinsinden maliyet" style="flex: 1; margin-right: 10px;"/>
-                            <field name="custom_cost_currency_id" class="oe_inline" options="{'no_create': True, 'no_open': True}" placeholder="Para Birimi Seçin" style="flex: 0 0 150px;"/>
+                            <field name="custom_cost_price" class="oe_inline" widget="float" placeholder="Döviz maliyet" style="flex: 1; margin-right: 10px;"/>
+                            <field name="custom_cost_currency_id" class="oe_inline" options="{'no_create': True, 'no_open': True}" style="flex: 0 0 150px;"/>
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <p class="text-muted" style="font-size: 12px; margin-top: 20px;">
-                            💡                            <strong>Otomatik Dönüşüm:</strong> Döviz cinsinden maliyet girin. 
-                            Odoo otomatik olarak bugünün kurunu kullanarak TL cinsinden Maliyet Fiyatını hesaplayacaktır.
+                            💡                            <strong>Otomatik Dönüşüm:</strong> Fiyat girildiğinde kurlar üzerinden otomatik hesaplama yapılır.
                         </p>
                     </div>
                 </div>
@@ -46,22 +72,17 @@
         </field>
     </record>
 
-    <!-- Product Template List View - Dövizli Fiyat Kolonlarını Ekle -->
     <record id="product_template_tree_view_inherit_multi_currency" model="ir.ui.view">
         <field name="name">product.template.tree.inherit.multi.currency</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_tree_view"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='list_price']" position="after">
-                <field name="custom_list_price_display" optional="hide" class="o_field_small"/>
+                <field name="custom_list_price_display" optional="hide"/>
             </xpath>
             <xpath expr="//field[@name='standard_price']" position="after">
-                <field name="custom_cost_price_display" optional="hide" class="o_field_small"/>
+                <field name="custom_cost_price_display" optional="hide"/>
             </xpath>
         </field>
     </record>
 </odoo>
-
-
-
-

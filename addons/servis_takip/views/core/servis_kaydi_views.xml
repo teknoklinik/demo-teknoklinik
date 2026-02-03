@@ -298,6 +298,15 @@
                         </field>
                     </page>
 
+                    <page string="Raporlama" name="ozel_notebook_1" invisible="ozel_notebook_1_gozuksun == False">
+                        <div style="margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid #e0e0e0;">
+                            <h2 style="margin: 0; color: #2c3e50; font-weight: 600;">
+                                <field name="ozel_notebook_1_label" readonly="1" nolabel="1" class="oe_inline"/>
+                            </h2>
+                        </div>
+                        <field name="ozel_notebook_1_satiri_ids" nolabel="1" context="{'default_notebook_type': 'notebook_1'}" mode="list"/>
+                    </page>
+
                     <page string="Notlar" name="notlar">
                         <field name="notlar_ids" context="{'default_servis_kaydi_id': id, 'form_view_ref': 'modul_teknik_servis.view_servis_kaydi_notlar_popup_form'}" options="{'no_create_edit': True}" readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']">
                             <list string="Notlar">
@@ -309,14 +318,6 @@
                         </field>
                     </page>
 
-                    <page string="Raporlama" name="ozel_notebook_1" invisible="ozel_notebook_1_gozuksun == False">
-                        <div style="margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid #e0e0e0;">
-                            <h2 style="margin: 0; color: #2c3e50; font-weight: 600;">
-                                <field name="ozel_notebook_1_label" readonly="1" nolabel="1" class="oe_inline"/>
-                            </h2>
-                        </div>
-                        <field name="ozel_notebook_1_satiri_ids" nolabel="1" context="{'default_notebook_type': 'notebook_1'}" mode="list"/>
-                    </page>
                 </notebook>
 
                 <div style="margin-top: 30px; margin-left: 50%; padding-left: 30px;">
