@@ -78,9 +78,11 @@
         <field name="inherit_id" ref="product.product_template_tree_view"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='list_price']" position="after">
+                <field name="price_with_tax_display" optional="hide"/>
                 <field name="custom_list_price_display" optional="hide"/>
             </xpath>
             <xpath expr="//field[@name='standard_price']" position="after">
+                <field name="cost_with_tax_display" optional="hide"/>
                 <field name="custom_cost_price_display" optional="hide"/>
             </xpath>
         </field>
