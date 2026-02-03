@@ -85,4 +85,29 @@
             </xpath>
         </field>
     </record>
+
+    <!-- Döviz Dönüşüm Action'ları -->
+    <record id="product_template_action_convert_döviz_to_tl" model="ir.actions.server">
+        <field name="name">Dövizden TL'ye Hesapla</field>
+        <field name="model_id" ref="product.model_product_template"/>
+        <field name="binding_model_id" ref="product.model_product_template"/>
+        <field name="binding_type">action</field>
+        <field name="state">code</field>
+        <field name="code">
+if records:
+    records.action_convert_döviz_to_tl()
+        </field>
+    </record>
+
+    <record id="product_template_action_convert_tl_to_döviz" model="ir.actions.server">
+        <field name="name">TL'den Dövize Hesapla</field>
+        <field name="model_id" ref="product.model_product_template"/>
+        <field name="binding_model_id" ref="product.model_product_template"/>
+        <field name="binding_type">action</field>
+        <field name="state">code</field>
+        <field name="code">
+if records:
+    records.action_convert_tl_to_döviz()
+        </field>
+    </record>
 </odoo>

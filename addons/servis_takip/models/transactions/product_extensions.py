@@ -8,6 +8,39 @@ _logger = logging.getLogger(__name__)
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
+    def _get_default_tax_20_percent(self):
+        """20% satın alma vergisini bul ve döndür"""
+        purchase_tax = self.env['account.tax'].search([
+            ('type_tax_use', '=', 'purchase'),
+            ('amount', '=', 20.0),
+            ('active', '=', True)
+        ], limit=1)
+        return purchase_tax.ids if purchase_tax else []
+
+    def _get_default_sales_tax_20_percent(self):
+        """20% satış vergisini bul ve döndür"""
+        sales_tax = self.env['account.tax'].search([
+            ('type_tax_use', '=', 'sale'),
+            ('amount', '=', 20.0),
+            ('active', '=', True)
+        ], limit=1)
+        return sales_tax.ids if sales_tax else []
+
+    @api.model
+    def default_get(self, fields_list):
+        """Yeni ürün oluşturulurken default değerleri ayarla"""
+        defaults = super().default_get(fields_list)
+        
+        # Satış vergileri için default
+        if 'taxes_id' in fields_list:
+            defaults['taxes_id'] = [(6, 0, self._get_default_sales_tax_20_percent())]
+        
+        # Maliyet vergileri için default
+        if 'cost_taxes_id' in fields_list:
+            defaults['cost_taxes_id'] = [(6, 0, self._get_default_tax_20_percent())]
+        
+        return defaults
+
     # --- Dövizli Satış Fiyatı Alanları ---
     custom_currency_id = fields.Many2one(
         'res.currency', 
@@ -122,6 +155,7 @@ class ProductTemplate(models.Model):
         'tax_id',
         string="Maliyet Vergileri",
         domain=[('type_tax_use', '=', 'purchase')],
+        default=lambda self: self._get_default_tax_20_percent(),
         help="Ürün maliyeti üzerine uygulanacak vergiler"
     )
 
@@ -242,6 +276,95 @@ class ProductTemplate(models.Model):
                 record.cost_with_tax_display = f"{record.cost_with_tax:.2f} {company_currency.symbol}"
             else:
                 record.cost_with_tax_display = ""
+
+    # --- Dönüşüm Action Metodları ---
+    def action_convert_döviz_to_tl(self):
+        """Döviz fiyatlarını TL'ye dönüştür (kur üzerinden çarp)"""
+        for record in self:
+            company_currency = record.company_id.currency_id or self.env.company.currency_id
+            
+            # Satış fiyatı dönüşümü
+            if record.custom_list_price and record.custom_currency_id:
+                try:
+                    converted_price = record.custom_currency_id._convert(
+                        record.custom_list_price,
+                        company_currency,
+                        record.company_id or self.env.company,
+                        date.today()
+                    )
+                    record.list_price = converted_price
+                    _logger.info(f"Satış Dönüşümü: {record.custom_list_price} {record.custom_currency_id.name} -> {converted_price} {company_currency.name}")
+                except Exception as e:
+                    _logger.warning(f"Satış dönüşümü başarısız: {str(e)}")
+            
+            # Maliyet dönüşümü
+            if record.custom_cost_price and record.custom_cost_currency_id:
+                try:
+                    converted_cost = record.custom_cost_currency_id._convert(
+                        record.custom_cost_price,
+                        company_currency,
+                        record.company_id or self.env.company,
+                        date.today()
+                    )
+                    record.standard_price = converted_cost
+                    _logger.info(f"Maliyet Dönüşümü: {record.custom_cost_price} {record.custom_cost_currency_id.name} -> {converted_cost} {company_currency.name}")
+                except Exception as e:
+                    _logger.warning(f"Maliyet dönüşümü başarısız: {str(e)}")
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Başarılı',
+                'message': f'Seçilenleri Dövizden TL\'ye Dönüştürme Tamamlandı ({len(self)} ürün)',
+                'type': 'success',
+                'sticky': False,
+            }
+        }
+
+    def action_convert_tl_to_döviz(self):
+        """TL fiyatlarını dövize dönüştür (kuru böl)"""
+        for record in self:
+            company_currency = record.company_id.currency_id or self.env.company.currency_id
+            
+            # Satış fiyatı dönüşümü
+            if record.list_price and record.custom_currency_id:
+                try:
+                    converted_price = company_currency._convert(
+                        record.list_price,
+                        record.custom_currency_id,
+                        record.company_id or self.env.company,
+                        date.today()
+                    )
+                    record.custom_list_price = converted_price
+                    _logger.info(f"Satış Ters Dönüşüm: {record.list_price} {company_currency.name} -> {converted_price} {record.custom_currency_id.name}")
+                except Exception as e:
+                    _logger.warning(f"Satış ters dönüşümü başarısız: {str(e)}")
+            
+            # Maliyet dönüşümü
+            if record.standard_price and record.custom_cost_currency_id:
+                try:
+                    converted_cost = company_currency._convert(
+                        record.standard_price,
+                        record.custom_cost_currency_id,
+                        record.company_id or self.env.company,
+                        date.today()
+                    )
+                    record.custom_cost_price = converted_cost
+                    _logger.info(f"Maliyet Ters Dönüşüm: {record.standard_price} {company_currency.name} -> {converted_cost} {record.custom_cost_currency_id.name}")
+                except Exception as e:
+                    _logger.warning(f"Maliyet ters dönüşümü başarısız: {str(e)}")
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Başarılı',
+                'message': f'Seçilenleri TL\'den Dövize Dönüştürme Tamamlandı ({len(self)} ürün)',
+                'type': 'success',
+                'sticky': False,
+            }
+        }
 
 
 
