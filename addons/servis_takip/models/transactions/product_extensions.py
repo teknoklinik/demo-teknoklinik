@@ -35,7 +35,7 @@ class ProductTemplate(models.Model):
         if 'taxes_id' in fields_list:
             defaults['taxes_id'] = [(6, 0, self._get_default_sales_tax_20_percent())]
         
-        # Maliyet vergileri için default (supplier_taxes_id kullan)
+        # Maliyet vergileri için default (supplier_taxes_id)
         if 'supplier_taxes_id' in fields_list:
             defaults['supplier_taxes_id'] = [(6, 0, self._get_default_tax_20_percent())]
         
@@ -52,15 +52,6 @@ class ProductTemplate(models.Model):
                 record.price_with_tax = record.list_price + tax_amount
             elif record.list_price and not record.taxes_id:
                 record.price_with_tax = record.list_price
-            
-            # Maliyet vergileri dahil maliyeti hesapla (supplier_taxes_id kullan)
-            if record.standard_price and record.supplier_taxes_id:
-                tax_amount = 0.0
-                for tax in record.supplier_taxes_id:
-                    tax_amount += tax.compute_all(record.standard_price, product=record)['total_included'] - record.standard_price
-                record.cost_with_tax = record.standard_price + tax_amount
-            elif record.standard_price and not record.supplier_taxes_id:
-                record.cost_with_tax = record.standard_price
 
     @api.model
     def create(self, vals):
@@ -71,9 +62,30 @@ class ProductTemplate(models.Model):
 
     def write(self, vals):
         """Ürün güncellenirken vergiler dahil fiyatları otomatik hesapla"""
+        # İçe aktarma sırasında boş alanları default %20 ile doldur
+        if 'taxes_id' in vals:
+            tax_val = vals.get('taxes_id')
+            # Boş kontrol: None, [], [(6, 0, [])]
+            is_empty = not tax_val or (isinstance(tax_val, list) and len(tax_val) == 0)
+            if is_empty:
+                default_taxes = self._get_default_sales_tax_20_percent()
+                if default_taxes:
+                    vals['taxes_id'] = [(6, 0, default_taxes)]
+                    _logger.info(f"taxes_id default %20 atandı")
+        
+        if 'supplier_taxes_id' in vals:
+            supplier_tax_val = vals.get('supplier_taxes_id')
+            # Boş kontrol: None, [], [(6, 0, [])]
+            is_empty = not supplier_tax_val or (isinstance(supplier_tax_val, list) and len(supplier_tax_val) == 0)
+            if is_empty:
+                default_taxes = self._get_default_tax_20_percent()
+                if default_taxes:
+                    vals['supplier_taxes_id'] = [(6, 0, default_taxes)]
+                    _logger.info(f"supplier_taxes_id default %20 atandı: {default_taxes}")
+        
         result = super().write(vals)
-        # Eğer list_price, taxes_id, standard_price veya supplier_taxes_id güncellenirse hesapla
-        if any(key in vals for key in ['list_price', 'taxes_id', 'standard_price', 'supplier_taxes_id']):
+        # Eğer list_price, taxes_id, standard_price güncellenirse hesapla
+        if any(key in vals for key in ['list_price', 'taxes_id', 'standard_price']):
             self._calculate_tax_fields()
         return result
 
@@ -97,6 +109,12 @@ class ProductTemplate(models.Model):
         string='Vergiler Dahil Fiyat'
     )
 
+    website_list_price = fields.Float(
+        string='Web Sitesi Satış Fiyatı',
+        help='Web sitesinde gösterilecek virgülden sonraki kısmı 00 olarak yuvarlanmış fiyat',
+        store=True,
+        compute='_compute_website_list_price'
+    )
 
     @api.onchange('list_price', 'taxes_id')
     def _onchange_calculate_price_with_tax(self):
@@ -107,6 +125,23 @@ class ProductTemplate(models.Model):
             for tax in self.taxes_id:
                 tax_amount += tax.compute_all(self.list_price, product=self)['total_included'] - self.list_price
             self.price_with_tax = self.list_price + tax_amount
+
+    @api.onchange('price_with_tax', 'taxes_id')
+    def _onchange_calculate_list_price(self):
+        """Vergiler dahil fiyat değiştiğinde satış fiyatını geri hesapla"""
+        if self.price_with_tax and self.taxes_id:
+            # Vergi toplamını hesapla
+            tax_amount = 0.0
+            for tax in self.taxes_id:
+                tax_amount += tax.compute_all(self.price_with_tax / (1 + sum(t.amount for t in self.taxes_id) / 100), product=self)['total_included'] - self.price_with_tax / (1 + sum(t.amount for t in self.taxes_id) / 100)
+            # Vergisiz fiyat = vergiler dahil fiyat / (1 + vergi oranı)
+            total_tax_rate = sum(t.amount for t in self.taxes_id) / 100
+            if total_tax_rate > 0:
+                self.list_price = self.price_with_tax / (1 + total_tax_rate)
+            else:
+                self.list_price = self.price_with_tax
+        elif self.price_with_tax and not self.taxes_id:
+            self.list_price = self.price_with_tax
 
     custom_list_price = fields.Float(
         string="Satış Fiyatı Döviz", 
@@ -167,12 +202,15 @@ class ProductTemplate(models.Model):
         help="Seçilen döviz cinsinden maliyet giriniz. Otomatik olarak TL'ye çevrilecektir."
     )
 
-    # --- Maliyet Vergileri Alanları (supplier_taxes_id kullanılıyor) ---
+    # --- Maliyet Vergileri Alanları (supplier_taxes_id - Native Odoo) ---
 
     cost_with_tax = fields.Float(
         string='Vergiler Dahil Maliyet',
         digits='Product Price',
-        help='Vergiler dahil toplam maliyet (TL) - otomatik hesaplanır veya elle girilebilir'
+        compute='_compute_cost_with_tax',
+        inverse='_inverse_cost_with_tax',
+        store=True,
+        help='Vergiler dahil toplam maliyet (TL) - otomatik hesaplanır veya elle girilebilir'        
     )
 
     cost_with_tax_display = fields.Char(
@@ -180,28 +218,33 @@ class ProductTemplate(models.Model):
         string='Vergiler Dahil Maliyet'
     )
 
-    @api.onchange('standard_price', 'supplier_taxes_id')
-    def _onchange_calculate_cost_with_tax(self):
-        """Maliyet fiyatı değiştiğinde vergiler dahil maliyeti otomatik hesapla"""
-        if self.standard_price:
-            # Vergi toplamını hesapla
-            tax_amount = 0.0
-            for tax in self.supplier_taxes_id:
-                tax_amount += tax.compute_all(self.standard_price, product=self)['total_included'] - self.standard_price
-            self.cost_with_tax = self.standard_price + tax_amount
-
-    @api.onchange('cost_with_tax', 'supplier_taxes_id')
-    def _onchange_calculate_standard_price(self):
-        """Vergiler dahil maliyet değiştiğinde maliyet fiyatını geri hesapla"""
-        if self.cost_with_tax and self.supplier_taxes_id:
-            # Vergi toplamını hesapla
-            total_tax_rate = sum(t.amount for t in self.supplier_taxes_id) / 100
-            if total_tax_rate > 0:
-                self.standard_price = self.cost_with_tax / (1 + total_tax_rate)
+    @api.depends('standard_price', 'supplier_taxes_id')
+    def _compute_cost_with_tax(self):
+        """Maliyet fiyatı + satınalma vergileri = vergiler dahil maliyet"""
+        for record in self:
+            if record.standard_price and record.supplier_taxes_id:
+                # Vergi toplamını hesapla
+                tax_amount = 0.0
+                for tax in record.supplier_taxes_id:
+                    tax_amount += tax.compute_all(record.standard_price, product=record)['total_included'] - record.standard_price
+                record.cost_with_tax = record.standard_price + tax_amount
+            elif record.standard_price and not record.supplier_taxes_id:
+                record.cost_with_tax = record.standard_price
             else:
-                self.standard_price = self.cost_with_tax
-        elif self.cost_with_tax and not self.supplier_taxes_id:
-            self.standard_price = self.cost_with_tax
+                record.cost_with_tax = 0.0
+
+    def _inverse_cost_with_tax(self):
+        """Vergiler dahil maliyet değiştiğinde, vergisiz maliyet'i geri hesapla"""
+        for record in self:
+            if record.cost_with_tax and record.supplier_taxes_id:
+                # Vergi oranını hesapla
+                total_tax_rate = sum(t.amount for t in record.supplier_taxes_id) / 100
+                if total_tax_rate > 0:
+                    record.standard_price = record.cost_with_tax / (1 + total_tax_rate)
+                else:
+                    record.standard_price = record.cost_with_tax
+            elif record.cost_with_tax and not record.supplier_taxes_id:
+                record.standard_price = record.cost_with_tax
 
     @api.onchange('custom_cost_price', 'custom_cost_currency_id')
     def _onchange_custom_cost_price(self):
@@ -247,11 +290,6 @@ class ProductTemplate(models.Model):
         compute='_compute_list_price_display',
         string='Satış Fiyatı Döviz'
     )
-    
-    custom_cost_price_display = fields.Char(
-        compute='_compute_cost_price_display',
-        string='Maliyet Döviz'
-    )
 
     @api.depends('custom_list_price', 'custom_currency_id')
     def _compute_list_price_display(self):
@@ -260,6 +298,11 @@ class ProductTemplate(models.Model):
                 record.custom_list_price_display = f"{record.custom_list_price:.2f} {record.custom_currency_id.symbol}"
             else:
                 record.custom_list_price_display = ""
+
+    custom_cost_price_display = fields.Char(
+        compute='_compute_cost_price_display',
+        string='Maliyet Döviz'
+    )
 
     @api.depends('custom_cost_price', 'custom_cost_currency_id')
     def _compute_cost_price_display(self):
@@ -287,11 +330,34 @@ class ProductTemplate(models.Model):
             else:
                 record.cost_with_tax_display = ""
 
+    @api.depends('list_price')
+    def _compute_website_list_price(self):
+        """Web sitesinde gösterilecek fiyatı virgülden sonraki kısmı 00 olarak yuvarla"""
+        for record in self:
+            if record.list_price:
+                # Fiyatın tam sayı kısmını al
+                rounded_price = int(record.list_price)
+                record.website_list_price = float(rounded_price)
+            else:
+                record.website_list_price = 0.0
+
     # --- Dönüşüm Action Metodları ---
     def action_convert_döviz_to_tl(self):
         """Döviz fiyatlarını TL'ye dönüştür (kur üzerinden çarp)"""
         for record in self:
             company_currency = record.company_id.currency_id or self.env.company.currency_id
+            
+            # Satış vergileri boşsa default %20 ata
+            if not record.taxes_id:
+                default_taxes = self._get_default_sales_tax_20_percent()
+                if default_taxes:
+                    record.taxes_id = [(6, 0, default_taxes)]
+            
+            # Maliyet vergileri boşsa default %20 ata
+            if not record.supplier_taxes_id:
+                default_taxes = self._get_default_tax_20_percent()
+                if default_taxes:
+                    record.supplier_taxes_id = [(6, 0, default_taxes)]
             
             # Satış fiyatı dönüşümü
             if record.custom_list_price and record.custom_currency_id:
@@ -303,25 +369,21 @@ class ProductTemplate(models.Model):
                         date.today()
                     )
                     record.list_price = converted_price
-                    # Vergiler dahil fiyatı otomatik hesapla
-                    record._onchange_calculate_price_with_tax()
                     _logger.info(f"Satış Dönüşümü: {record.custom_list_price} {record.custom_currency_id.name} -> {converted_price} {company_currency.name}")
                 except Exception as e:
                     _logger.warning(f"Satış dönüşümü başarısız: {str(e)}")
             
             # Maliyet dönüşümü
-            if record.custom_cost_price and record.custom_cost_currency_id:
+            if record.custom_cost_price and record.custom_currency_id:
                 try:
-                    converted_cost = record.custom_cost_currency_id._convert(
+                    converted_cost = record.custom_currency_id._convert(
                         record.custom_cost_price,
                         company_currency,
                         record.company_id or self.env.company,
                         date.today()
                     )
                     record.standard_price = converted_cost
-                    # Vergiler dahil maliyeti otomatik hesapla
-                    record._onchange_calculate_cost_with_tax()
-                    _logger.info(f"Maliyet Dönüşümü: {record.custom_cost_price} {record.custom_cost_currency_id.name} -> {converted_cost} {company_currency.name}")
+                    _logger.info(f"Maliyet Dönüşümü: {record.custom_cost_price} {record.custom_currency_id.name} -> {converted_cost} {company_currency.name}")
                 except Exception as e:
                     _logger.warning(f"Maliyet dönüşümü başarısız: {str(e)}")
         
@@ -341,6 +403,12 @@ class ProductTemplate(models.Model):
         for record in self:
             company_currency = record.company_id.currency_id or self.env.company.currency_id
             
+            # Satış vergileri boşsa default %20 ata
+            if not record.taxes_id:
+                default_taxes = self._get_default_sales_tax_20_percent()
+                if default_taxes:
+                    record.taxes_id = [(6, 0, default_taxes)]
+            
             # Satış fiyatı dönüşümü
             if record.list_price and record.custom_currency_id:
                 try:
@@ -351,11 +419,15 @@ class ProductTemplate(models.Model):
                         date.today()
                     )
                     record.custom_list_price = converted_price
-                    # Vergiler dahil fiyatı otomatik hesapla
-                    record._onchange_calculate_price_with_tax()
                     _logger.info(f"Satış Ters Dönüşüm: {record.list_price} {company_currency.name} -> {converted_price} {record.custom_currency_id.name}")
                 except Exception as e:
                     _logger.warning(f"Satış ters dönüşümü başarısız: {str(e)}")
+            
+            # Maliyet vergileri boşsa default %20 ata
+            if not record.supplier_taxes_id:
+                default_taxes = self._get_default_tax_20_percent()
+                if default_taxes:
+                    record.supplier_taxes_id = [(6, 0, default_taxes)]
             
             # Maliyet dönüşümü
             if record.standard_price and record.custom_cost_currency_id:
@@ -367,8 +439,6 @@ class ProductTemplate(models.Model):
                         date.today()
                     )
                     record.custom_cost_price = converted_cost
-                    # Vergiler dahil maliyeti otomatik hesapla
-                    record._onchange_calculate_cost_with_tax()
                     _logger.info(f"Maliyet Ters Dönüşüm: {record.standard_price} {company_currency.name} -> {converted_cost} {record.custom_cost_currency_id.name}")
                 except Exception as e:
                     _logger.warning(f"Maliyet ters dönüşümü başarısız: {str(e)}")
@@ -383,4 +453,9 @@ class ProductTemplate(models.Model):
                 'sticky': False,
             }
         }
+
+
+
+
+
 

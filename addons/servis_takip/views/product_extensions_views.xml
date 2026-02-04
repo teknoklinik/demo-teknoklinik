@@ -10,10 +10,6 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
 
-            <xpath expr="//field[@name='supplier_taxes_id']" position="attributes">
-                <attribute name="invisible">0</attribute>
-            </xpath>
-
             <xpath expr="//field[@name='list_price']" position="after">
                 <div class="row mt-3 mb-3">
                     <div class="col-lg-6">
@@ -42,10 +38,11 @@
                 </div>
             </xpath>
 
+            <!-- Maliyet (Satınalma) Vergileri Bölümü -->
             <xpath expr="//field[@name='standard_price']" position="after">
                 <div class="row mt-3 mb-3">
                     <div class="col-lg-6">
-                        <label for="supplier_taxes_id" string="Maliyet Vergileri"/>
+                        <label for="supplier_taxes_id" string="Satınalma Vergileri"/>
                         <field name="supplier_taxes_id" widget="many2many_tags" placeholder="Vergi seçiniz" domain="[('type_tax_use', '=', 'purchase')]" context="{'default_type_tax_use': 'purchase', 'search_default_purchase': 1}"/>
                     </div>
                     <div class="col-lg-6">
@@ -64,7 +61,7 @@
                     </div>
                     <div class="col-lg-6">
                         <p class="text-muted" style="font-size: 12px; margin-top: 20px;">
-                            💡                            <strong>Otomatik Dönüşüm:</strong> Fiyat girildiğinde kurlar üzerinden otomatik hesaplama yapılır.
+                            💡 <strong>Otomatik Dönüşüm:</strong> Fiyat girildiğinde kurlar üzerinden otomatik hesaplama yapılır.
                         </p>
                     </div>
                 </div>
@@ -82,7 +79,6 @@
                 <field name="custom_list_price_display" optional="show"/>
             </xpath>
             <xpath expr="//field[@name='standard_price']" position="after">
-                <field name="cost_with_tax_display" optional="show"/>
                 <field name="custom_cost_price_display" optional="show"/>
             </xpath>
         </field>
