@@ -190,7 +190,7 @@
                 </group>
 
                 <notebook>
-                    <page string="Durum Satırı" name="durum_gecmisi">
+                    <page string="Durum Geçmişi" name="durum_gecmisi">
                         <field name="durum_satirlari" widget="one2many" mode="list" context="{'default_servis_kaydi_id': id, 'form_view_ref': 'servis_takip.view_servis_durum_satiri_popup_form'}" readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']">
                             <list default_order="tarih asc" create="1" delete="0">
                                 <field name="state" readonly="tablo_duzenle == False" options="{'no_create': True, 'no_open': True}"/>
