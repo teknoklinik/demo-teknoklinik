@@ -373,6 +373,15 @@ class ProductTemplate(models.Model):
                 except Exception as e:
                     _logger.warning(f"Satış dönüşümü başarısız: {str(e)}")
             
+            # Vergiler dahil satış fiyatını hesapla ve doldur
+            if record.list_price and record.taxes_id:
+                tax_amount = 0.0
+                for tax in record.taxes_id:
+                    tax_amount += tax.compute_all(record.list_price, product=record)['total_included'] - record.list_price
+                record.price_with_tax = record.list_price + tax_amount
+            elif record.list_price and not record.taxes_id:
+                record.price_with_tax = record.list_price
+            
             # Maliyet dönüşümü
             if record.custom_cost_price and record.custom_currency_id:
                 try:
@@ -386,6 +395,15 @@ class ProductTemplate(models.Model):
                     _logger.info(f"Maliyet Dönüşümü: {record.custom_cost_price} {record.custom_currency_id.name} -> {converted_cost} {company_currency.name}")
                 except Exception as e:
                     _logger.warning(f"Maliyet dönüşümü başarısız: {str(e)}")
+            
+            # Vergiler dahil maliyeti hesapla ve doldur
+            if record.standard_price and record.supplier_taxes_id:
+                tax_amount = 0.0
+                for tax in record.supplier_taxes_id:
+                    tax_amount += tax.compute_all(record.standard_price, product=record)['total_included'] - record.standard_price
+                record.cost_with_tax = record.standard_price + tax_amount
+            elif record.standard_price and not record.supplier_taxes_id:
+                record.cost_with_tax = record.standard_price
         
         return {
             'type': 'ir.actions.client',
@@ -423,6 +441,15 @@ class ProductTemplate(models.Model):
                 except Exception as e:
                     _logger.warning(f"Satış ters dönüşümü başarısız: {str(e)}")
             
+            # Vergiler dahil satış fiyatını hesapla ve doldur
+            if record.list_price and record.taxes_id:
+                tax_amount = 0.0
+                for tax in record.taxes_id:
+                    tax_amount += tax.compute_all(record.list_price, product=record)['total_included'] - record.list_price
+                record.price_with_tax = record.list_price + tax_amount
+            elif record.list_price and not record.taxes_id:
+                record.price_with_tax = record.list_price
+            
             # Maliyet vergileri boşsa default %20 ata
             if not record.supplier_taxes_id:
                 default_taxes = self._get_default_tax_20_percent()
@@ -442,6 +469,15 @@ class ProductTemplate(models.Model):
                     _logger.info(f"Maliyet Ters Dönüşüm: {record.standard_price} {company_currency.name} -> {converted_cost} {record.custom_cost_currency_id.name}")
                 except Exception as e:
                     _logger.warning(f"Maliyet ters dönüşümü başarısız: {str(e)}")
+            
+            # Vergiler dahil maliyeti hesapla ve doldur
+            if record.standard_price and record.supplier_taxes_id:
+                tax_amount = 0.0
+                for tax in record.supplier_taxes_id:
+                    tax_amount += tax.compute_all(record.standard_price, product=record)['total_included'] - record.standard_price
+                record.cost_with_tax = record.standard_price + tax_amount
+            elif record.standard_price and not record.supplier_taxes_id:
+                record.cost_with_tax = record.standard_price
         
         return {
             'type': 'ir.actions.client',
