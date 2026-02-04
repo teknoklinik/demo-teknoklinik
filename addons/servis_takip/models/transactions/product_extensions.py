@@ -35,9 +35,9 @@ class ProductTemplate(models.Model):
         if 'taxes_id' in fields_list:
             defaults['taxes_id'] = [(6, 0, self._get_default_sales_tax_20_percent())]
         
-        # Maliyet vergileri için default
-        if 'cost_taxes_id' in fields_list:
-            defaults['cost_taxes_id'] = [(6, 0, self._get_default_tax_20_percent())]
+        # Maliyet vergileri için default (supplier_taxes_id kullan)
+        if 'supplier_taxes_id' in fields_list:
+            defaults['supplier_taxes_id'] = [(6, 0, self._get_default_tax_20_percent())]
         
         return defaults
 
@@ -53,13 +53,13 @@ class ProductTemplate(models.Model):
             elif record.list_price and not record.taxes_id:
                 record.price_with_tax = record.list_price
             
-            # Maliyet vergileri dahil maliyeti hesapla
-            if record.standard_price and record.cost_taxes_id:
+            # Maliyet vergileri dahil maliyeti hesapla (supplier_taxes_id kullan)
+            if record.standard_price and record.supplier_taxes_id:
                 tax_amount = 0.0
-                for tax in record.cost_taxes_id:
+                for tax in record.supplier_taxes_id:
                     tax_amount += tax.compute_all(record.standard_price, product=record)['total_included'] - record.standard_price
                 record.cost_with_tax = record.standard_price + tax_amount
-            elif record.standard_price and not record.cost_taxes_id:
+            elif record.standard_price and not record.supplier_taxes_id:
                 record.cost_with_tax = record.standard_price
 
     @api.model
@@ -72,8 +72,8 @@ class ProductTemplate(models.Model):
     def write(self, vals):
         """Ürün güncellenirken vergiler dahil fiyatları otomatik hesapla"""
         result = super().write(vals)
-        # Eğer list_price, taxes_id, standard_price veya cost_taxes_id güncellenirse hesapla
-        if any(key in vals for key in ['list_price', 'taxes_id', 'standard_price', 'cost_taxes_id']):
+        # Eğer list_price, taxes_id, standard_price veya supplier_taxes_id güncellenirse hesapla
+        if any(key in vals for key in ['list_price', 'taxes_id', 'standard_price', 'supplier_taxes_id']):
             self._calculate_tax_fields()
         return result
 
@@ -190,17 +190,7 @@ class ProductTemplate(models.Model):
         help="Seçilen döviz cinsinden maliyet giriniz. Otomatik olarak TL'ye çevrilecektir."
     )
 
-    # --- Maliyet Vergileri Alanları ---
-    cost_taxes_id = fields.Many2many(
-        'account.tax',
-        'product_cost_tax_rel',
-        'product_id',
-        'tax_id',
-        string="Maliyet Vergileri",
-        domain=[('type_tax_use', '=', 'purchase')],
-        default=lambda self: self._get_default_tax_20_percent(),
-        help="Ürün maliyeti üzerine uygulanacak vergiler"
-    )
+    # --- Maliyet Vergileri Alanları (supplier_taxes_id kullanılıyor) ---
 
     cost_with_tax = fields.Float(
         string='Vergiler Dahil Maliyet',
@@ -213,27 +203,27 @@ class ProductTemplate(models.Model):
         string='Vergiler Dahil Maliyet'
     )
 
-    @api.onchange('standard_price', 'cost_taxes_id')
+    @api.onchange('standard_price', 'supplier_taxes_id')
     def _onchange_calculate_cost_with_tax(self):
         """Maliyet fiyatı değiştiğinde vergiler dahil maliyeti otomatik hesapla"""
         if self.standard_price:
             # Vergi toplamını hesapla
             tax_amount = 0.0
-            for tax in self.cost_taxes_id:
+            for tax in self.supplier_taxes_id:
                 tax_amount += tax.compute_all(self.standard_price, product=self)['total_included'] - self.standard_price
             self.cost_with_tax = self.standard_price + tax_amount
 
-    @api.onchange('cost_with_tax', 'cost_taxes_id')
+    @api.onchange('cost_with_tax', 'supplier_taxes_id')
     def _onchange_calculate_standard_price(self):
         """Vergiler dahil maliyet değiştiğinde maliyet fiyatını geri hesapla"""
-        if self.cost_with_tax and self.cost_taxes_id:
+        if self.cost_with_tax and self.supplier_taxes_id:
             # Vergi toplamını hesapla
-            total_tax_rate = sum(t.amount for t in self.cost_taxes_id) / 100
+            total_tax_rate = sum(t.amount for t in self.supplier_taxes_id) / 100
             if total_tax_rate > 0:
                 self.standard_price = self.cost_with_tax / (1 + total_tax_rate)
             else:
                 self.standard_price = self.cost_with_tax
-        elif self.cost_with_tax and not self.cost_taxes_id:
+        elif self.cost_with_tax and not self.supplier_taxes_id:
             self.standard_price = self.cost_with_tax
 
     @api.onchange('custom_cost_price', 'custom_cost_currency_id')
