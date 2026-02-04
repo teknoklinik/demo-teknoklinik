@@ -97,12 +97,6 @@ class ProductTemplate(models.Model):
         string='Vergiler Dahil Fiyat'
     )
 
-    website_list_price = fields.Float(
-        string='Web Sitesi Satış Fiyatı',
-        help='Web sitesinde gösterilecek virgülden sonraki kısmı 00 olarak yuvarlanmış fiyat',
-        store=True,
-        compute='_compute_website_list_price'
-    )
 
     @api.onchange('list_price', 'taxes_id')
     def _onchange_calculate_price_with_tax(self):
@@ -113,23 +107,6 @@ class ProductTemplate(models.Model):
             for tax in self.taxes_id:
                 tax_amount += tax.compute_all(self.list_price, product=self)['total_included'] - self.list_price
             self.price_with_tax = self.list_price + tax_amount
-
-    @api.onchange('price_with_tax', 'taxes_id')
-    def _onchange_calculate_list_price(self):
-        """Vergiler dahil fiyat değiştiğinde satış fiyatını geri hesapla"""
-        if self.price_with_tax and self.taxes_id:
-            # Vergi toplamını hesapla
-            tax_amount = 0.0
-            for tax in self.taxes_id:
-                tax_amount += tax.compute_all(self.price_with_tax / (1 + sum(t.amount for t in self.taxes_id) / 100), product=self)['total_included'] - self.price_with_tax / (1 + sum(t.amount for t in self.taxes_id) / 100)
-            # Vergisiz fiyat = vergiler dahil fiyat / (1 + vergi oranı)
-            total_tax_rate = sum(t.amount for t in self.taxes_id) / 100
-            if total_tax_rate > 0:
-                self.list_price = self.price_with_tax / (1 + total_tax_rate)
-            else:
-                self.list_price = self.price_with_tax
-        elif self.price_with_tax and not self.taxes_id:
-            self.list_price = self.price_with_tax
 
     custom_list_price = fields.Float(
         string="Satış Fiyatı Döviz", 
@@ -310,17 +287,6 @@ class ProductTemplate(models.Model):
             else:
                 record.cost_with_tax_display = ""
 
-    @api.depends('list_price')
-    def _compute_website_list_price(self):
-        """Web sitesinde gösterilecek fiyatı virgülden sonraki kısmı 00 olarak yuvarla"""
-        for record in self:
-            if record.list_price:
-                # Fiyatın tam sayı kısmını al
-                rounded_price = int(record.list_price)
-                record.website_list_price = float(rounded_price)
-            else:
-                record.website_list_price = 0.0
-
     # --- Dönüşüm Action Metodları ---
     def action_convert_döviz_to_tl(self):
         """Döviz fiyatlarını TL'ye dönüştür (kur üzerinden çarp)"""
@@ -417,9 +383,4 @@ class ProductTemplate(models.Model):
                 'sticky': False,
             }
         }
-
-
-
-
-
 
