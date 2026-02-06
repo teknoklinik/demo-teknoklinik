@@ -943,13 +943,18 @@ class ServisKaydi(models.Model):
         """Kabul raporu için müşteri imzası al"""
         self.ensure_one()
         
-        # Kabul raporunun var olup olmadığını kontrol et
+        # Kabul raporunun var olup olmadığını kontrol et, yoksa oluştur
         kabul_rapor = self.env['kabul.rapor'].search([
             ('servis_id', '=', self.id)
         ], limit=1)
         
         if not kabul_rapor:
-            raise UserError('Bu servis kaydı için önce kabul raporu oluşturmalısınız!')
+            kabul_no = self.env['ir.sequence'].next_by_code('kabul.rapor.sequence') or f'KBL-{self.id}'
+            kabul_rapor = self.env['kabul.rapor'].create({
+                'name': kabul_no,
+                'servis_id': self.id,
+                'musteri_id': self.musteri_id.id if self.musteri_id else False,
+            })
         
         return {
             'type': 'ir.actions.act_window',
@@ -967,13 +972,18 @@ class ServisKaydi(models.Model):
         """Teslim raporu için müşteri imzası al"""
         self.ensure_one()
         
-        # Teslim raporunun var olup olmadığını kontrol et
+        # Teslim raporunun var olup olmadığını kontrol et, yoksa oluştur
         teslim_rapor = self.env['teslim.rapor'].search([
             ('servis_id', '=', self.id)
         ], limit=1)
         
         if not teslim_rapor:
-            raise UserError('Bu servis kaydı için önce teslim raporu oluşturmalısınız!')
+            teslim_no = self.env['ir.sequence'].next_by_code('teslim.rapor.sequence') or f'TSL-{self.id}'
+            teslim_rapor = self.env['teslim.rapor'].create({
+                'name': teslim_no,
+                'servis_id': self.id,
+                'musteri_id': self.musteri_id.id if self.musteri_id else False,
+            })
         
         return {
             'type': 'ir.actions.act_window',

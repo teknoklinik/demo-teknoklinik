@@ -59,11 +59,6 @@
                                     <strong>Belge Tarihi:</strong>
                                     <span t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
                                 </div>
-                                <div style="display: inline-block; min-width: 150px;">
-                                    <div t-attf-style="padding: 8px 15px; border-radius: 4px; font-size: 13px; font-weight: bold; text-align: center; border: 1px solid #ccc; background-color: #E2EFDA; color: #375623;">
-                                        KABUL HAZIR
-                                    </div>
-                                </div>
                             </div>
                         </div>
 
