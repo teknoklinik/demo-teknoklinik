@@ -210,8 +210,9 @@ class ServisKaydi(models.Model):
     def _compute_garanti_durumu(self):
         today = date.today()
         for record in self:
-            if not record.garanti_bitis:
-                record.garanti_durumu = 'belirsiz'
+            # Eğer garanti başlama tarihi girilmemiş veya garanti süresi 0/boş ise → 'yok'
+            if not record.garanti_baslama or not record.garanti_bitis:
+                record.garanti_durumu = 'yok'
             elif record.garanti_bitis < today:
                 record.garanti_durumu = 'yok'
             else:

@@ -2,6 +2,8 @@
 <odoo>
     <menuitem id="menu_servis_root" name="Servis Yönetimi" action="action_servis_kaydi_tum" web_icon="servis_takip,static/description/icon.png" sequence="10"/>
 
+    <menuitem id="menu_servis_kayitlari_ana" name="Servis Yönetimi" parent="menu_servis_root" action="action_servis_kaydi_tum" sequence="20"/>
+
     <menuitem id="menu_urun_parki" name="Ürün Parkı" parent="menu_servis_root" action="action_urun_parki" sequence="30"/>
 
     <menuitem id="menu_servis_yapilandirma" name="Yapılandırma" parent="menu_servis_root" sequence="100" groups="base.group_system"/>
