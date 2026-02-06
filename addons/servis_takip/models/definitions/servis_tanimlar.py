@@ -6,6 +6,7 @@ class ServisArizaTanimi(models.Model):
     _description = 'Servis Arıza Tanımları'
     _rec_name = 'name'
     name = fields.Char(string='Arıza Adı', required=True)
+    urun_turu_id = fields.Many2one('urun.turu', string='Ürün Tipi')
     aktif = fields.Boolean(string='Aktif', default=True)
 
 class ServisKaydiArizaDetay(models.Model):
@@ -16,7 +17,7 @@ class ServisKaydiArizaDetay(models.Model):
         'servis.ariza.tanimi', 
         string='Arıza Tipi', 
         required=True,
-        domain="[('aktif', '=', True)]"
+        domain="[('aktif', '=', True), ('urun_turu_id', '=', parent.urun_turu_id)]"
     )
     musteri_notu = fields.Char(string='Müşteri Notu') 
 
