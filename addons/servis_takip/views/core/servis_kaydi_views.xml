@@ -186,6 +186,15 @@
                             </button>
                             <div style="font-size: 10px; color: #999; font-weight: 500; white-space: nowrap;">Manuel Kayıt</div>
                         </div>
+                        <!-- Ödeme Kutusu -->
+                        <div class="mt-3 mb-3" colspan="2" invisible="genel_toplam == 0">
+                            <div style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 50%, #c44569 100%); border-radius: 8px; padding: 14px 18px; color: white; box-shadow: 0 4px 12px rgba(255, 107, 107, 0.25); max-width: 280px;">
+                                <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.85); font-weight: 600; margin-bottom: 5px;">Toplam Ödeme</div>
+                                <div style="font-size: 24px; font-weight: bold; color: white;">
+                                    <field name="genel_toplam" nolabel="1" widget="monetary" options="{'currency_field': 'company_currency_id'}" style="color: white;"/>
+                                </div>
+                            </div>
+                        </div>
                     </group>
                 </group>
 
