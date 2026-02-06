@@ -435,6 +435,13 @@ class ServisKaydi(models.Model):
         for record in self:
             record.company_currency_id = record.company_id.currency_id
 
+    currency_symbol = fields.Char(string='Para Birimi Sembolü', compute='_compute_currency_symbol', store=True)
+
+    @api.depends('company_currency_id')
+    def _compute_currency_symbol(self):
+        for record in self:
+            record.currency_symbol = record.company_currency_id.symbol if record.company_currency_id else '₺'
+
     # --- Yardımcı Metotlar ---
     def _create_status_line(self, durum_kodu, aciklama, personel_id=None):
         self.ensure_one()
