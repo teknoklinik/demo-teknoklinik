@@ -1,6 +1,6 @@
 {
     'name': 'Servis Yönetimi',
-    'version': '19.0.1.0.1',
+    'version': '19.0.1.0.2',
     'summary': 'Müşteriye ait ürünlerin teknik servis ve onarım süreçlerini takip eder.',
     'description': """
 Servis Yönetimi Modülü

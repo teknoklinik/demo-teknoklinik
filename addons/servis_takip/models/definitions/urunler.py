@@ -7,19 +7,46 @@ class UrunTuru(models.Model):
     _order = 'name'
 
     name = fields.Char(string='Ürün Türü Adı', required=True)
+    
+    # Reverse relationships for visibility
+    marka_ids = fields.One2many('urun.markasi', 'tur_id', string='Markalar', readonly=True)
+    modeli_ids = fields.One2many('urun.modeli', 'tur_id', string='Modeller', readonly=True)
+    
+    def unlink(self):
+        """Silmeden önce ilişkili kayıtları warn et"""
+        for record in self:
+            if record.marka_ids:
+                raise ValueError(
+                    _('Bu ürün türüne ait %d marka vardır. '
+                      'Önce markaları silin veya başka türe taşıyın.') % len(record.marka_ids)
+                )
+        return super(UrunTuru, self).unlink()
 
 
 class UrunMarkasi(models.Model):
     _name = 'urun.markasi'
     _description = 'Ürün Markası'
-    _order = 'name'
+    _order = 'tur_id, name'
 
     name = fields.Char(string='Marka Adı', required=True)
     tur_id = fields.Many2one('urun.turu', string='Ürün Türü', required=True, ondelete='cascade')
+    
+    # Reverse relationships for visibility
+    modeli_ids = fields.One2many('urun.modeli', 'marka_id', string='Modeller', readonly=True)
+    
+    def unlink(self):
+        """Silmeden önce ilişkili kayıtları warn et"""
+        for record in self:
+            if record.modeli_ids:
+                raise ValueError(
+                    _('Bu markaya ait %d model vardır. '
+                      'Önce modelleri silin veya başka markaya taşıyın.') % len(record.modeli_ids)
+                )
+        return super(UrunMarkasi, self).unlink()
 
 class UrunModeli(models.Model):
     _name = 'urun.modeli'
-    _description = 'Ürün Tanımları'
+    _description = 'Ürün Modeli'
     _order = 'id desc'
 
     # ID gösterimi için alan

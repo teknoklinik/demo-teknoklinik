@@ -1,55 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <record id="view_urun_modeli_tree" model="ir.ui.view">
-        <field name="name">urun.modeli.list</field>
-        <field name="model">urun.modeli</field>
+    <!-- ========== ÜRÜN TÜRÜ VIEWS ========== -->
+    <record id="view_urun_turu_form" model="ir.ui.view">
+        <field name="name">urun.turu.form</field>
+        <field name="model">urun.turu</field>
         <field name="arch" type="xml">
-            <list string="Ürün Tanımları" editable="bottom" create="true" delete="true">
-                <field name="display_id" string="ID" readonly="1" width="20px"/>
-                <field name="tur_id" string="Ürün Türü" options="{'no_create_edit': True, 'no_open': True}"/>
-                <field name="marka_id" string="Marka" domain="[('tur_id', '=', tur_id)]" options="{'no_create_edit': True, 'no_quick_create': False}"/>
-                <field name="name" string="Model Adı" placeholder="Örn: LaserJet Pro M404n"/>
-            </list>
+            <form string="Ürün Türü">
+                <sheet>
+                    <group>
+                        <field name="name" string="Ürün Türü Adı"/>
+                    </group>
+                </sheet>
+            </form>
         </field>
-    </record>
-
-    <record id="action_urun_modeli" model="ir.actions.act_window">
-        <field name="name">Ürün Ağacı</field>
-        <field name="res_model">urun.modeli</field>
-        <field name="view_mode">list,form</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Yeni bir ürün tanımı ekleyin.
-            </p>
-            <p>
-                Buradan Tür, Marka ve Model eşleşmelerini tek bir listeden yönetebilirsiniz.
-            </p>
-        </field>
-    </record>
-
-    <record id="view_urun_markasi_tree" model="ir.ui.view">
-        <field name="name">urun.markasi.list</field>
-        <field name="model">urun.markasi</field>
-        <field name="arch" type="xml">
-            <list string="Ürün Markaları" editable="bottom" create="true" delete="true">
-                <field name="tur_id" options="{'no_create_edit': True}"/>
-                <field name="name" string="Marka Adı"/>
-            </list>
-        </field>
-    </record>
-
-    <record id="action_urun_markasi" model="ir.actions.act_window">
-        <field name="name">Markalar</field>
-        <field name="res_model">urun.markasi</field>
-        <field name="view_mode">list,form</field>
     </record>
 
     <record id="view_urun_turu_tree" model="ir.ui.view">
         <field name="name">urun.turu.list</field>
         <field name="model">urun.turu</field>
         <field name="arch" type="xml">
-            <list string="Ürün Türleri" editable="bottom" create="true" delete="true">
+            <list string="Ürün Türleri" create="true" delete="true" editable="bottom">
                 <field name="name" string="Ürün Türü Adı"/>
             </list>
         </field>
@@ -59,6 +30,103 @@
         <field name="name">Ürün Türleri</field>
         <field name="res_model">urun.turu</field>
         <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Yeni bir ürün türü ekleyin.
+            </p>
+            <p>
+                Listede satıra çift tıklayarak veya satırı seçerek açabilirsiniz.
+                Silmek için satırı seçip sil butonunu tıklayın.
+            </p>
+        </field>
+    </record>
+
+    <!-- ========== ÜRÜN MARKASI VIEWS ========== -->
+    <record id="view_urun_markasi_form" model="ir.ui.view">
+        <field name="name">urun.markasi.form</field>
+        <field name="model">urun.markasi</field>
+        <field name="arch" type="xml">
+            <form string="Ürün Markası">
+                <sheet>
+                    <group>
+                        <field name="tur_id" string="Ürün Türü" options="{'no_create_edit': True}"/>
+                        <field name="name" string="Marka Adı"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_urun_markasi_tree" model="ir.ui.view">
+        <field name="name">urun.markasi.list</field>
+        <field name="model">urun.markasi</field>
+        <field name="arch" type="xml">
+            <list string="Ürün Markaları" create="true" delete="true">
+                <field name="tur_id" string="Ürün Türü" options="{'no_create_edit': True}"/>
+                <field name="name" string="Marka Adı"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_urun_markasi" model="ir.actions.act_window">
+        <field name="name">Ürün Markaları</field>
+        <field name="res_model">urun.markasi</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Yeni bir marka ekleyin.
+            </p>
+            <p>
+                Seçtiğiniz ürün türüne göre markaları yönetebilirsiniz.
+                Silmek için satırı seçip sil butonunu tıklayın.
+            </p>
+        </field>
+    </record>
+
+    <!-- ========== ÜRÜN MODELİ VIEWS ========== -->
+    <record id="view_urun_modeli_form" model="ir.ui.view">
+        <field name="name">urun.modeli.form</field>
+        <field name="model">urun.modeli</field>
+        <field name="arch" type="xml">
+            <form string="Ürün Modeli">
+                <sheet>
+                    <group>
+                        <field name="display_id" string="ID" readonly="1"/>
+                        <field name="tur_id" string="Ürün Türü"/>
+                        <field name="marka_id" string="Marka" domain="[('tur_id', '=', tur_id)]"/>
+                        <field name="name" string="Model Adı" placeholder="Örn: LaserJet Pro M404n"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_urun_modeli_tree" model="ir.ui.view">
+        <field name="name">urun.modeli.list</field>
+        <field name="model">urun.modeli</field>
+        <field name="arch" type="xml">
+            <list string="Ürün Modelleri" create="true" delete="true">
+                <field name="display_id" string="ID" readonly="1" width="20px"/>
+                <field name="tur_id" string="Ürün Türü" options="{'no_create_edit': True, 'no_open': True}"/>
+                <field name="marka_id" string="Marka" domain="[('tur_id', '=', tur_id)]" options="{'no_create_edit': True, 'no_quick_create': False}"/>
+                <field name="name" string="Model Adı" placeholder="Örn: LaserJet Pro M404n"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_urun_modeli" model="ir.actions.act_window">
+        <field name="name">Ürün Modelleri</field>
+        <field name="res_model">urun.modeli</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Yeni bir ürün modeli ekleyin.
+            </p>
+            <p>
+                Tür, Marka ve Model kombinasyonlarını tanımlayın.
+                Silmek için satırı seçip sil butonunu tıklayın.
+            </p>
+        </field>
     </record>
 
 </odoo>
