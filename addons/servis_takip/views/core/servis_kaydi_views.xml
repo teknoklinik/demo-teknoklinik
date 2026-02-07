@@ -156,6 +156,13 @@
                         <field name="urun_modeli_id" domain="[('marka_id', '=', urun_marka_id)]" readonly="urun_marka_id == False or (formu_duzenle == False and state in ['teslim_edildi', 'iptal'])"/>
                         <field name="seri_no" readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']"/>
                         <field name="barkod_no" readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']"/>
+                        <div invisible="not show_urun_parkina_aktar_button" style="display: flex; align-items: center; gap: 8px; margin-top: 5px;">
+                            <button name="action_urun_parkina_aktar" type="object" style="all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; background-color: #E0F7FA; color: #0891B2; padding: 5px 12px; border: 1px solid #B2EBF2; border-radius: 6px; font-size: 11px; font-weight: 600; transition: all 0.2s ease;">
+                                <i class="fa fa-plus-circle" style="font-size: 13px; color: #06B6D4;"/>
+                                <span style="white-space: nowrap;">Ürün Parkına Aktar</span>
+                            </button>
+                            <span style="font-size: 10px; color: #AAA; white-space: nowrap; font-style: italic;">Manuel Kayıt</span>
+                        </div>
                     </group>
                     <group string="Garanti">
                         <group>
@@ -179,24 +186,20 @@
                         <group string="Etiket" colspan="2">
                             <field name="etiket_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" placeholder="Etiketler..." readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']"/>
                         </group>
-                        <div invisible="not show_urun_parkina_aktar_button" style="display: flex; flex-direction: row; align-items: center; gap: 10px; width: auto;">
-                            <button name="action_urun_parkina_aktar" type="object" class="btn-info" style="width: auto !important; height: 50px !important; font-weight: 500; font-size: 13px; border-radius: 8px; background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%) !important; color: white !important; border: none; padding: 0 18px !important; box-shadow: 0 2px 8px rgba(6, 182, 212, 0.25); transition: all 0.3s ease; display: flex; align-items: center; gap: 8px; white-space: nowrap;">
-                                <i class="fa fa-plus-circle" style="font-size: 18px;"/>
-                                <span>Ürün Parkına Aktar</span>
-                            </button>
-                            <div style="font-size: 10px; color: #999; font-weight: 500; white-space: nowrap;">Manuel Kayıt</div>
-                        </div>
                         <!-- Ödeme Kutusu -->
-                        <div class="mt-2 mb-2" colspan="2" invisible="genel_toplam == 0">
-                            <div style="background: #f0f4ff; border-left: 3px solid #667eea; padding: 10px 12px; border-radius: 4px;">
-                                <div style="font-size: 10px; color: #667eea; font-weight: 600; margin-bottom: 3px;">Ödeme</div>
-                                <div style="font-size: 18px; font-weight: bold; color: #333;">
-                                    <span style="display: inline;">
-                                        <field name="genel_toplam" nolabel="1" widget="monetary" options="{'currency_field': 'company_currency_id'}" style="color: #667eea; display: inline;"/>
-                                        <field name="currency_symbol" nolabel="1" readonly="1" style="color: #667eea; font-size: 14px; display: inline; margin-left: 2px;"/>
-                                    </span>
+                        <div class="mt-2 mb-2" colspan="2" invisible="genel_toplam == 0" style="display: flex; align-items: stretch; width: fit-content;">
+                            <div style="background: #f0f4ff; border-left: 3px solid #667eea; padding: 6px 15px; border-radius: 6px 0 0 6px; display: flex; flex-direction: column; justify-content: center; min-width: 120px;">
+                                <div style="font-size: 10px; color: #667eea; font-weight: 600; text-transform: uppercase; margin-bottom: -2px;">Ödeme</div>
+                                <div style="font-size: 18px; font-weight: bold; color: #667eea; white-space: nowrap;">
+                                    <field name="genel_toplam" nolabel="1" widget="monetary" options="{'currency_field': 'company_currency_id'}" style="display: inline;"/>
+                                    <field name="currency_symbol" nolabel="1" readonly="1" style="font-size: 14px; display: inline; margin-left: 2px;"/>
                                 </div>
                             </div>
+
+                            <button name="action_buton_fatura" type="object" class="btn-warning" style="margin: 0 !important; border-radius: 0 6px 6px 0 !important; padding: 0 20px !important; display: flex; align-items: center; gap: 8px; border: none; font-weight: bold; font-size: 14px; height: auto;">
+                                <i class="fa fa-file-text-o"/>
+                                <span>FATURA</span>
+                            </button>
                         </div>
                     </group>
                 </group>
