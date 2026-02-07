@@ -911,6 +911,7 @@ class ServisKaydi(models.Model):
             except:
                 existing_invoice = False
 
+        is_new_invoice = False
         if existing_invoice:
             if existing_invoice.state != 'draft':
                 raise UserError("Onaylanmış bir faturayı güncelleyemezsiniz. Lütfen faturayı taslağa çekin.")
@@ -928,6 +929,28 @@ class ServisKaydi(models.Model):
             self.write({'fatura_id': fatura.id})
             self.env.cr.commit() 
             res_id = fatura.id
+            is_new_invoice = True
+
+        # Fatura oluştururken ürün parkı kayıt politikasını kontrol et
+        if is_new_invoice:
+            fatura_kayit_politikasi = self.env['ir.config_parameter'].sudo().get_param(
+                'servis_takip.fatura_urun_parki_kayit_politikasi',
+                default='kayit_etme'
+            )
+            
+            # Eğer politika 'kayit_et' ise otomatik ürün parkına kayıt yap
+            if fatura_kayit_politikasi == 'kayit_et':
+                try:
+                    # Gerekli alanlar var mı kontrol et
+                    if (self.seri_no and self.urun_turu_id and 
+                        self.urun_marka_id and self.urun_modeli_id):
+                        # Fatura tarihi varsa onu gönder
+                        fatura_ref = self.env['account.move'].browse(res_id)
+                        garanti_baslama_tarihi = fatura_ref.invoice_date if fatura_ref.invoice_date else fields.Date.today()
+                        self._auto_urun_parkina_kayit(garanti_baslama_tarihi)
+                except Exception as e:
+                    # Hata oluşsa bile fatura oluşturulmuş olsun, sadece log'la
+                    _logger.warning(f"Fatura ürün parkı otomatik kaydı yapılamadı: {str(e)}")
 
         # YARDIMCI FONKSİYON YERİNE DOĞRUDAN RETURN (Hata veren yer burasıydı)
         return {
@@ -1045,6 +1068,7 @@ class ServisKaydi(models.Model):
                 'model_id': self.urun_modeli_id.id,
                 'serial_no': self.seri_no,
                 'musteri_id': self.musteri_id.id,
+                'garanti_baslama': self.garanti_baslama if self.garanti_baslama else fields.Date.today(),
             })
             
             return {
@@ -1057,4 +1081,47 @@ class ServisKaydi(models.Model):
                     'sticky': False,
                 }
             }
+
+    def _auto_urun_parkina_kayit(self, garanti_baslama_tarihi=None):
+        """Ürün bilgilerini otomatik olarak ürün parkına kayıt et (fatura politikası için)"""
+        self.ensure_one()
+        
+        # Gerekli ürün bilgilerinin tamamlandığını kontrol et
+        if not all([self.urun_turu_id, self.urun_marka_id, self.urun_modeli_id, self.seri_no]):
+            return
+        
+        # Ürün parkında arama yap
+        urun_parki = self.env['servis.urun'].search([
+            ('tur_id', '=', self.urun_turu_id.id),
+            ('marka_id', '=', self.urun_marka_id.id),
+            ('model_id', '=', self.urun_modeli_id.id),
+            ('serial_no', '=', self.seri_no),
+        ], limit=1)
+        
+        if urun_parki:
+            # Ürün parkında kayıtlı - güncelle
+            update_vals = {}
+            if not urun_parki.musteri_id:
+                update_vals['musteri_id'] = self.musteri_id.id
+            # Garanti başlama tarihi varsa ve henüz atanmamışsa, gelen tarihi ayarla
+            if garanti_baslama_tarihi and not urun_parki.garanti_baslama:
+                update_vals['garanti_baslama'] = garanti_baslama_tarihi
+            
+            if update_vals:
+                urun_parki.write(update_vals)
+            # Zaten kayıtlıysa yapma, sessiz geç
+        else:
+            # Ürün parkında yok - yeni kayıt oluştur
+            try:
+                self.env['servis.urun'].create({
+                    'tur_id': self.urun_turu_id.id,
+                    'marka_id': self.urun_marka_id.id,
+                    'model_id': self.urun_modeli_id.id,
+                    'serial_no': self.seri_no,
+                    'musteri_id': self.musteri_id.id,
+                    'garanti_baslama': garanti_baslama_tarihi if garanti_baslama_tarihi else fields.Date.today(),
+                })
+            except Exception as e:
+                # Hata oluşsa bile sessiz geç, otomatik işlem olduğu için user notification gösterme
+                _logger.warning(f"Otomatik ürün parkı kaydı başarısız: {str(e)}")
                 

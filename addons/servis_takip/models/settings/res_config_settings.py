@@ -16,6 +16,13 @@ class ResConfigSettings(models.TransientModel):
        default='kayit_et',
        config_parameter='servis_takip.urun_parki_kayit_politikasi')
 
+    fatura_urun_parki_kayit_politikasi = fields.Selection([
+        ('kayit_et', 'Otomatik Kayıt Et'),
+        ('kayit_etme', 'Kayıt Etme')
+    ], string="Fatura Oluştururken Ürün Parkı Kayıt Politikası", 
+       default='kayit_etme',
+       config_parameter='servis_takip.fatura_urun_parki_kayit_politikasi')
+
     servis_sure_asimi_limiti = fields.Integer(
         string="Servis Süre Aşımı Sınırı (Gün)",
         default=21,

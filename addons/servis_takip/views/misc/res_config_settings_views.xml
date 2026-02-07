@@ -36,6 +36,21 @@
                             </div>
                         </div>
                     </div>
+
+                    <h2>Faturalama Ayarları</h2>
+                    <div class="row mt16 o_settings_container" name="fatura_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box" id="fatura_parki_policy_setting">
+                            <div class="o_setting_right_pane">
+                                <label for="fatura_urun_parki_kayit_politikasi"/>
+                                <div class="text-muted">
+                                    Fatura oluştururken ürün parkı kaydı için politikayı belirleyin.
+                                </div>
+                                <div class="content-group mt16">
+                                    <field name="fatura_urun_parki_kayit_politikasi" widget="radio"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </xpath>
         </field>
