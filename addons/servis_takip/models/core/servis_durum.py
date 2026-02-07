@@ -61,7 +61,7 @@ class ServisDurumSatiri(models.Model):
     servis_kaydi_id = fields.Many2one(
         'servis.kaydi', 
         string='Servis Kaydı',
-        required=True,
+        required=False,
         ondelete='cascade'
     )
 
@@ -77,7 +77,7 @@ class ServisDurumSatiri(models.Model):
     state = fields.Selection(
         selection='_get_durum_listesi',
         string='Durum',
-        required=True,
+        required=False,
     )
 
     def _get_durum_listesi(self):
@@ -100,14 +100,14 @@ class ServisDurumSatiri(models.Model):
         'hr.employee', 
         string='İlgili Personel',
         default=lambda self: self.env.user.employee_ids[:1].id if self.env.user.employee_ids else False,
-        required=True,
+        required=False,
         readonly=True
     )
 
     tarih = fields.Datetime(
         string='Başlangıç Tarihi',
         default=lambda self: fields.Datetime.now(),
-        required=True,
+        required=False,
         readonly=True 
     )
     
