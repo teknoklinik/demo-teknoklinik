@@ -161,7 +161,6 @@
                                 <i class="fa fa-plus-circle" style="font-size: 13px; color: #06B6D4;"/>
                                 <span style="white-space: nowrap;">Ürün Parkına Aktar</span>
                             </button>
-                            <span style="font-size: 10px; color: #AAA; white-space: nowrap; font-style: italic;">Manuel Kayıt</span>
                         </div>
                     </group>
                     <group string="Garanti">

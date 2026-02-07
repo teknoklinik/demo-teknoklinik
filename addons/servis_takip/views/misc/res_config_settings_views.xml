@@ -43,7 +43,7 @@
                             <div class="o_setting_right_pane">
                                 <label for="fatura_urun_parki_kayit_politikasi"/>
                                 <div class="text-muted">
-                                    Fatura oluştururken ürün parkı kaydı için politikayı belirleyin.
+                                    Fatura oluştururken Seri No ile takip edilen ürünler için ürün parkı kaydı politikasını belirleyin.
                                 </div>
                                 <div class="content-group mt16">
                                     <field name="fatura_urun_parki_kayit_politikasi" widget="radio"/>
