@@ -47,24 +47,24 @@
                     </div>
                     <group>
                         <group string="Ürün Temel Bilgileri">
-                            <field name="tur_id" options="{'no_create_edit': True}"/>
-                            <field name="marka_id" options="{'no_create_edit': True}" domain="[('tur_id', '=', tur_id)]" context="{'default_tur_id': tur_id}"/>
-                            <field name="model_id" options="{'no_create_edit': True}" domain="[('marka_id', '=', marka_id)]" context="{'default_marka_id': marka_id, 'default_tur_id': tur_id}"/>
+                            <field name="tur_id" options="{'no_create_edit': True}" style="border-bottom: 1px solid #ddd;"/>
+                            <field name="marka_id" options="{'no_create_edit': True}" domain="[('tur_id', '=', tur_id)]" context="{'default_tur_id': tur_id}" style="border-bottom: 1px solid #ddd;"/>
+                            <field name="model_id" options="{'no_create_edit': True}" domain="[('marka_id', '=', marka_id)]" context="{'default_marka_id': marka_id, 'default_tur_id': tur_id}" style="border-bottom: 1px solid #ddd;"/>
                         </group>
                         <group string="Kimlik Bilgileri">
-                            <field name="serial_no" placeholder="S/N Numarası"/>
-                            <field name="barcode" placeholder="Barkod Okutun"/>
-                            <field name="location"/>
+                            <field name="serial_no" placeholder="S/N Numarası" style="border-bottom: 1px solid #ddd;"/>
+                            <field name="barcode" placeholder="Barkod Okutun" style="border-bottom: 1px solid #ddd;"/>
+                            <field name="location" style="border-bottom: 1px solid #ddd;"/>
                         </group>
                     </group>
 
                     <group string="Müşteri Bilgileri">
                         <group>
-                            <field name="musteri_tipi" />
-                            <field name="musteri_id" context="{'default_is_company': musteri_tipi == 'sirket'}"/>
+                            <field name="musteri_tipi" style="border-bottom: 1px solid #ddd;"/>
+                            <field name="musteri_id" context="{'default_is_company': musteri_tipi == 'sirket'}" style="border-bottom: 1px solid #ddd;"/>
                         </group>
                         <group>
-                            <field name="etiket_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create': True}" placeholder="Etiket seçin..."/>
+                            <field name="etiket_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create': True}" placeholder="Etiket seçin..." style="border-bottom: 1px solid #ddd;"/>
                         </group>
                     </group>
 
@@ -72,11 +72,11 @@
                         <page string="Garanti Durumu" name="garanti_page">
                             <group>
                                 <group>
-                                    <field name="garanti_baslama"/>
-                                    <field name="garanti_suresi"/>
+                                    <field name="garanti_baslama" style="border-bottom: 1px solid #ddd;"/>
+                                    <field name="garanti_suresi" style="border-bottom: 1px solid #ddd;"/>
                                 </group>
                                 <group>
-                                    <field name="garanti_bitis" readonly="1"/>
+                                    <field name="garanti_bitis" readonly="1" style="border-bottom: 1px solid #ddd;"/>
                                     <field name="garanti_durumu" invisible="1"/>
                                     <div colspan="2" class="mt-2 mb-2" invisible="garanti_durumu == 'belirsiz'">
                                         <div invisible="garanti_durumu != 'yok'" class="alert alert-danger text-center p-2">

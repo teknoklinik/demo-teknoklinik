@@ -7,8 +7,8 @@
             <form string="Aksesuar">
                 <sheet>
                     <group>
-                        <field name="name" required="1"/>
-                        <field name="active"/>
+                        <field name="name" required="1" style="border-bottom: 1px solid #ddd;"/>
+                        <field name="active" style="border-bottom: 1px solid #ddd;"/>
                     </group>
                 </sheet>
             </form>

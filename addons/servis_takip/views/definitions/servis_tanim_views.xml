@@ -19,9 +19,9 @@
             <form string="Arıza Tanımı">
                 <sheet>
                     <group>
-                        <field name="name"/>
-                        <field name="urun_turu_id"/>
-                        <field name="aktif"/>
+                        <field name="name" style="border-bottom: 1px solid #ddd;"/>
+                        <field name="urun_turu_id" style="border-bottom: 1px solid #ddd;"/>
+                        <field name="aktif" style="border-bottom: 1px solid #ddd;"/>
                     </group>
                 </sheet>
             </form>
@@ -46,8 +46,8 @@
             <form string="İşlem Tipi">
                 <sheet>
                     <group>
-                        <field name="name"/>
-                        <field name="aktif"/>
+                        <field name="name" style="border-bottom: 1px solid #ddd;"/>
+                        <field name="aktif" style="border-bottom: 1px solid #ddd;"/>
                     </group>
                 </sheet>
             </form>
