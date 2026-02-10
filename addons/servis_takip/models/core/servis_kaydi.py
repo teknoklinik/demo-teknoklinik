@@ -320,6 +320,13 @@ class ServisKaydi(models.Model):
                 record.formu_duzenle = True
         return True
     
+    def action_baslat(self):
+        """Sayfayı yenile - durum tablosu görünür olacak"""
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'reload',
+        }
+    
     # --- Compute Metotları ---
     @api.depends('state')
     def _compute_kayit_gorsel_verileri(self):
@@ -465,7 +472,7 @@ class ServisKaydi(models.Model):
         })
 
     def _get_default_durum_satirlari(self):
-        """Yeni kayıt dendiği anda 'Kayıt Yapıldı' satırını ekranda hazır getirir."""
+        """Yeni kayıt dendiği anda 'Kaydı Yapıldı' satırını ekranda hazır getirir."""
         p_id = self.env.user.employee_id.id if self.env.user.employee_id else False        
         return [(0, 0, {
             'state': 'kayit_yapildi', # DURUM modelindeki Selection key'i ile birebir aynı olmalı

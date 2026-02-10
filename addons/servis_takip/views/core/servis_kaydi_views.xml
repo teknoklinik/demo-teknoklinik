@@ -205,7 +205,27 @@
 
                 <notebook>
                     <page string="Durum Geçmişi" name="durum_gecmisi">
-                        <field name="durum_satirlari" widget="one2many" mode="list" context="{'default_servis_kaydi_id': id, 'form_view_ref': 'servis_takip.view_servis_durum_satiri_popup_form'}" readonly="state in ['teslim_edildi', 'iptal']">
+                        <div invisible="id != False" class="alert alert-warning" role="alert">
+                            <p>
+                                <strong>Zorunlu alanları doldurmalısınız:</strong>
+                            </p>
+                            <ul>
+                                <li invisible="musteri_id">Müşteri</li>
+                                <li invisible="urun_turu_id">Ürün Türü</li>
+                                <li invisible="urun_marka_id">Ürün Markası</li>
+                                <li invisible="urun_modeli_id">Ürün Modeli</li>
+                                <li invisible="seri_no">Seri No</li>
+                            </ul>
+                        </div>
+                        <div invisible="id != False or not musteri_id or not urun_turu_id or not urun_marka_id or not urun_modeli_id or not seri_no" class="alert alert-info" role="alert">
+                            <p>
+                                <strong>Tüm zorunlu alanlar dolduruldu. Devam etmek için aşağıdaki butona tıklayınız.</strong>
+                            </p>
+                            <button name="action_baslat" type="object" class="btn btn-primary btn-sm">
+                                Servis Kaydını Başlat
+                            </button>
+                        </div>
+                        <field name="durum_satirlari" widget="one2many" mode="list" context="{'default_servis_kaydi_id': id, 'form_view_ref': 'servis_takip.view_servis_durum_satiri_popup_form'}" readonly="state in ['teslim_edildi', 'iptal']" invisible="id == False">
                             <list default_order="tarih asc" create="1" delete="0">
                                 <field name="state" readonly="state != 'kayit_yapildi'" options="{'no_create': True, 'no_open': True}"/>
                                 <field name="tarih" readonly="1"/>

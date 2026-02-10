@@ -5,7 +5,7 @@ import random
 
 # 1. Kod tarafında korunan sabit durumlar
 SERVIS_DURUM_SELECTION = [
-    ('kayit_yapildi', 'Servis Kayıt Yapıldı'),
+    ('kayit_yapildi', 'Servis Kaydı Yapıldı'),
     ('inceleme', 'İncelemede'),
     ('onay_bekliyor', 'Onay Bekleniyor'),
     ('islemde', 'İşlemde'),
@@ -163,8 +163,8 @@ class ServisDurumSatiri(models.Model):
             if not vals.get('state'):
                 vals['state'] = 'kayit_yapildi'
             
-            # 3. ÖNEMLİ: Eğer açıklama boş geliyorsa (çıkıp girince boş kalmaması için)
-            if not vals.get('aciklama'):
+            # 3. ÖNEMLİ: Eğer açıklama boş geliyorsa VE state 'kayit_yapildi' ise default ata
+            if not vals.get('aciklama') and vals.get('state') == 'kayit_yapildi':
                 vals['aciklama'] = 'Servis kaydı oluşturuldu.'
 
         # Veritabanına yazma işlemi
