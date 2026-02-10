@@ -492,7 +492,7 @@ class ServisKaydi(models.Model):
                 has_any_required = (
                     vals.get('musteri_id') or vals.get('urun_turu_id') or 
                     vals.get('urun_marka_id') or vals.get('urun_modeli_id') or 
-                    vals.get('seri_no')
+                    vals.get('seri_no') or vals.get('ariza_detay_ids')
                 )
                 
                 if has_any_required:
@@ -507,6 +507,8 @@ class ServisKaydi(models.Model):
                         eksikler.append("Ürün Modeli")
                     if not vals.get('seri_no'):
                         eksikler.append("Seri No")
+                    if not vals.get('ariza_detay_ids'):
+                        eksikler.append("En Az Bir Arıza Tipi")
                     
                     if eksikler:
                         from odoo.exceptions import UserError

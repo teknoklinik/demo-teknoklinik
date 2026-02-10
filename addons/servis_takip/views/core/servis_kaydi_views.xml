@@ -215,9 +215,10 @@
                                 <li invisible="urun_marka_id">Ürün Markası</li>
                                 <li invisible="urun_modeli_id">Ürün Modeli</li>
                                 <li invisible="seri_no">Seri No</li>
+                                <li invisible="ariza_detay_ids">En Az Bir Arıza Tipi</li>
                             </ul>
                         </div>
-                        <div invisible="id != False or not musteri_id or not urun_turu_id or not urun_marka_id or not urun_modeli_id or not seri_no" class="alert alert-info" role="alert">
+                        <div invisible="id != False or not musteri_id or not urun_turu_id or not urun_marka_id or not urun_modeli_id or not seri_no or not ariza_detay_ids" class="alert alert-info" role="alert">
                             <p>
                                 <strong>Tüm zorunlu alanlar dolduruldu. Devam etmek için aşağıdaki butona tıklayınız.</strong>
                             </p>
@@ -247,7 +248,7 @@
                         </field>
                     </page>
 
-                    <page string="Yapılan İşlemler" name="yapilan_islemler" invisible="state != 'islemde'">
+                    <page string="Yapılan İşlemler" name="yapilan_islemler">
                         <field name="servis_islem_satirlari" widget="one2many" mode="list" nolabel="1" force_save="1" context="{'default_servis_kaydi_id': id, 'form_view_ref': 'servis_takip.view_servis_islem_satiri_popup_form'}" options="{'reload_on_button': True}">
                             <list default_order="tarih asc" create="1" delete="tablo_duzenle == False">
                                 <field name="tablo_duzenle" invisible="1"/>
