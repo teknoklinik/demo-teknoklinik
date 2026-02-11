@@ -30,3 +30,4 @@ access_servis_rapor_gonder_wizard,servis.rapor.gonder.wizard,model_servis_rapor_
 access_imza_al_wizard,imza.al.wizard,model_imza_al_wizard,base.group_user,1,1,1,1
 access_servis_ozellestirme,servis.ozellestirme,model_servis_ozellestirme,base.group_system,1,1,1,1
 access_servis_ozel_notebook_satiri,servis.ozel.notebook.satiri,model_servis_ozel_notebook_satiri,base.group_user,1,1,1,1
+access_res_config_settings_servis,Servis Ayarları Erişimi,model_res_config_settings,base.group_user,1,1,0,0

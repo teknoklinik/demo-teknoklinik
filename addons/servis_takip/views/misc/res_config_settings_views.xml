@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="base.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
-                <div class="app_settings_block" string="Servis Yönetimi" data-string="Servis Yönetimi" data-key="servis_takip" app="servis_takip">
+                <app string="Servis Yönetimi" data-string="Servis Yönetimi" name="servis_takip">
 
                     <field name="is_advanced_service_features" invisible="1"/>
 
@@ -51,7 +51,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </app>
             </xpath>
         </field>
     </record>
