@@ -45,7 +45,8 @@ teslimatına kadar tüm teknik servis süreçlerini yönetmenizi sağlar.
         # 4. VIEWS - MISC
         'views/misc/urun_popups.xml',
         'views/misc/servis_popups.xml',
-        'views/misc/res_config_settings_views.xml',  # Ayarlar
+        'views/misc/res_config_settings_views.xml',  # Ayarlar - Servis Yönetimi
+        'views/misc/res_config_settings_account_extension.xml',  # Ayarlar - Faturalama Eklentisi
 
         # 5. VIEWS - CORE (Ana işlemler)
         'views/core/servis_actions.xml',
