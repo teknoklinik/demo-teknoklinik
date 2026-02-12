@@ -463,8 +463,9 @@ class ProductTemplate(models.Model):
     # ==================== DÖNÜŞÜM AKSIYON METODLARI ====================
 
     def action_convert_döviz_to_tl(self):
-        """Döviz fiyatlarını TL'ye dönüştür"""
+        """Döviz fiyatlarını TL'ye dönüştür - satış VE maliyet"""
         for record in self:
+            # SATIŞ FİYATLARI DÖNÜŞTÜRME
             if record.custom_list_price and record.custom_currency_id:
                 record.list_price = record._convert_currency(
                     record.custom_list_price,
@@ -472,6 +473,15 @@ class ProductTemplate(models.Model):
                     record._get_company_currency()
                 )
             record._onchange_list_price()
+            
+            # MALİYET FİYATLARI DÖNÜŞTÜRME
+            if record.custom_cost_price and record.custom_cost_currency_id:
+                record.standard_price = record._convert_currency(
+                    record.custom_cost_price,
+                    record.custom_cost_currency_id,
+                    record._get_company_currency()
+                )
+            record._onchange_standard_price()
         
         return {
             'type': 'ir.actions.client',
@@ -485,8 +495,9 @@ class ProductTemplate(models.Model):
         }
 
     def action_convert_tl_to_döviz(self):
-        """TL fiyatlarını dövize dönüştür"""
+        """TL fiyatlarını dövize dönüştür - satış VE maliyet"""
         for record in self:
+            # SATIŞ FİYATLARI DÖNÜŞTÜRME
             if record.list_price and record.custom_currency_id:
                 record.custom_list_price = record._convert_currency(
                     record.list_price,
@@ -494,6 +505,15 @@ class ProductTemplate(models.Model):
                     record.custom_currency_id
                 )
             record._onchange_custom_list_price()
+            
+            # MALİYET FİYATLARI DÖNÜŞTÜRME
+            if record.standard_price and record.custom_cost_currency_id:
+                record.custom_cost_price = record._convert_currency(
+                    record.standard_price,
+                    record._get_company_currency(),
+                    record.custom_cost_currency_id
+                )
+            record._onchange_custom_cost_price()
         
         return {
             'type': 'ir.actions.client',
