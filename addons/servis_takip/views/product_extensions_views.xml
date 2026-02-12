@@ -6,7 +6,12 @@
         <field name="inherit_id" ref="product.product_template_only_form_view"/>
         <field name="arch" type="xml">
 
+            <!-- Native alanları gizle - custom alanlar gösterilecek -->
             <xpath expr="//field[@name='taxes_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='list_price']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
 
@@ -16,26 +21,47 @@
                         <label for="taxes_id" string="Satış Vergileri"/>
                         <field name="taxes_id" widget="many2many_tags" placeholder="Vergi seçiniz" domain="[('type_tax_use', '=', 'sale')]" context="{'default_type_tax_use': 'sale', 'search_default_sale': 1}"/>
                     </div>
+                </div>
+
+                <!-- SATIŞ FİYATLARI GRID -->
+                <div class="row mt-3 mb-3">
                     <div class="col-lg-6">
-                        <label for="price_with_tax" string="Vergiler Dahil Fiyat"/>
-                        <field name="price_with_tax" widget="float" class="oe_inline" style="flex: 1; margin-right: 5px; display: inline-block; width: calc(100% - 30px);"/>
+                        <label for="list_price" string="Satış Fiyatı (TL)"/>
+                        <field name="list_price" widget="float" class="oe_inline"/>
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="price_with_tax" string="Vergiler Dahil Satış Fiyatı (TL)"/>
+                        <field name="price_with_tax" widget="float" class="oe_inline"/>
                     </div>
                 </div>
 
+                <!-- SATIŞ FİYATLARI DÖVIZ -->
                 <div class="row mt-3 mb-3">
-                    <div class="col-lg-6">
-                        <label for="custom_list_price" string="Satış Fiyatı Döviz"/>
-                        <div class="o_row">
-                            <field name="custom_list_price" class="oe_inline" widget="float" placeholder="Döviz" style="flex: 1; margin-right: 10px;"/>
-                            <field name="custom_currency_id" class="oe_inline" options="{'no_create': True, 'no_open': True}" style="flex: 0 0 150px;"/>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <p class="text-muted" style="font-size: 12px; margin-top: 20px;">
-                          💡                            <strong>Otomatik Dönüşüm:</strong> Fiyat girildiğinde kurlar üzerinden otomatik hesaplama yapılır.
-                        </p>
+                    <div class="col-lg-12">
+                        <label for="custom_currency_id" string="Döviz Para Birimi" style="font-weight: bold;"/>
+                        <field name="custom_currency_id" class="oe_inline" options="{'no_create': True, 'no_open': True}" style="max-width: 200px;"/>
                     </div>
                 </div>
+
+                <div class="row mt-2 mb-3">
+                    <div class="col-lg-6">
+                        <label for="custom_list_price" string="Satış Fiyatı Döviz"/>
+                        <field name="custom_list_price" class="oe_inline" widget="float" placeholder="Döviz"/>
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="custom_list_price_with_tax" string="Ver. Dahil Satış Fiyatı Döviz"/>
+                        <field name="custom_list_price_with_tax" class="oe_inline" widget="float" placeholder="Döviz"/>
+                    </div>
+                </div>
+
+                <p class="text-muted" style="font-size: 12px; margin-top: 10px;">
+                    💡 <strong>Otomatik Dönüşüm:</strong> Hangi alanı değiştirirseniz diğerleri otomatik hesaplanır.
+                </p>
+            </xpath>
+
+            <!-- Native maliyet alanını gizle -->
+            <xpath expr="//field[@name='standard_price']" position="attributes">
+                <attribute name="invisible">1</attribute>
             </xpath>
 
             <!-- Maliyet (Satınalma) Vergileri Bölümü -->
@@ -45,26 +71,42 @@
                         <label for="supplier_taxes_id" string="Satınalma Vergileri"/>
                         <field name="supplier_taxes_id" widget="many2many_tags" placeholder="Vergi seçiniz" domain="[('type_tax_use', '=', 'purchase')]" context="{'default_type_tax_use': 'purchase', 'search_default_purchase': 1}"/>
                     </div>
+                </div>
+
+                <!-- MALİYET FİYATLARI GRID -->
+                <div class="row mt-3 mb-3">
                     <div class="col-lg-6">
-                        <label for="cost_with_tax" string="Vergiler Dahil Maliyet"/>
-                        <field name="cost_with_tax" widget="float" class="oe_inline" style="flex: 1; margin-right: 5px; display: inline-block; width: calc(100% - 30px);"/>
+                        <label for="standard_price" string="Maliyet (TL)"/>
+                        <field name="standard_price" widget="float" class="oe_inline"/>
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="cost_with_tax" string="Vergiler Dahil Maliyet (TL)"/>
+                        <field name="cost_with_tax" widget="float" class="oe_inline"/>
                     </div>
                 </div>
 
+                <!-- MALİYET FİYATLARI DÖVIZ -->
                 <div class="row mt-3 mb-3">
-                    <div class="col-lg-6">
-                        <label for="custom_cost_price" string="Maliyet Döviz"/>
-                        <div class="o_row">
-                            <field name="custom_cost_price" class="oe_inline" widget="float" placeholder="Döviz maliyet" style="flex: 1; margin-right: 10px;"/>
-                            <field name="custom_cost_currency_id" class="oe_inline" options="{'no_create': True, 'no_open': True}" style="flex: 0 0 150px;"/>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <p class="text-muted" style="font-size: 12px; margin-top: 20px;">
-                            💡                            <strong>Otomatik Dönüşüm:</strong> Fiyat girildiğinde kurlar üzerinden otomatik hesaplama yapılır.
-                        </p>
+                    <div class="col-lg-12">
+                        <label for="custom_cost_currency_id" string="Döviz Para Birimi" style="font-weight: bold;"/>
+                        <field name="custom_cost_currency_id" class="oe_inline" options="{'no_create': True, 'no_open': True}" style="max-width: 200px;"/>
                     </div>
                 </div>
+
+                <div class="row mt-2 mb-3">
+                    <div class="col-lg-6">
+                        <label for="custom_cost_price" string="Maliyet Döviz"/>
+                        <field name="custom_cost_price" class="oe_inline" widget="float" placeholder="Döviz"/>
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="custom_cost_price_with_tax" string="Ver. Dahil Maliyet Döviz"/>
+                        <field name="custom_cost_price_with_tax" class="oe_inline" widget="float" placeholder="Döviz"/>
+                    </div>
+                </div>
+
+                <p class="text-muted" style="font-size: 12px; margin-top: 10px;">
+                    💡 <strong>Otomatik Dönüşüm:</strong> Hangi alanı değiştirirseniz diğerleri otomatik hesaplanır.
+                </p>
             </xpath>
         </field>
     </record>
