@@ -250,13 +250,12 @@
 
                     <page string="Yapılan İşlemler" name="yapilan_islemler">
                         <field name="servis_islem_satirlari" widget="one2many" mode="list" nolabel="1" force_save="1" context="{'default_servis_kaydi_id': id, 'form_view_ref': 'servis_takip.view_servis_islem_satiri_popup_form'}" options="{'reload_on_button': True}">
-                            <list default_order="tarih asc" create="1" delete="tablo_duzenle == False">
-                                <field name="tablo_duzenle" invisible="1"/>
-                                <field name="islem_tipi_id" options="{'no_create': True}" readonly="tablo_duzenle == False"/>
+                            <list default_order="tarih asc" create="1" delete="1">
+                                <field name="islem_tipi_id" options="{'no_create': True}" readonly="1"/>
                                 <field name="tarih" readonly="1" force_save="1"/>
                                 <field name="bitis_tarihi" readonly="1" force_save="1"/>
                                 <field name="gecen_sure" readonly="1" force_save="1"/>
-                                <field name="aciklama" readonly="tablo_duzenle == False"/>
+                                <field name="aciklama" readonly="1"/>
                                 <field name="personel_id" options="{'no_create': True, 'no_open': True}" readonly="1" widget="many2one_avatar_user"/>
                             </list>
                         </field>

@@ -1,22 +1,31 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_servis_kaydi_user,Servis Kaydı Kullanıcı Erişimi,model_servis_kaydi,base.group_user,1,1,1,1
 access_servis_kaydi_ariza_detay,Servis Kaydı Arıza Detay Kullanıcı Erişimi,model_servis_kaydi_ariza_detay,base.group_user,1,1,1,1
-access_servis_ariza_tanimi_user,Servis Arıza Tanımı Kullanıcı Erişimi,model_servis_ariza_tanimi,base.group_user,1,1,1,0
+access_servis_ariza_tanimi_system,Servis Arıza Tanımı Yönetici,model_servis_ariza_tanimi,base.group_system,1,1,1,1
+access_servis_ariza_tanimi_user,Servis Arıza Tanımı Kullanıcı Erişimi,model_servis_ariza_tanimi,base.group_user,1,0,0,0
 access_servis_kaydi_teknik_rapor_satir,Servis Teknik Rapor Satırı,model_servis_kaydi_teknik_rapor_satir,base.group_user,1,1,1,1
 access_servis_durum_satiri_user,Servis Durum Geçmişi Satırı,model_servis_durum_satiri,base.group_user,1,1,1,0
 access_servis_kaydi_notlar,Servis Kaydı Notlar Erişimi,model_servis_kaydi_notlar,base.group_user,1,1,1,1
 access_servis_kaydi_dokuman,Servis Kaydı Doküman Yükle Erişimi,model_servis_kaydi_dokuman,base.group_user,1,1,1,1
 access_servis_kaydi_aksesuar,Servis Kaydı Aksesuarları Erişimi,model_servis_kaydi_aksesuar,base.group_user,1,1,1,1
-access_servis_aksesuar,Servis Aksesuarları Erişimi,model_servis_aksesuar,base.group_user,1,1,1,1
+access_servis_aksesuar_system,Servis Aksesuarları Yönetici,model_servis_aksesuar,base.group_system,1,1,1,1
+access_servis_aksesuar,Servis Aksesuarları Erişimi,model_servis_aksesuar,base.group_user,1,0,0,0
 access_servis_kaydi_deger_okuma,Servis Kaydı Değer Okumaları Erişimi,model_servis_kaydi_deger_okuma,base.group_user,1,1,1,1
-access_deger_okuma_tanimi,Değer Okuma Tanımı Erişimi,model_deger_okuma_tanimi,base.group_user,1,1,1,1
-access_servis_islem_tipi_user,Servis İşlem Tipi Kullanıcı Erişimi,model_servis_islem_tipi,base.group_user,1,1,1,1
+access_deger_okuma_tanimi_system,Değer Okuma Tanımı Yönetici,model_deger_okuma_tanimi,base.group_system,1,1,1,1
+access_deger_okuma_tanimi,Değer Okuma Tanımı Erişimi,model_deger_okuma_tanimi,base.group_user,1,0,0,0
+access_servis_islem_tipi_system,Servis İşlem Tipi Yönetici,model_servis_islem_tipi,base.group_system,1,1,1,1
+access_servis_islem_tipi_user,Servis İşlem Tipi Kullanıcı Erişimi,model_servis_islem_tipi,base.group_user,1,0,0,0
 access_servis_islem_satiri_user,Servis İşlem Satırı Kullanıcı Erişimi,model_servis_islem_satiri,base.group_user,1,1,1,1
-access_servis_etiket_user,Servis Etiket Erişimi,model_servis_etiket,base.group_user,1,1,1,1
-access_servis_durum_tanimi_user,Servis Durum Tanımı Erişimi,model_servis_durum_tanimi,base.group_user,1,1,1,1
-access_urun_turu,urun.turu,model_urun_turu,base.group_user,1,1,1,1
-access_urun_markasi,urun.markasi,model_urun_markasi,base.group_user,1,1,1,1
-access_urun_modeli,urun.modeli,model_urun_modeli,base.group_user,1,1,1,1
+access_servis_etiket_system,Servis Etiket Yönetici,model_servis_etiket,base.group_system,1,1,1,1
+access_servis_etiket_user,Servis Etiket Erişimi,model_servis_etiket,base.group_user,1,0,0,0
+access_servis_durum_tanimi_system,Servis Durum Tanımı Yönetici,model_servis_durum_tanimi,base.group_system,1,1,1,1
+access_servis_durum_tanimi_user,Servis Durum Tanımı Erişimi,model_servis_durum_tanimi,base.group_user,1,0,0,0
+access_urun_turu_system,urun.turu,model_urun_turu,base.group_system,1,1,1,1
+access_urun_turu,urun.turu,model_urun_turu,base.group_user,1,0,0,0
+access_urun_markasi_system,urun.markasi,model_urun_markasi,base.group_system,1,1,1,1
+access_urun_markasi,urun.markasi,model_urun_markasi,base.group_user,1,0,0,0
+access_urun_modeli_system,urun.modeli,model_urun_modeli,base.group_system,1,1,1,1
+access_urun_modeli,urun.modeli,model_urun_modeli,base.group_user,1,0,0,0
 access_servis_urun,servis.urun,model_servis_urun,base.group_user,1,1,1,1
 access_urun_notu,urun.notu,model_urun_notu,base.group_user,1,1,1,1
 access_urun_dokuman,urun.dokuman,model_urun_dokuman,base.group_user,1,1,1,1
@@ -28,6 +37,7 @@ access_servis_urun_aktar_wizard,servis.urun.aktar.wizard,model_servis_urun_aktar
 access_servis_urun_aktar_wizard_line,servis.urun.aktar.wizard.line,model_servis_urun_aktar_wizard_line,base.group_user,1,1,1,1
 access_servis_rapor_gonder_wizard,servis.rapor.gonder.wizard,model_servis_rapor_gonder_wizard,base.group_user,1,1,1,1
 access_imza_al_wizard,imza.al.wizard,model_imza_al_wizard,base.group_user,1,1,1,1
-access_servis_ozellestirme,servis.ozellestirme,model_servis_ozellestirme,base.group_system,1,1,1,1
+access_servis_ozellestirme_system,servis.ozellestirme,model_servis_ozellestirme,base.group_system,1,1,1,1
+access_servis_ozellestirme_user,servis.ozellestirme,model_servis_ozellestirme,base.group_user,1,1,1,1
 access_servis_ozel_notebook_satiri,servis.ozel.notebook.satiri,model_servis_ozel_notebook_satiri,base.group_user,1,1,1,1
 access_res_config_settings_servis,Servis Ayarları Erişimi,model_res_config_settings,base.group_user,1,1,0,0
