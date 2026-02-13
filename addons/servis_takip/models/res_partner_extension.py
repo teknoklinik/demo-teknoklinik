@@ -32,28 +32,35 @@ class ResPartner(models.Model):
             all_partners = self.search([('cari_kod', '!=', False)])
             
             if all_partners:
-                # Son kontağı bul (cari_kod'a göre ters sırala)
-                sorted_partners = sorted(all_partners, key=lambda x: x.cari_kod or '', reverse=True)
-                last_partner = sorted_partners[0]
-                last_code = last_partner.cari_kod.strip() if last_partner.cari_kod else None
+                # Son kontağı bul (cari_kod'a göre ters sırala - integer sort)
+                # Eski (8 hane) ve yeni (9 hane) format'ları both support etmek için
+                valid_partners = []
+                for partner in all_partners:
+                    code = partner.cari_kod.strip() if partner.cari_kod else None
+                    if code and len(code) in [8, 9] and code[:4].isdigit() and code[4:].isdigit():
+                        valid_partners.append((int(code), partner))
                 
-                if last_code and len(last_code) >= 8 and last_code[:4].isdigit() and last_code[4:].isdigit():
+                if valid_partners:
+                    # Integer olarak sort et (string sort karşılaştırmasından ziyade)
+                    valid_partners.sort(key=lambda x: x[0], reverse=True)
+                    last_code_int = valid_partners[0][0]
+                    last_code = str(last_code_int)
                     last_year = int(last_code[:4])
                     last_sequence = int(last_code[4:])
                     
                     # Eğer son kayıt bu yılsa +1 yap
                     if last_year == current_year:
                         next_sequence = last_sequence + 1
-                        return f"{current_year}{next_sequence:04d}"
+                        return f"{current_year}{next_sequence:05d}"
                     # Eğer geçmiş yılussa bu yıldan başla
                     else:
-                        return f"{current_year}0001"
+                        return f"{current_year}00001"
                 else:
                     # Format hata, yeni formatla başla
-                    return f"{current_year}0001"
+                    return f"{current_year}00001"
             else:
                 # Hiç cari kod yoksa bu yıldan başla
-                return f"{current_year}0001"
+                return f"{current_year}00001"
                 
         except Exception as e:
             _logger.warning(f"Cari kod oluşturma hatası: {str(e)}")
