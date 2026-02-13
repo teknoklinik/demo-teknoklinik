@@ -159,14 +159,43 @@ class ProductTemplate(models.Model):
             return amount
 
     def _remove_tax_from_amount(self, amount_with_tax, taxes):
-        """Vergiler dahil tutardan vergiyi çıkar ve vergisiz tutarı döndür"""
+        """Vergiler dahil tutardan vergiyi çıkar ve vergisiz tutarı döndür
+        compute_all() kullanarak Odoo'nun vergi motoruyla tutarlı sonuç al"""
         if not amount_with_tax or not taxes:
             return amount_with_tax
         try:
+            # Iterative approach: tahmin et, hesapla, karşılaştır
+            # Başlangıç tahmini: basit rate hesap
             total_tax_rate = sum(t.amount for t in taxes) / 100
-            if total_tax_rate > 0:
-                return amount_with_tax / (1 + total_tax_rate)
-            return amount_with_tax
+            if total_tax_rate <= 0:
+                return amount_with_tax
+            
+            # İlk tahmin
+            estimated_base = amount_with_tax / (1 + total_tax_rate)
+            
+            # Tahminle compute_all() ile kontrol et
+            computed = taxes.compute_all(estimated_base, product=self)
+            total_included = computed['total_included']
+            
+            # Eğer hesaplanan total_included, verilen amount_with_tax'e yakın ise okey
+            if abs(total_included - amount_with_tax) < 0.01:
+                return round(estimated_base, 2)
+            
+            # Newton-Raphson yöntemi: daha kesin bulma
+            base = estimated_base
+            for _ in range(5):  # En fazla 5 iterasyon
+                computed = taxes.compute_all(base, product=self)
+                total_included = computed['total_included']
+                
+                if abs(total_included - amount_with_tax) < 0.01:
+                    return round(base, 2)
+                
+                # Düzeltme: oran hesapla
+                if total_included > 0:
+                    ratio = amount_with_tax / total_included
+                    base = base * ratio
+            
+            return round(base, 2)
         except Exception:
             return amount_with_tax
 
@@ -238,6 +267,9 @@ class ProductTemplate(models.Model):
     @api.onchange('list_price', 'taxes_id')
     def _onchange_list_price(self):
         """Satış fiyatı değişince: vergiler dahil satış fiyatını ve dövizleri güncelle"""
+        # Döngü önlemek: price_with_tax onchange'i tetiklemeden context flag set et
+        self = self.with_context(skip_price_sync=True)
+        
         if self.list_price and self.custom_currency_id:
             self.custom_list_price = self._convert_currency(
                 self.list_price,
@@ -260,6 +292,9 @@ class ProductTemplate(models.Model):
     @api.onchange('price_with_tax', 'taxes_id')
     def _onchange_price_with_tax(self):
         """Vergiler dahil satış fiyatı değişince: satış fiyatını ve dövizleri güncelle"""
+        # Döngü önlemek: list_price onchange'i tetiklemeden context flag set et
+        self = self.with_context(skip_price_sync=True)
+        
         self.list_price = self._remove_tax_from_amount(
             self.price_with_tax,
             self.taxes_id
