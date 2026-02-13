@@ -43,7 +43,7 @@ class ProductTemplate(models.Model):
     
     price_with_tax = fields.Float(
         string='Vergiler Dahil Satış Fiyatı (TL)',
-        digits='Product Price',
+        digits=(12, 0),  # No decimal places
         help='Vergiler dahil toplam satış fiyatı'
     )
 
@@ -73,7 +73,7 @@ class ProductTemplate(models.Model):
 
     custom_list_price_with_tax = fields.Float(
         string="Vergiler Dahil Satış Fiyatı Döviz",
-        digits='Product Price',
+        digits=(12, 0),  # No decimal places
         help="Seçilen döviz cinsinden vergiler dahil satış fiyatı"
     )
 
@@ -86,7 +86,7 @@ class ProductTemplate(models.Model):
 
     cost_with_tax = fields.Float(
         string='Vergiler Dahil Maliyet (TL)',
-        digits='Product Price',
+        digits=(12, 0),  # No decimal places
         compute='_compute_cost_with_tax',
         inverse='_inverse_cost_with_tax',
         store=True,
@@ -113,7 +113,7 @@ class ProductTemplate(models.Model):
 
     custom_cost_price_with_tax = fields.Float(
         string="Vergiler Dahil Maliyet Döviz",
-        digits='Product Price',
+        digits=(12, 0),  # No decimal places
         help="Seçilen döviz cinsinden vergiler dahil maliyet"
     )
 
@@ -139,7 +139,8 @@ class ProductTemplate(models.Model):
                 self.company_id or self.env.company,
                 date.today()
             )
-            return result
+            # Round to whole number
+            return round(result, 0)
         except Exception as e:
             _logger.warning(f"Para birimi dönüşümü başarısız: {str(e)}")
             return 0.0
@@ -152,7 +153,8 @@ class ProductTemplate(models.Model):
             tax_amount = 0.0
             for tax in taxes:
                 tax_amount += tax.compute_all(amount, product=self)['total_included'] - amount
-            return amount + tax_amount
+            # Round to whole number (no decimals)
+            return round(amount + tax_amount, 0)
         except Exception:
             return amount
 
@@ -192,7 +194,7 @@ class ProductTemplate(models.Model):
         for record in self:
             company_currency = record._get_company_currency()
             if record.price_with_tax:
-                record.price_with_tax_display = f"{record.price_with_tax:.2f} {company_currency.symbol}"
+                record.price_with_tax_display = f"{record.price_with_tax:.0f} {company_currency.symbol}"
             else:
                 record.price_with_tax_display = ""
 
@@ -201,7 +203,7 @@ class ProductTemplate(models.Model):
         for record in self:
             company_currency = record._get_company_currency()
             if record.cost_with_tax:
-                record.cost_with_tax_display = f"{record.cost_with_tax:.2f} {company_currency.symbol}"
+                record.cost_with_tax_display = f"{record.cost_with_tax:.0f} {company_currency.symbol}"
             else:
                 record.cost_with_tax_display = ""
 
@@ -426,19 +428,20 @@ class ProductTemplate(models.Model):
     # ==================== CREATE / WRITE METODLAR ====================
 
     @api.model
-    def create(self, vals):
+    def create(self, vals_list):
         """Ürün oluştururken default vergileri ayarla"""
-        if 'taxes_id' not in vals or not vals.get('taxes_id'):
-            default_taxes = self._get_default_sales_tax_20_percent()
-            if default_taxes:
-                vals['taxes_id'] = [(6, 0, default_taxes)]
+        for vals in vals_list:
+            if 'taxes_id' not in vals or not vals.get('taxes_id'):
+                default_taxes = self._get_default_sales_tax_20_percent()
+                if default_taxes:
+                    vals['taxes_id'] = [(6, 0, default_taxes)]
+            
+            if 'supplier_taxes_id' not in vals or not vals.get('supplier_taxes_id'):
+                default_taxes = self._get_default_tax_20_percent()
+                if default_taxes:
+                    vals['supplier_taxes_id'] = [(6, 0, default_taxes)]
         
-        if 'supplier_taxes_id' not in vals or not vals.get('supplier_taxes_id'):
-            default_taxes = self._get_default_tax_20_percent()
-            if default_taxes:
-                vals['supplier_taxes_id'] = [(6, 0, default_taxes)]
-        
-        return super().create(vals)
+        return super().create(vals_list)
 
     def write(self, vals):
         """Ürün güncellenirken default vergileri ayarla"""
