@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Kontakt form view'inde cari kod alanını ekle -->
+    <record id="res_partner_view_form_inherit_cari_kod" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.cari.kod</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="cari_kod" 
+                    string="Cari Kod"
+                    placeholder="Otomatik doldurulur (YYYYNNNN)"
+                    class="oe_inline"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Kontakt list view'inde cari kod sütununu ekle -->
+    <record id="res_partner_view_list_inherit_cari_kod" model="ir.ui.view">
+        <field name="name">res.partner.list.inherit.cari.kod</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='complete_name']" position="after">
+                <field name="cari_kod" string="Cari Kod"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,6 +1,6 @@
 {
     'name': 'Servis Yönetimi',
-    'version': '19.0.1.0.3',
+    'version': '19.0.1.0.4',
     'summary': 'Müşteriye ait ürünlerin teknik servis ve onarım süreçlerini takip eder.',
     'description': """
 Servis Yönetimi Modülü
@@ -41,6 +41,9 @@ teslimatına kadar tüm teknik servis süreçlerini yönetmenizi sağlar.
 
         # 3.5. VIEWS - PRODUCT EXTENSIONS (Dövizli Fiyat)
         'views/product_extensions_views.xml',
+
+        # 3.6. VIEWS - RES.PARTNER EXTENSIONS (Cari Kod)
+        'views/res_partner_views.xml',
 
         # 4. VIEWS - MISC
         'views/misc/urun_popups.xml',
