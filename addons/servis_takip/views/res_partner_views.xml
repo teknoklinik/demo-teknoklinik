@@ -26,4 +26,16 @@
             </xpath>
         </field>
     </record>
+
+    <!-- Kontaklar arama view'inde cari kod'u aranabilir yap -->
+    <record id="res_partner_view_search_inherit_cari_kod" model="ir.ui.view">
+        <field name="name">res.partner.search.inherit.cari.kod</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[last()]" position="after">
+                <field name="cari_kod" filter_domain="[('cari_kod', 'ilike', self)]"/>
+            </xpath>
+        </field>
+    </record>
 </odoo>
