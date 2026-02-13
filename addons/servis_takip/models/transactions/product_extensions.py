@@ -43,7 +43,7 @@ class ProductTemplate(models.Model):
     
     price_with_tax = fields.Float(
         string='Vergiler Dahil Satış Fiyatı (TL)',
-        digits=(12, 0),  # No decimal places
+        digits=(12, 0),  # Tam sayıya yuvarla (virgülsüz)
         help='Vergiler dahil toplam satış fiyatı'
     )
 
@@ -73,7 +73,7 @@ class ProductTemplate(models.Model):
 
     custom_list_price_with_tax = fields.Float(
         string="Vergiler Dahil Satış Fiyatı Döviz",
-        digits=(12, 0),  # No decimal places
+        digits='Product Price',
         help="Seçilen döviz cinsinden vergiler dahil satış fiyatı"
     )
 
@@ -86,7 +86,7 @@ class ProductTemplate(models.Model):
 
     cost_with_tax = fields.Float(
         string='Vergiler Dahil Maliyet (TL)',
-        digits=(12, 0),  # No decimal places
+        digits=(12, 0),  # Tam sayıya yuvarla (virgülsüz)
         compute='_compute_cost_with_tax',
         inverse='_inverse_cost_with_tax',
         store=True,
@@ -113,7 +113,7 @@ class ProductTemplate(models.Model):
 
     custom_cost_price_with_tax = fields.Float(
         string="Vergiler Dahil Maliyet Döviz",
-        digits=(12, 0),  # No decimal places
+        digits='Product Price',
         help="Seçilen döviz cinsinden vergiler dahil maliyet"
     )
 
@@ -129,7 +129,8 @@ class ProductTemplate(models.Model):
         return self.company_id.currency_id or self.env.company.currency_id
 
     def _convert_currency(self, amount, from_currency, to_currency):
-        """Para birimi dönüşümü yap - hata durumunda 0 döndür"""
+        """Para birimi dönüşümü yap - hata durumunda 0 döndür
+        NOT: Display'de yuvarlama yapılır, veri tabanında kesin tutulur"""
         if not amount or not from_currency or not to_currency:
             return 0.0
         try:
@@ -139,22 +140,21 @@ class ProductTemplate(models.Model):
                 self.company_id or self.env.company,
                 date.today()
             )
-            # Round to whole number
-            return round(result, 0)
+            return result
         except Exception as e:
             _logger.warning(f"Para birimi dönüşümü başarısız: {str(e)}")
             return 0.0
 
     def _calculate_tax_on_amount(self, amount, taxes):
-        """Vergiyi hesapla ve vergiler dahil tutarı döndür"""
+        """Vergiyi hesapla ve vergiler dahil tutarı döndür
+        NOT: Display'de yuvarlama yapılır, veri tabanında kesin tutulur"""
         if not amount or not taxes:
             return amount
         try:
             tax_amount = 0.0
             for tax in taxes:
                 tax_amount += tax.compute_all(amount, product=self)['total_included'] - amount
-            # Round to whole number (no decimals)
-            return round(amount + tax_amount, 0)
+            return amount + tax_amount
         except Exception:
             return amount
 
@@ -277,10 +277,12 @@ class ProductTemplate(models.Model):
                 self.custom_currency_id
             )
         
-        self.price_with_tax = self._calculate_tax_on_amount(
+        # SADECE TL PARA BİRİMİNDE YUVARLA
+        price_with_tax_calculated = self._calculate_tax_on_amount(
             self.list_price,
             self.taxes_id
         )
+        self.price_with_tax = round(price_with_tax_calculated, 0)
         
         if self.price_with_tax and self.custom_currency_id:
             self.custom_list_price_with_tax = self._convert_currency(
@@ -328,10 +330,12 @@ class ProductTemplate(models.Model):
             company_currency
         )
         
-        self.price_with_tax = self._calculate_tax_on_amount(
+        # SADECE TL PARA BİRİMİNDE YUVARLA
+        price_with_tax_calculated = self._calculate_tax_on_amount(
             self.list_price,
             self.taxes_id
         )
+        self.price_with_tax = round(price_with_tax_calculated, 0)
         
         self.custom_list_price_with_tax = self._convert_currency(
             self.price_with_tax,
@@ -347,11 +351,13 @@ class ProductTemplate(models.Model):
         
         company_currency = self._get_company_currency()
         
-        self.price_with_tax = self._convert_currency(
+        # Dövizden TL'ye çevir ve SADECE TL'de yuvarlama yap
+        price_with_tax_converted = self._convert_currency(
             self.custom_list_price_with_tax,
             self.custom_currency_id,
             company_currency
         )
+        self.price_with_tax = round(price_with_tax_converted, 0)
         
         self.list_price = self._remove_tax_from_amount(
             self.price_with_tax,
@@ -376,10 +382,12 @@ class ProductTemplate(models.Model):
                 self.custom_cost_currency_id
             )
         
-        self.cost_with_tax = self._calculate_tax_on_amount(
+        # SADECE TL PARA BİRİMİNDE YUVARLA
+        cost_with_tax_calculated = self._calculate_tax_on_amount(
             self.standard_price,
             self.supplier_taxes_id
         )
+        self.cost_with_tax = round(cost_with_tax_calculated, 0)
         
         if self.cost_with_tax and self.custom_cost_currency_id:
             self.custom_cost_price_with_tax = self._convert_currency(
@@ -424,10 +432,12 @@ class ProductTemplate(models.Model):
             company_currency
         )
         
-        self.cost_with_tax = self._calculate_tax_on_amount(
+        # SADECE TL PARA BİRİMİNDE YUVARLA
+        cost_with_tax_calculated = self._calculate_tax_on_amount(
             self.standard_price,
             self.supplier_taxes_id
         )
+        self.cost_with_tax = round(cost_with_tax_calculated, 0)
         
         self.custom_cost_price_with_tax = self._convert_currency(
             self.cost_with_tax,
@@ -443,11 +453,13 @@ class ProductTemplate(models.Model):
         
         company_currency = self._get_company_currency()
         
-        self.cost_with_tax = self._convert_currency(
+        # Dövizden TL'ye çevir ve SADECE TL'de yuvarlama yap
+        cost_with_tax_converted = self._convert_currency(
             self.custom_cost_price_with_tax,
             self.custom_cost_currency_id,
             company_currency
         )
+        self.cost_with_tax = round(cost_with_tax_converted, 0)
         
         self.standard_price = self._remove_tax_from_amount(
             self.cost_with_tax,
