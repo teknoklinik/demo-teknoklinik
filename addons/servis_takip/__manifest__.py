@@ -31,7 +31,7 @@ teslimatına kadar tüm teknik servis süreçlerini yönetmenizi sağlar.
         
         # 2. VERİ ve SEQUENCE (Kayıt numaraları için)
         'data/sequences/servis_kaydi_sequence.xml',
-        'data/sequences/rapor_sequence.xml',
+        'data/sequences/formu_sequence.xml',
         
         # 3. VIEWS - TANIMLAR (Definitions)
         'views/definitions/urun_views.xml',
@@ -57,14 +57,14 @@ teslimatına kadar tüm teknik servis süreçlerini yönetmenizi sağlar.
         'views/core/servis_kaydi_views.xml',
         'views/core/servis_takip_views.xml',
 
-        # 6. VIEWS - RAPORLAR
+        # 6. VIEWS - FORMLAR
         'views/reports/kabul_rapor_views.xml',
         'views/reports/teslim_rapor_views.xml',
-        'views/reports/barkod_etiketi_views.xml',  # Barkod Etiketi Raporu
+        'views/reports/barkod_etiketi_views.xml',  # Barkod Etiketi Formu
 
         # 7. VIEWS - WIZARD'LAR
         'views/wizards/servis_urun_aktar_views.xml',
-        'views/wizards/servis_rapor_gonder_wizard_views.xml',
+        'views/wizards/servis_formu_gonder_wizard_views.xml',
         'views/wizards/servis_ozellestirme_views.xml',  # Özelleştirme
         
         # 8. MENÜLER (En son yüklenmeli çünkü tüm Action ID'leri yukarıda tanımlandı)

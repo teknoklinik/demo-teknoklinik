@@ -64,7 +64,7 @@ class TeslimFormu(models.Model):
     
 class TeslimFormuLine(models.Model):
     _name = 'teslim.formu.line'
-    _description = 'Teslim Formu Satırları'
+    _description = 'Teslim Rapor Satırları'
 
     formu_id = fields.Many2one('teslim.formu', string='Teslim Formu', ondelete='cascade')
     product_id = fields.Many2one('product.product', string='Ürün/Hizmet', required=True)

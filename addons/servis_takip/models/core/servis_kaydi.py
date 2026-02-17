@@ -663,73 +663,73 @@ class ServisKaydi(models.Model):
     def action_tabloyu_ac(self): self.tablo_duzenle = True
     def action_tabloyu_kilitle(self): self.tablo_duzenle = False
 
-    # --- Kabul Raporu için Bağlantı ---
+    # --- Kabul Formu için Bağlantı ---
 
-    def action_kabul_raporu_pdf(self):
+    def action_kabul_formu_pdf(self):
         self.ensure_one()
 
-        # Raporun var olup olmadığını kontrol et
-        rapor = self.env['kabul.rapor'].search([('servis_id', '=', self.id)], limit=1)
+        # Formun var olup olmadığını kontrol et
+        formu = self.env['kabul.formu'].search([('servis_id', '=', self.id)], limit=1)
         
-        # Rapor yoksa oluştur
-        if not rapor:
-            kabul_no = self.env['ir.sequence'].next_by_code('kabul.rapor.sequence') or f'KBL-{self.id}'
-            rapor = self.env['kabul.rapor'].create({
+        # Form yoksa oluştur
+        if not formu:
+            kabul_no = self.env['ir.sequence'].next_by_code('kabul.formu.sequence') or f'KBL-{self.id}'
+            formu = self.env['kabul.formu'].create({
                 'name': kabul_no,
                 'servis_id': self.id,
                 'musteri_id': self.musteri_id.id if self.musteri_id else False,
             })
         
-        # Raporu yeni sekmede aç
+        # Formu yeni sekmede aç
         return {
             'type': 'ir.actions.act_url',
-            'url': f'/report/pdf/servis_takip.report_kabul_raporu_template/{self.id}',
+            'url': f'/report/pdf/servis_takip.report_kabul_formu_template/{self.id}',
             'target': 'new',
         }
 
-    # --- Teslim Raporu için Bağlantı ---
+    # --- Teslim Formu için Bağlantı ---
 
-    def action_teslim_raporu_pdf(self):
+    def action_teslim_formu_pdf(self):
         self.ensure_one()
 
         # --- 2. YÖNTEM KONTROLÜ BAŞLANGIÇ ---
-        # Eğer 'Parça ve Hizmetleri Rapora Ekle' seçili DEĞİLSE
+        # Eğer 'Parça ve Hizmetleri Forma Ekle' seçili DEĞİLSE
         if not self.rapor_parca_hizmet_ekle:
             # Teknisyen notu boş mu veya sadece boşluk mu?
             if not self.teknisyen_notu or not self.teknisyen_notu.strip():
                 raise UserError(
-                    "Teslim Raporu Oluşturulamadı!\n\n"
-                    "Parça ve Hizmetleri Rapora Ekle seçeneği işaretli değil. "
+                    "Teslim Formu Oluşturulamadı!\n\n"
+                    "Parça ve Hizmetleri Forma Ekle seçeneği işaretli değil. "
                     "Bu durumda müşteriye yapılan işlemler hakkında bilgi vermek için "
                     "'Teknisyen Notu' alanını doldurmanız gerekmektedir."
                 )
         # --- 2. YÖNTEM KONTROLÜ BİTİŞ ---
 
-        # Raporun var olup olmadığını kontrol et
-        rapor = self.env['teslim.rapor'].search([('servis_id', '=', self.id)], limit=1)
+        # Formun var olup olmadığını kontrol et
+        formu = self.env['teslim.formu'].search([('servis_id', '=', self.id)], limit=1)
         
-        # Rapor yoksa oluştur
-        if not rapor:
-            teslim_no = self.env['ir.sequence'].next_by_code('teslim.rapor.sequence') or f'TSL-{self.id}'
-            rapor = self.env['teslim.rapor'].create({
+        # Form yoksa oluştur
+        if not formu:
+            teslim_no = self.env['ir.sequence'].next_by_code('teslim.formu.sequence') or f'TSL-{self.id}'
+            formu = self.env['teslim.formu'].create({
                 'name': teslim_no,
                 'servis_id': self.id,
                 'musteri_id': self.musteri_id.id if self.musteri_id else False,
             })
         
-        # Raporu yeni sekmede aç
+        # Formu yeni sekmede aç
         return {
             'type': 'ir.actions.act_url',
-            'url': f'/report/pdf/servis_takip.report_teslim_raporu_template/{self.id}',
+            'url': f'/report/pdf/servis_takip.report_teslim_formu_template/{self.id}',
             'target': 'new',
         }
     
-    def action_open_rapor_gonder_wizard(self):
-        """Rapor gönderme wizard'ını aç"""
+    def action_open_formu_gonder_wizard(self):
+        """Form gönderme wizard'ını aç"""
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
-            'res_model': 'servis.rapor.gonder.wizard',
+            'res_model': 'servis.formu.gonder.wizard',
             'view_mode': 'form',
             'view_type': 'form',
             'target': 'new',
@@ -997,17 +997,17 @@ class ServisKaydi(models.Model):
         }
 
     def action_imza_al_kabul(self):
-        """Kabul raporu için müşteri imzası al"""
+        """Kabul formu için müşteri imzası al"""
         self.ensure_one()
         
-        # Kabul raporunun var olup olmadığını kontrol et, yoksa oluştur
-        kabul_rapor = self.env['kabul.rapor'].search([
+        # Kabul formunun var olup olmadığını kontrol et, yoksa oluştur
+        kabul_formu = self.env['kabul.formu'].search([
             ('servis_id', '=', self.id)
         ], limit=1)
         
-        if not kabul_rapor:
-            kabul_no = self.env['ir.sequence'].next_by_code('kabul.rapor.sequence') or f'KBL-{self.id}'
-            kabul_rapor = self.env['kabul.rapor'].create({
+        if not kabul_formu:
+            kabul_no = self.env['ir.sequence'].next_by_code('kabul.formu.sequence') or f'KBL-{self.id}'
+            kabul_formu = self.env['kabul.formu'].create({
                 'name': kabul_no,
                 'servis_id': self.id,
                 'musteri_id': self.musteri_id.id if self.musteri_id else False,
@@ -1015,28 +1015,28 @@ class ServisKaydi(models.Model):
         
         return {
             'type': 'ir.actions.act_window',
-            'name': 'Müşteri İmzası - Kabul Raporu',
+            'name': 'Müşteri İmzası - Kabul Formu',
             'res_model': 'imza.al.wizard',
             'view_mode': 'form',
             'target': 'new',
             'context': {
                 'default_servis_kaydi_id': self.id,
-                'default_rapor_tipi': 'kabul',
+                'default_formu_tipi': 'kabul',
             }
         }
 
     def action_imza_al_teslim(self):
-        """Teslim raporu için müşteri imzası al"""
+        """Teslim formu için müşteri imzası al"""
         self.ensure_one()
         
-        # Teslim raporunun var olup olmadığını kontrol et, yoksa oluştur
-        teslim_rapor = self.env['teslim.rapor'].search([
+        # Teslim formunun var olup olmadığını kontrol et, yoksa oluştur
+        teslim_formu = self.env['teslim.formu'].search([
             ('servis_id', '=', self.id)
         ], limit=1)
         
-        if not teslim_rapor:
-            teslim_no = self.env['ir.sequence'].next_by_code('teslim.rapor.sequence') or f'TSL-{self.id}'
-            teslim_rapor = self.env['teslim.rapor'].create({
+        if not teslim_formu:
+            teslim_no = self.env['ir.sequence'].next_by_code('teslim.formu.sequence') or f'TSL-{self.id}'
+            teslim_formu = self.env['teslim.formu'].create({
                 'name': teslim_no,
                 'servis_id': self.id,
                 'musteri_id': self.musteri_id.id if self.musteri_id else False,
@@ -1044,13 +1044,13 @@ class ServisKaydi(models.Model):
         
         return {
             'type': 'ir.actions.act_window',
-            'name': 'Müşteri İmzası - Teslim Raporu',
+            'name': 'Müşteri İmzası - Teslim Formu',
             'res_model': 'imza.al.wizard',
             'view_mode': 'form',
             'target': 'new',
             'context': {
                 'default_servis_kaydi_id': self.id,
-                'default_rapor_tipi': 'teslim',
+                'default_formu_tipi': 'teslim',
             }
         }
 

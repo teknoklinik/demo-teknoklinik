@@ -2,7 +2,7 @@
 <odoo>
     <!-- Özelleştirme Action - Server Action with get_formview_action -->
     <record id="action_servis_ozellestirme_open_form" model="ir.actions.server">
-        <field name="name">Raporlama Özelleştirmesi</field>
+        <field name="name">Formlama Özelleştirmesi</field>
         <field name="model_id" ref="model_servis_ozellestirme"/>
         <field name="state">code</field>
         <field name="code">
@@ -16,14 +16,14 @@ action = env['servis.ozellestirme'].get_ozellestirme().get_formview_action()
         <field name="name">servis.ozellestirme.form</field>
         <field name="model">servis.ozellestirme</field>
         <field name="arch" type="xml">
-            <form string="Raporlama Özelleştirmesi" create="false" delete="false" edit="true">
+            <form string="Formlama Özelleştirmesi" create="false" delete="false" edit="true">
                 <style>
                     .breadcrumb { display: none !important; }
                     .oe_view_manager .oe_form_header { display: none !important; }
                 </style>
                 <sheet>
                     <div class="oe_title">
-                        <h1>Raporlama Alanını Özelleştir</h1>
+                        <h1>Formlama Alanını Özelleştir</h1>
                         <div style="margin-top: 15px;">
                             <button string="💾 Kaydet" type="object" name="kaydet_ve_yenile" class="btn btn-primary" style="padding: 8px 20px; font-size: 14px; font-weight: 600;"/>
                         </div>
@@ -31,21 +31,21 @@ action = env['servis.ozellestirme'].get_ozellestirme().get_formview_action()
 
                     <div class="alert alert-info" role="alert" style="margin-bottom: 30px; padding: 15px; border-radius: 8px;">
                         <p style="margin: 0; font-size: 14px;">
-                            <strong>Servis kaydı formunda</strong> görünen raporlama alanlarını özelleştirebilirsiniz. 
+                            <strong>Servis kaydı formunda</strong> görünen formlama alanlarını özelleştirebilirsiniz. 
                             Alan adlarını değiştirebilir ve görünürlüğünü kontrol edebilirsiniz.
                         </p>
                     </div>
 
                     <!-- 3 Kutu Layout (Settings Tarzı) -->
                     <div class="row mt16" style="margin: 0;">
-                        <!-- Raporlama Sekme -->
+                        <!-- Formlama Sekme -->
                         <div class="col-12 col-lg-4" style="padding: 0 12px 20px 0; margin-bottom: 20px;">
                             <div style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; background: #fafafa; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
                                 <div style="margin: 0 0 15px 0; color: #2c3e50; font-size: 16px; font-weight: 600;">
-                                    <span style="color: #2c3e50; font-weight: 600; font-size: 16px;">Raporlama</span>
+                                    <span style="color: #2c3e50; font-weight: 600; font-size: 16px;">Formlama</span>
                                 </div>
                                 <div style="color: #7f8c8d; font-size: 13px; margin-bottom: 15px; line-height: 1.5;">
-                                    Raporlama sekmesinin görünürlüğünü kontrol edin.
+                                    Formlama sekmesinin görünürlüğünü kontrol edin.
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 10px;">
                                     <field name="ozel_notebook_1_gozuksun" widget="boolean" nolabel="1"/>

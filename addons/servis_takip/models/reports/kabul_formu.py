@@ -54,7 +54,7 @@ class KabulFormu(models.Model):
     
 class KabulFormuLine(models.Model):
     _name = 'kabul.formu.line'
-    _description = 'Kabul Formu Satırları'
+    _description = 'Kabul Rapor Satırları'
 
     formu_id = fields.Many2one('kabul.formu', string='Kabul Formu', ondelete='cascade')
     product_id = fields.Many2one('product.product', string='Ürün/Hizmet', required=True)

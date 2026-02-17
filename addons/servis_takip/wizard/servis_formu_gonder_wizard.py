@@ -3,9 +3,9 @@ from odoo.exceptions import UserError
 import base64
 
 
-class ServisRaporGonderWizard(models.TransientModel):
-    _name = 'servis.rapor.gonder.wizard'
-    _description = 'Servis Raporu Gönder Wizard'
+class ServisFormuGonderWizard(models.TransientModel):
+    _name = 'servis.formu.gonder.wizard'
+    _description = 'Servis Formu Gönder Wizard'
 
     servis_kaydi_id = fields.Many2one('servis.kaydi', string='Servis Kaydı', required=True)
     musteri_id = fields.Many2one('res.partner', string='Müşteri', related='servis_kaydi_id.musteri_id', readonly=True)
@@ -14,8 +14,8 @@ class ServisRaporGonderWizard(models.TransientModel):
     email_degisti = fields.Boolean(string='Email Değişti', compute='_compute_degisti', store=False)
     telefon_degisti = fields.Boolean(string='Telefon Değişti', compute='_compute_degisti', store=False)
     
-    gonder_kabul_raporu = fields.Boolean(string='Kabul Raporu', default=False)
-    gonder_teslim_raporu = fields.Boolean(string='Teslim Raporu', default=False)
+    gonder_kabul_formu = fields.Boolean(string='Kabul Formu', default=False)
+    gonder_teslim_formu = fields.Boolean(string='Teslim Formu', default=False)
     
     gonder_email = fields.Boolean(string='E-Posta ile Gönder', default=True)
     gonder_whatsapp = fields.Boolean(string='WhatsApp ile Gönder', default=False)
@@ -32,24 +32,24 @@ class ServisRaporGonderWizard(models.TransientModel):
 
     @api.onchange('servis_kaydi_id')
     def _onchange_servis_kaydi(self):
-        """Mevcut raporlara göre checkboxları otomatik işaretle ve müşteri bilgilerini doldur"""
+        """Mevcut formlara göre checkboxları otomatik işaretle ve müşteri bilgilerini doldur"""
         if self.servis_kaydi_id:
             # Müşteri bilgilerini doldur
             if self.servis_kaydi_id.musteri_id:
                 self.musteri_email = self.servis_kaydi_id.musteri_id.email
                 self.musteri_telefon = self.servis_kaydi_id.musteri_id.phone
 
-            # Kabul raporu varsa işaretle
-            kabul_rapor = self.env['kabul.rapor'].search([
+            # Kabul formu varsa işaretle
+            kabul_formu = self.env['kabul.formu'].search([
                 ('servis_id', '=', self.servis_kaydi_id.id)
             ], limit=1)
-            self.gonder_kabul_raporu = bool(kabul_rapor)
+            self.gonder_kabul_formu = bool(kabul_formu)
 
-            # Teslim raporu varsa işaretle
-            teslim_rapor = self.env['teslim.rapor'].search([
+            # Teslim formu varsa işaretle
+            teslim_formu = self.env['teslim.formu'].search([
                 ('servis_id', '=', self.servis_kaydi_id.id)
             ], limit=1)
-            self.gonder_teslim_raporu = bool(teslim_rapor)
+            self.gonder_teslim_formu = bool(teslim_formu)
 
     def action_guncelle_iletisim(self):
         """Email ve telefon numarasını kontak kaydında güncelle"""
@@ -77,44 +77,44 @@ class ServisRaporGonderWizard(models.TransientModel):
         }
 
     def action_gonder(self):
-        """Seçilen raporları müşteriye gönder"""
+        """Secilen formlari musteriye gonder"""
         self.ensure_one()
 
-        if not self.gonder_kabul_raporu and not self.gonder_teslim_raporu:
-            raise UserError('Lütfen en az bir rapor seçiniz!')
+        if not self.gonder_kabul_formu and not self.gonder_teslim_formu:
+            raise UserError('Lutfen en az bir form seciniz!')
 
         if not self.gonder_email and not self.gonder_whatsapp:
-            raise UserError('Lütfen en az bir gönderim yöntemi seçiniz!')
+            raise UserError('Lutfen en az bir gonderim yontemi seciniz!')
 
         if not self.musteri_email and self.gonder_email:
-            raise UserError('E-Posta gönderimi seçili olduğu halde e-posta adresi bulunamadı!')
+            raise UserError('E-Posta gonderimi secili oldugu halde e-posta adresi bulunamadi!')
 
         if not self.musteri_telefon and self.gonder_whatsapp:
-            raise UserError('WhatsApp gönderimi seçili olduğu halde telefon numarası bulunamadı!')
+            raise UserError('WhatsApp gonderimi secili oldugu halde telefon numarasi bulunamadi!')
 
-        raporlar_gonderildi = []
+        formlar_gonderildi = []
 
-        # 1. Raporları arka planda işle (E-posta gönderimi vs.)
-        if self.gonder_kabul_raporu:
-            self._gonder_rapor(
+        # 1. Formlari arka planda isle (E-posta gonderimi vs.)
+        if self.gonder_kabul_formu:
+            self._gonder_formu(
                 self.servis_kaydi_id,
                 'kabul',
-                'servis_takip.report_kabul_raporu_template'
+                'servis_takip.report_kabul_formu_template'
             )
-            raporlar_gonderildi.append('Kabul Raporu')
+            formlar_gonderildi.append('Kabul Formu')
 
-        if self.gonder_teslim_raporu:
-            self._gonder_rapor(
+        if self.gonder_teslim_formu:
+            self._gonder_formu(
                 self.servis_kaydi_id,
                 'teslim',
-                'servis_takip.report_teslim_raporu_template'
+                'servis_takip.report_teslim_formu_template'
             )
-            raporlar_gonderildi.append('Teslim Raporu')
+            formlar_gonderildi.append('Teslim Formu')
 
-        # 2. WhatsApp seçiliyse TEK BİR AKSİYON oluştur (Mesajı burada birleştiriyoruz)
+        # 2. WhatsApp seciliyse TEK BIR AKSYON olustur (Mesaj burada birlestiriliyoruz)
         if self.gonder_whatsapp:
-            # Seçilen raporları metin olarak birleştir
-            rapor_metni = " ve ".join(raporlar_gonderildi)
+            # Secilen formlari metin olarak birlestir
+            form_metni = " ve ".join(formlar_gonderildi)
             
             # Telefonu temizle
             telefon = ''.join(filter(str.isdigit, self.musteri_telefon))
@@ -123,11 +123,11 @@ class ServisRaporGonderWizard(models.TransientModel):
             elif len(telefon) == 11 and telefon.startswith('05'):
                 telefon = '9' + telefon
 
-            # Mesajı oluştur
+            # Mesaji olustur
             mesaj = (
                 f"Merhaba {self.musteri_id.name},\n\n"
-                f"*{self.servis_kaydi_id.name}* numaralı servis kaydınıza ait *{rapor_metni}* hazırlanmıştır. "
-                f"Rapor detayları e-posta adresinize gönderilmiştir.\n\n"
+                f"*{self.servis_kaydi_id.name}* numarali servis kaydınıza ait *{form_metni}* hazırlanmıştır. "
+                f"Form detayları e-posta adresinize gonderilmistir.\n\n"
                 f"Bizi tercih ettiğiniz için teşekkür ederiz."
             )
             
@@ -143,22 +143,22 @@ class ServisRaporGonderWizard(models.TransientModel):
             }
 
         # 3. Sadece E-Posta seçiliyse başarı mesajı göster
-        mesaj_sonuc = '\n'.join(raporlar_gonderildi) + '\n\n'
+        mesaj_sonuc = '\n'.join(formlar_gonderildi) + '\n\n'
         mesaj_sonuc += f"✓ E-Posta: {self.musteri_email}\n"
 
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
-                'title': 'Raporlar Gönderildi',
+                'title': 'Formlar Gönderildi',
                 'message': mesaj_sonuc,
                 'type': 'success',
                 'sticky': False,
             }
         }
 
-    def _gonder_rapor(self, servis_kaydi, rapor_tipi, report_name):
-        """Raporu mail veya whatsapp ile gönder"""
+    def _gonder_formu(self, servis_kaydi, formu_tipi, report_name):
+        """Formu mail veya whatsapp ile gönder"""
         
         try:
             pdf_content, _ = self.env['ir.actions.report']._render_qweb_pdf(report_name, res_ids=servis_kaydi.ids)
@@ -166,20 +166,20 @@ class ServisRaporGonderWizard(models.TransientModel):
             raise UserError(f"PDF oluşturulurken hata oluştu: {str(e)}\n"
                             f"Lütfen '{report_name}' isimli raporun doğru tanımlandığından emin olun.")
 
-        dosya_adi = f"{servis_kaydi.name}-{rapor_tipi.capitalize()}-Raporu.pdf"
+        dosya_adi = f"{servis_kaydi.name}-{formu_tipi.capitalize()}-Formu.pdf"
 
         # E-Posta gönder
         if self.gonder_email:
-            self._gonder_email(servis_kaydi, rapor_tipi, pdf_content, dosya_adi)
+            self._gonder_email(servis_kaydi, formu_tipi, pdf_content, dosya_adi)
 
         # WhatsApp gönder
         if self.gonder_whatsapp:
-            return self._gonder_whatsapp(servis_kaydi, rapor_tipi)
+            return self._gonder_whatsapp(servis_kaydi, formu_tipi)
         
         return False
 
-    def _gonder_email(self, servis_kaydi, rapor_tipi, pdf_content, dosya_adi):
-        """Mail ile rapor gönder ve eki ekle"""
+    def _gonder_email(self, servis_kaydi, formu_tipi, pdf_content, dosya_adi):
+        """Mail ile formu gönder ve eki ekle"""
         if not self.musteri_email:
             raise UserError(f'Müşterinin e-posta adresi bulunamadı!')
 
@@ -203,10 +203,10 @@ class ServisRaporGonderWizard(models.TransientModel):
 
         # 3. Mail Nesnesini Oluştur ve Eki Bağla
         mail_vals = {
-            'subject': f"{servis_kaydi.name} - {rapor_tipi.capitalize()} Raporu",
+            'subject': f"{servis_kaydi.name} - {formu_tipi.capitalize()} Formu",
             'body_html': f"""
                 <p>Merhaba {self.musteri_id.name},</p>
-                <p>Teknik servis kaydı <strong>{servis_kaydi.name}</strong> için hazırlanan rapor ekte sunulmuştur.</p>
+                <p>Teknik servis kaydı <strong>{servis_kaydi.name}</strong> için hazırlanan formu ekte sunulmuştur.</p>
                 <p>Saygılarımızla,<br/>Teknik Servis Takip Sistemi</p>
             """,
             'email_from': self.env.company.email or 'noreply@example.com',
@@ -217,7 +217,7 @@ class ServisRaporGonderWizard(models.TransientModel):
         mail = self.env['mail.mail'].create(mail_vals)
         mail.send()
 
-    def _gonder_whatsapp(self, servis_kaydi, rapor_tipi):
+    def _gonder_whatsapp(self, servis_kaydi, formu_tipi):
         """WhatsApp Web üzerinden mesaj gönderimini başlatır"""
         if not self.musteri_telefon:
             raise UserError(f'Müşterinin telefon numarası bulunamadı!')
@@ -235,7 +235,7 @@ class ServisRaporGonderWizard(models.TransientModel):
         mesaj = (
             f"Merhaba {self.musteri_id.name},\n\n"
             f"*{servis_kaydi.name}* numaralı servis kaydınız için "
-            f"*{rapor_tipi.lower()}* raporu hazırlanmıştır. "
+            f"*{formu_tipi.lower()}* formu hazırlanmıştır. "
             f"Detaylar e-posta adresinize gönderilmiştir.\n\n"
             f"Bizi tercih ettiğiniz için teşekkür ederiz."
         )

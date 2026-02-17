@@ -120,7 +120,7 @@
                         <group string="Bilgiler">
                             <field name="servis_kaydi_id" readonly="1"/>
                             <field name="musteri_id" readonly="1"/>
-                            <field name="rapor_tipi" readonly="1"/>
+                            <field name="formu_tipi" readonly="1"/>
                         </group>
                     </group>
                     <group string="İmza Alanı (Yazı alanına tıklayarak temizleyip yeniden yazabilirsiniz)">

@@ -69,22 +69,22 @@
         </field>
     </record>
 
-    <record id="action_kabul_raporu_pdf" model="ir.actions.report">
-        <field name="name">Kabul Raporu</field>
+    <record id="action_kabul_formu_pdf" model="ir.actions.report">
+        <field name="name">Kabul Formu</field>
         <field name="model">servis.kaydi</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">servis_takip.report_kabul_raporu_template</field>
-        <field name="report_file">servis_takip.report_kabul_raporu_template</field>
-        <field name="print_report_name">object.name + ' - Kabul Raporu'</field>
+        <field name="report_name">servis_takip.report_kabul_formu_template</field>
+        <field name="report_file">servis_takip.report_kabul_formu_template</field>
+        <field name="print_report_name">object.name + ' - Kabul Formu'</field>
     </record>
 
-    <record id="action_teslim_raporu_pdf" model="ir.actions.report">
-        <field name="name">Teslim Raporu</field>
+    <record id="action_teslim_formu_pdf" model="ir.actions.report">
+        <field name="name">Teslim Formu</field>
         <field name="model">servis.kaydi</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">servis_takip.report_teslim_raporu_template</field>
-        <field name="report_file">servis_takip.report_teslim_raporu_template</field>
-        <field name="print_report_name">object.name + ' - Teslim Raporu'</field>
+        <field name="report_name">servis_takip.report_teslim_formu_template</field>
+        <field name="report_file">servis_takip.report_teslim_formu_template</field>
+        <field name="print_report_name">object.name + ' - Teslim Formu'</field>
     </record>
 
     <record id="model_servis_kaydi_action_copy" model="ir.actions.server">
@@ -98,10 +98,10 @@
         </field>
     </record>
 
-    <record id="action_servis_rapor_gonder_wizard" model="ir.actions.act_window">
-        <field name="name">Rapor Gönder</field>
+    <record id="action_servis_formu_gonder_wizard" model="ir.actions.act_window">
+        <field name="name">Form Gönder</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">servis.rapor.gonder.wizard</field>
+        <field name="res_model">servis.formu.gonder.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
         <field name="context">{'default_servis_kaydi_id': active_id}</field>
