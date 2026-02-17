@@ -113,6 +113,13 @@ class ServisKaydi(models.Model):
         ('devam', 'Garantisi Devam Ediyor'),
         ('belirsiz', 'Belirsiz')
     ], compute='_compute_garanti_durumu')
+    
+    # --- Barkod Etiketi Kontrolleri ---
+    barkod_etiketi_acilabilir = fields.Boolean(
+        string='Barkod Etiketi Açılabilir',
+        compute='_compute_barkod_etiketi_acilabilir',
+        store=False
+    )
 
     # --- Müşteri İmzaları ---
     kabul_musteri_imzasi = fields.Binary(string='Kabul Müşteri İmzası', copy=False)
@@ -217,6 +224,24 @@ class ServisKaydi(models.Model):
                 record.garanti_durumu = 'yok'
             else:
                 record.garanti_durumu = 'devam'
+
+    @api.depends('musteri_id', 'urun_turu_id', 'urun_marka_id', 'urun_modeli_id', 'seri_no', 'ariza_detay_ids.ariza_tanimi_id')
+    def _compute_barkod_etiketi_acilabilir(self):
+        """Barkod Etiketinin tüm gerekli alanlar dolu ise açılabilir"""
+        for record in self:
+            # 5 alanın kontrol edilmesi
+            temel_alanlar_ok = bool(
+                record.musteri_id and 
+                record.urun_turu_id and 
+                record.urun_marka_id and 
+                record.urun_modeli_id and 
+                record.seri_no
+            )
+            
+            # En az bir arıza tanımının dolu olması
+            ariza_ok = any(detay.ariza_tanimi_id for detay in record.ariza_detay_ids)
+            
+            record.barkod_etiketi_acilabilir = temel_alanlar_ok and ariza_ok
 
     # 1. Gelecek Tarih Kontrolü (Hata Fırlatır)
     @api.constrains('garanti_baslama')
@@ -1136,25 +1161,6 @@ class ServisKaydi(models.Model):
 
     def action_barkod_etiketi_preview(self):
         """PDF olarak barkod etiketini açar"""
-        # Boş alanları kontrol et
-        bos_alanlar = []
-        
-        if not self.musteri_id:
-            bos_alanlar.append("Müşteri")
-        if not self.urun_turu_id:
-            bos_alanlar.append("Ürün Türü")
-        if not self.urun_marka_id:
-            bos_alanlar.append("Ürün Markası")
-        if not self.urun_modeli_id:
-            bos_alanlar.append("Ürün Modeli")
-        if not self.seri_no:
-            bos_alanlar.append("Seri No")
-        
-        # Eğer boş alan varsa hepsinin listesini göster
-        if bos_alanlar:
-            hata_mesaji = "Barkod Etiketi oluşturmak için aşağıdaki alanlar zorunludur:\n\n" + "\n".join([f"• {alan}" for alan in bos_alanlar])
-            raise UserError(hata_mesaji)
-        
         return {
             'type': 'ir.actions.act_url',
             'url': f'/report/pdf/servis_takip.report_barkod_etiketi/{self.id}?download=false',
