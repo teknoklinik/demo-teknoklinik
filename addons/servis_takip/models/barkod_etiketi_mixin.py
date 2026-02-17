@@ -15,8 +15,12 @@ class BarkodEtiketiMixin(models.AbstractModel):
             return None
         
         try:
-            import barcode
-            from barcode.writer import ImageWriter # SVG yerine ImageWriter kullanıyoruz
+            try:
+                import barcode
+                from barcode.writer import ImageWriter
+            except ImportError:
+                _logger.warning("python-barcode paketi bulunamadı. Barkod üretimi devre dışı.")
+                return None
             
             # Barkod üretimi
             # 'code128' genellikle seri numaraları için en uygunudur

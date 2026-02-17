@@ -25,9 +25,6 @@ teslimatına kadar tüm teknik servis süreçlerini yönetmenizi sağlar.
         'base_setup',
         'barcodes',
     ],
-    'external_dependencies': {
-        'python': ['python-barcode'],
-    },
     'data': [
         # 1. GÜVENLİK/ACL (Her zaman en başta olmalı)
         'security/ir.model.access.csv', 
