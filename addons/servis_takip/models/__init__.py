@@ -1,3 +1,4 @@
+from . import barkod_etiketi_mixin
 from . import core
 from . import definitions
 from . import transactions

@@ -24,6 +24,9 @@ teslimatına kadar tüm teknik servis süreçlerini yönetmenizi sağlar.
         'sale',  
         'base_setup', 
     ],
+    'external_dependencies': {
+        'python': ['barcode'],
+    },
     'data': [
         # 1. GÜVENLİK/ACL (Her zaman en başta olmalı)
         'security/ir.model.access.csv', 
@@ -59,6 +62,7 @@ teslimatına kadar tüm teknik servis süreçlerini yönetmenizi sağlar.
         # 6. VIEWS - RAPORLAR
         'views/reports/kabul_rapor_views.xml',
         'views/reports/teslim_rapor_views.xml',
+        'views/reports/barkod_etiketi_views.xml',  # Barkod Etiketi Raporu
 
         # 7. VIEWS - WIZARD'LAR
         'views/wizards/servis_urun_aktar_views.xml',

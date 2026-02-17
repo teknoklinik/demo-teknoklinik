@@ -9,7 +9,7 @@ _logger = logging.getLogger(__name__)
 
 class ServisKaydi(models.Model):
     _name = 'servis.kaydi'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'barkod.etiketi.mixin']
     _description = 'Teknik Servis Onarım Kaydı'
     _rec_name = 'name' 
 
@@ -1133,4 +1133,15 @@ class ServisKaydi(models.Model):
             except Exception as e:
                 # Hata oluşsa bile sessiz geç, otomatik işlem olduğu için user notification gösterme
                 _logger.warning(f"Otomatik ürün parkı kaydı başarısız: {str(e)}")
-                
+
+    def action_barkod_etiketi_preview(self):
+        """PDF olarak barkod etiketini açar"""
+        if not self.barkod_no:
+            raise UserError("Barkod etiketi oluşturmak için 'Barkod No' alanı zorunludur. Lütfen barkod numarasını girin.")
+        
+        return {
+            'type': 'ir.actions.act_url',
+            'url': f'/report/pdf/servis_takip.report_barkod_etiketi/{self.id}?download=false',
+            'target': 'new',
+        }
+
