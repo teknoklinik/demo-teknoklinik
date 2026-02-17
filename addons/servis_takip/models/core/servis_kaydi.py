@@ -1136,8 +1136,24 @@ class ServisKaydi(models.Model):
 
     def action_barkod_etiketi_preview(self):
         """PDF olarak barkod etiketini açar"""
-        if not self.barkod_no:
-            raise UserError("Barkod etiketi oluşturmak için 'Barkod No' alanı zorunludur. Lütfen barkod numarasını girin.")
+        # Boş alanları kontrol et
+        bos_alanlar = []
+        
+        if not self.musteri_id:
+            bos_alanlar.append("Müşteri")
+        if not self.urun_turu_id:
+            bos_alanlar.append("Ürün Türü")
+        if not self.urun_marka_id:
+            bos_alanlar.append("Ürün Markası")
+        if not self.urun_modeli_id:
+            bos_alanlar.append("Ürün Modeli")
+        if not self.seri_no:
+            bos_alanlar.append("Seri No")
+        
+        # Eğer boş alan varsa hepsinin listesini göster
+        if bos_alanlar:
+            hata_mesaji = "Barkod Etiketi oluşturmak için aşağıdaki alanlar zorunludur:\n\n" + "\n".join([f"• {alan}" for alan in bos_alanlar])
+            raise UserError(hata_mesaji)
         
         return {
             'type': 'ir.actions.act_url',

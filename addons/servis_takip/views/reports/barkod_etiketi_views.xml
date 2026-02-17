@@ -11,7 +11,7 @@
             <field name="margin_bottom">0</field>
             <field name="margin_left">0</field>
             <field name="margin_right">0</field>
-            <field name="dpi">96</field>
+            <field name="dpi">83</field>
         </record>
 
         <record id="action_report_barkod_etiketi" model="ir.actions.report">
@@ -89,7 +89,10 @@
                                             <t t-if="doc.urun_modeli_id"><t t-esc="doc.urun_modeli_id.name"/></t>
                                         </div>
                                         
-                                        <div class="warranty-box">GARANTİLİ</div>
+                                        <div class="warranty-box">
+                                            <t t-if="doc.garanti_durumu == 'devam'">GARANTİLİ</t>
+                                            <t t-else="">GARANTİSİZ</t>
+                                        </div>
                                         
                                         <div style="font-size: 16px; font-weight: bold; margin-top: 3mm;">
                                             <t t-if="doc.kayit_tarihi"><t t-esc="doc.kayit_tarihi.strftime('%d.%m.%Y')"/></t>
