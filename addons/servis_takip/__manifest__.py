@@ -22,7 +22,8 @@ teslimatına kadar tüm teknik servis süreçlerini yönetmenizi sağlar.
         'account',
         'mail',
         'sale',  
-        'base_setup', 
+        'base_setup',
+        'barcodes',
     ],
     'external_dependencies': {
         'python': ['barcode'],
