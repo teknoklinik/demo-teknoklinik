@@ -23,10 +23,10 @@ teslimatına kadar tüm teknik servis süreçlerini yönetmenizi sağlar.
         'mail',
         'sale',  
         'base_setup',
-        'barcode',
+        'barcodes',
     ],
     'external_dependencies': {
-        'python': ['barcode'],
+        'python': ['python-barcode'],
     },
     'data': [
         # 1. GÜVENLİK/ACL (Her zaman en başta olmalı)
