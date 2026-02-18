@@ -81,7 +81,6 @@ class ServisKaydi(models.Model):
     
     # --- Özel Notebook Alanları ---
     ozel_notebook_1_label = fields.Char(string='Özel 1 Label', compute='_compute_ozel_notebook_labels', store=True)
-    ozel_notebook_1_gozuksun = fields.Boolean(compute='_compute_ozel_notebook_visibility', store=True)
     ozel_notebook_1_satiri_ids = fields.One2many(
         'servis.ozel.notebook.satiri',
         'servis_kaydi_id',
@@ -156,14 +155,7 @@ class ServisKaydi(models.Model):
         """Özelleştirme modelinden özel notebook etiketlerini al"""
         ozellestirme = self.env['servis.ozellestirme'].get_ozellestirme()
         for record in self:
-            record.ozel_notebook_1_label = ozellestirme.ozel_notebook_1_adi or 'Özel 1'
-
-    @api.depends()
-    def _compute_ozel_notebook_visibility(self):
-        """Özelleştirme modelinden özel notebook görünürlüğünü al"""
-        ozellestirme = self.env['servis.ozellestirme'].get_ozellestirme()
-        for record in self:
-            record.ozel_notebook_1_gozuksun = ozellestirme.ozel_notebook_1_gozuksun
+            record.ozel_notebook_1_label = ozellestirme.ozel_notebook_1_adi or False
 
     @api.depends('ozel_notebook_1_satiri_ids')
     def _compute_ozel_alan_degerleri(self):

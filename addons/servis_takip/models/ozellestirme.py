@@ -49,7 +49,6 @@ class ServisOzellestirme(models.Model):
             
             # Computed field'ları manual trigger et
             servis_kaydi_records._compute_ozel_notebook_labels()
-            servis_kaydi_records._compute_ozel_notebook_visibility()
             servis_kaydi_records._compute_ozel_alan_degerleri()
         
         return result

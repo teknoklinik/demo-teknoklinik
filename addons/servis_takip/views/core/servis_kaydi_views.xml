@@ -294,6 +294,17 @@
                             </group>
                         </group>
                     </page>
+                    
+                    <page string="Değer Okuma" name="deger_okuma">
+                        <field name="deger_okuma_ids" readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']" nolabel="1">
+                            <list string="Değer Okuma" editable="bottom" class="o_list_compact">
+                                <field name="deger_okuma_tanimi_id" string="Değer Okuma" options="{'no_create_edit': False, 'no_create': False}" required="1" width="30%"/>
+                                <field name="aciklama" string="Açıklama" width="50%"/>
+                                <field name="tarih" readonly="1" width="10%"/>
+                                <field name="personel_id" readonly="1" widget="many2one_avatar_user" width="10%"/>
+                            </list>
+                        </field>
+                    </page>
 
                     <page string="Teknisyen Notu" name="teknisyen_notu">
                         <field name="teknisyen_notu" placeholder="Teknisyen tarafından yapılan işlemler ve notlar..."/>
@@ -321,23 +332,7 @@
                         </field>
                     </page>
 
-                    <page string="Değer Okuma" name="deger_okuma">
-                        <field name="deger_okuma_ids" readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']" nolabel="1">
-                            <list string="Değer Okuma" editable="bottom" class="o_list_compact">
-                                <field name="deger_okuma_tanimi_id" string="Değer Okuma" options="{'no_create_edit': False, 'no_create': False}" required="1" width="30%"/>
-                                <field name="aciklama" string="Açıklama" width="50%"/>
-                                <field name="tarih" readonly="1" width="10%"/>
-                                <field name="personel_id" readonly="1" widget="many2one_avatar_user" width="10%"/>
-                            </list>
-                        </field>
-                    </page>
-
-                    <page string="Formlar" name="ozel_notebook_1" invisible="ozel_notebook_1_gozuksun == False">
-                        <div style="margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid #e0e0e0;">
-                            <h2 style="margin: 0; color: #2c3e50; font-weight: 600;">
-                                <field name="ozel_notebook_1_label" readonly="1" nolabel="1" class="oe_inline"/>
-                            </h2>
-                        </div>
+                    <page string="Raporlama" name="ozel_notebook_1">
                         <field name="ozel_notebook_1_satiri_ids" nolabel="1" context="{'default_notebook_type': 'notebook_1'}" mode="list"/>
                     </page>
 
@@ -352,7 +347,7 @@
                                 <field name="kargo_fis" string="Kargo Fiş"/>
                                 <field name="kargo_irsaliye" string="Kargo İrsaliye"/>
                                 <field name="durum" string="Durumu" options="{'no_create': True}"/>
-                                <field name="garanti_durumu" string="Garanti Durumu" readonly="1"/>
+                                <field name="garanti_durumu" string="Garanti Durumu"/>
                             </list>
                         </field>
                     </page>

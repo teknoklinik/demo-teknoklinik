@@ -28,7 +28,7 @@
 
     <menuitem id="menu_deger_okuma_tanimi" name="Değer Okuma" parent="menu_servis_yapilandirma" action="action_deger_okuma_tanimi" sequence="70"/>
 
-    <menuitem id="menu_servis_ozellestirme" name="Formlama Özelleştirmesi" action="action_servis_ozellestirme_open_form" parent="menu_servis_yapilandirma" sequence="80"/>
+    <menuitem id="menu_servis_ozellestirme" name="Raporlama Özelleştirmesi" action="action_servis_ozellestirme_open_form" parent="menu_servis_yapilandirma" sequence="80"/>
 
     <menuitem id="menu_servis_ayarlari" name="Ayarlar" action="action_servis_config_settings" parent="menu_servis_yapilandirma" sequence="100"/>
 </odoo>

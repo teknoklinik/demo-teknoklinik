@@ -23,7 +23,7 @@ action = env['servis.ozellestirme'].get_ozellestirme().get_formview_action()
                 </style>
                 <sheet>
                     <div class="oe_title">
-                        <h1>Formlama Alanını Özelleştir</h1>
+                        <h1>Raporlama Alanını Özelleştir</h1>
                         <div style="margin-top: 15px;">
                             <button string="💾 Kaydet" type="object" name="kaydet_ve_yenile" class="btn btn-primary" style="padding: 8px 20px; font-size: 14px; font-weight: 600;"/>
                         </div>
@@ -31,28 +31,9 @@ action = env['servis.ozellestirme'].get_ozellestirme().get_formview_action()
 
                     <div class="alert alert-info" role="alert" style="margin-bottom: 30px; padding: 15px; border-radius: 8px;">
                         <p style="margin: 0; font-size: 14px;">
-                            <strong>Servis kaydı formunda</strong> görünen formlama alanlarını özelleştirebilirsiniz. 
+                            <strong>Servis kaydı formunda</strong> görünen raporlama alanlarını özelleştirebilirsiniz. 
                             Alan adlarını değiştirebilir ve görünürlüğünü kontrol edebilirsiniz.
                         </p>
-                    </div>
-
-                    <!-- 3 Kutu Layout (Settings Tarzı) -->
-                    <div class="row mt16" style="margin: 0;">
-                        <!-- Formlama Sekme -->
-                        <div class="col-12 col-lg-4" style="padding: 0 12px 20px 0; margin-bottom: 20px;">
-                            <div style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; background: #fafafa; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
-                                <div style="margin: 0 0 15px 0; color: #2c3e50; font-size: 16px; font-weight: 600;">
-                                    <span style="color: #2c3e50; font-weight: 600; font-size: 16px;">Formlama</span>
-                                </div>
-                                <div style="color: #7f8c8d; font-size: 13px; margin-bottom: 15px; line-height: 1.5;">
-                                    Formlama sekmesinin görünürlüğünü kontrol edin.
-                                </div>
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    <field name="ozel_notebook_1_gozuksun" widget="boolean" nolabel="1"/>
-                                    <span style="font-size: 13px; color: #2c3e50;">Formlarda Görünür Olsun</span>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Özel Alan Adlarını Özelleştir -->
