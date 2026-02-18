@@ -72,6 +72,52 @@
         <field name="model">servis.kaydi</field>
         <field name="arch" type="xml">
             <form string="Servis Kaydı">
+                <style>
+                    /* Tab container */
+                    .o_notebook .nav-tabs {
+                        border-bottom: 1px solid #dddddd !important;
+                        background: transparent !important;
+                    }
+                    
+                    /* Bootstrap 5 seçicileri - Seçili tab butonu */
+                    .o_notebook .nav-tabs .nav-link.active,
+                    .o_notebook .nav-tabs .nav-link[aria-selected="true"] {
+                        background: #79c6ffa8 !important;
+                        color: #000 !important;
+                        border: 1px solid #79c6ff !important;
+                        padding: 8px 16px !important;
+                        font-weight: 500 !important;
+                        font-size: 13px !important;
+                        margin-right: 2px !important;
+                        border-radius: 2px !important;
+                        transition: all 0.15s ease-out !important;
+                    }
+                    
+                    /* Pasif tab butonu */
+                    .o_notebook .nav-tabs .nav-link:not(.active) {
+                        background: #fff !important;
+                        color: #333 !important;
+                        border: 1px solid #ddd !important;
+                        padding: 8px 16px !important;
+                        font-weight: 500 !important;
+                        font-size: 13px !important;
+                        margin-right: 2px !important;
+                        border-radius: 2px !important;
+                        transition: all 0.15s ease-out !important;
+                    }
+                    
+                    .o_notebook .nav-tabs .nav-link:not(.active):hover {
+                        background: #f8f8f8 !important;
+                    }
+                    }
+                    
+                    /* Tab içeriği - NORMAL */
+                    .o_notebook .tab-pane {
+                        background: white !important;
+                        padding: 20px !important;
+                        border: none !important;
+                    }
+                </style>
                 <header>
                     <button name="action_toggle_form_edit" string="Kaydı Düzenle" type="object" class="oe_highlight" invisible="state not in ['teslim_edildi', 'iptal'] or formu_duzenle == True"/>
                     <button name="action_toggle_form_edit" string="Düzenlemeyi Tamamla" type="object" class="oe_highlight" invisible="state not in ['teslim_edildi', 'iptal'] or formu_duzenle == False"/>
@@ -203,7 +249,7 @@
                     </group>
                 </group>
 
-                <notebook>
+                <notebook class="o_notebook">
                     <page string="Durum Geçmişi" name="durum_gecmisi">
                         <div invisible="id != False" class="alert alert-warning" role="alert">
                             <p>
