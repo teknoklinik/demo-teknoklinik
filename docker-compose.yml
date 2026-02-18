@@ -6,6 +6,7 @@ services:
       - db
     ports:
       - "8069:8069" # Odoo arayüzü bu porttan erişilebilir olacak
+    entrypoint: /bin/bash -c "/entrypoint.sh odoo"
     volumes:
       # Kendi özel modüllerinizin olduğu dizini konteynere bağlar
       - ./addons:/mnt/extra-addons 

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Kargo Firmasi List View -->
+    <record id="view_kargo_firmasi_list" model="ir.ui.view">
+        <field name="name">kargo.firmasi.list</field>
+        <field name="model">kargo.firmasi</field>
+        <field name="arch" type="xml">
+            <list string="Kargo Firmaları" editable="bottom">
+                <field name="name"/>
+                <field name="aktif"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Kargo Firmasi Form View -->
+    <record id="view_kargo_firmasi_form" model="ir.ui.view">
+        <field name="name">kargo.firmasi.form</field>
+        <field name="model">kargo.firmasi</field>
+        <field name="arch" type="xml">
+            <form string="Kargo Firması">
+                <sheet>
+                    <group>
+                        <field name="name" string="Firma Adı"/>
+                        <field name="aktif"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Kargo Firmasi Action -->
+    <record id="action_kargo_firmasi" model="ir.actions.act_window">
+        <field name="name">Kargo Firmaları</field>
+        <field name="res_model">kargo.firmasi</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Kargo firması tanımı bulunamadı. Yeni bir tane oluştur.
+            </p>
+        </field>
+    </record>
+
+    <!-- Kargo Firmasi Menu -->
+    <menuitem
+        id="menu_kargo_firmasi"
+        name="Kargo Firmaları"
+        parent="menu_servis_yapilandirma"
+        action="action_kargo_firmasi"
+        sequence="75"/>
+
+</odoo>

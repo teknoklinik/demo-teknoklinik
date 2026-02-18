@@ -40,4 +40,6 @@ access_imza_al_wizard,imza.al.wizard,model_imza_al_wizard,base.group_user,1,1,1,
 access_servis_ozellestirme_system,servis.ozellestirme,model_servis_ozellestirme,base.group_system,1,1,1,1
 access_servis_ozellestirme_user,servis.ozellestirme,model_servis_ozellestirme,base.group_user,1,1,1,1
 access_servis_ozel_notebook_satiri,servis.ozel.notebook.satiri,model_servis_ozel_notebook_satiri,base.group_user,1,1,1,1
+access_kargo_firmasi_system,Kargo Firmasi Yönetici,model_kargo_firmasi,base.group_system,1,1,1,1
+access_kargo_firmasi_user,Kargo Firmasi Kullanıcı,model_kargo_firmasi,base.group_user,1,0,0,0
 access_res_config_settings_servis,Servis Ayarları Erişimi,model_res_config_settings,base.group_user,1,1,0,0

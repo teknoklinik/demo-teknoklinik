@@ -341,6 +341,22 @@
                         <field name="ozel_notebook_1_satiri_ids" nolabel="1" context="{'default_notebook_type': 'notebook_1'}" mode="list"/>
                     </page>
 
+                    <page string="Kargolar" name="kargolar">
+                        <field name="kargolar_satiri_ids" nolabel="1" context="{'default_notebook_type': 'kargolar'}" mode="list">
+                            <list editable="bottom" create="true" delete="true">
+                                <field name="kargo_turu" string="Kargo Türü" required="1" options="{'no_create': True}"/>
+                                <field name="kargo_firmasi_id" string="Kargo Firması" options="{'no_create_edit': False}"/>
+                                <field name="servis_form_no" string="Servis Form No" readonly="1"/>
+                                <field name="tarih" string="Tarih" readonly="1" widget="datetime"/>
+                                <field name="tutar" string="Tutar" widget="monetary"/>
+                                <field name="kargo_fis" string="Kargo Fiş"/>
+                                <field name="kargo_irsaliye" string="Kargo İrsaliye"/>
+                                <field name="durum" string="Durumu" options="{'no_create': True}"/>
+                                <field name="garanti_durumu" string="Garanti Durumu" readonly="1"/>
+                            </list>
+                        </field>
+                    </page>
+
                     <page string="Notlar" name="notlar">
                         <field name="notlar_ids" context="{'default_servis_kaydi_id': id, 'form_view_ref': 'modul_teknik_servis.view_servis_kaydi_notlar_popup_form'}" options="{'no_create_edit': True}" readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']">
                             <list string="Notlar">

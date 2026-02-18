@@ -89,6 +89,14 @@ class ServisKaydi(models.Model):
         domain=[('notebook_type', '=', 'notebook_1')]
     )
 
+    # --- Kargolar Notebook Alanı ---
+    kargolar_satiri_ids = fields.One2many(
+        'servis.ozel.notebook.satiri',
+        'servis_kaydi_id',
+        string='Kargolar Satırları',
+        domain=[('notebook_type', '=', 'kargolar')]
+    )
+
     # 6 Özel Alan Değerleri (Computed - Listede görüntülenecek)
     ozel_alan_1_degeri = fields.Text(string='Özel Alan 1', compute='_compute_ozel_alan_degerleri', store=True)
     ozel_alan_2_degeri = fields.Text(string='Özel Alan 2', compute='_compute_ozel_alan_degerleri', store=True)
@@ -605,7 +613,7 @@ class ServisKaydi(models.Model):
                         })
                 
         return records
-
+    
     def write(self, vals):
         # Eğer satırlarda bir oynama varsa tabloyu kilitle
         if 'servis_islem_satirlari' in vals:

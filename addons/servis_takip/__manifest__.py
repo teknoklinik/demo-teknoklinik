@@ -37,6 +37,7 @@ teslimatına kadar tüm teknik servis süreçlerini yönetmenizi sağlar.
         'views/definitions/urun_views.xml',
         'views/definitions/servis_urun_views.xml',
         'views/definitions/servis_tanim_views.xml',
+        'views/definitions/kargo_firmasi_views.xml',
         'views/definitions/aksesuar_views.xml',
         'views/definitions/deger_okuma_tanim_views.xml',
 

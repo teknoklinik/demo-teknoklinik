@@ -16,6 +16,7 @@ class OzelNotebookSatiri(models.Model):
     
     notebook_type = fields.Selection([
         ('notebook_1', 'Raporlama'),
+        ('kargolar', 'Kargolar'),
     ], string='Notebook Tipi', required=False, default='notebook_1')
 
     # Form alanları
@@ -39,6 +40,67 @@ class OzelNotebookSatiri(models.Model):
         default=lambda self: self.env.user,
         readonly=True
     )
+
+    # --- Kargolar Notebook Alanları ---
+    kargo_turu = fields.Selection([
+        ('giris', 'Kargo Giriş'),
+        ('cikis', 'Kargo Çıkış'),
+    ], string='Kargo Türü', help='Kargo giriş veya çıkışı seçiniz')
+    
+    kargo_firmasi_id = fields.Many2one(
+        'kargo.firmasi',
+        string='Kargo Firması',
+        domain=[('aktif', '=', True)]
+    )
+    
+    servis_form_no = fields.Char(
+        string='Servis Form No',
+        compute='_compute_servis_form_no',
+        store=False,
+        readonly=True
+    )
+    
+    tarih = fields.Datetime(
+        string='Tarih',
+        default=lambda self: fields.Datetime.now(),
+        readonly=True
+    )
+    
+    tutar = fields.Float(string='Tutar', digits=(10, 2))
+    
+    kargo_fis = fields.Char(string='Kargo Fiş')
+    
+    kargo_irsaliye = fields.Char(string='Kargo İrsaliye')
+    
+    durum = fields.Selection([
+        ('onaylandi', 'Onaylandı'),
+        ('onaylanmadi', 'Onaylanmadı'),
+    ], string='Durumu')
+    
+    garanti_durumu = fields.Char(
+        string='Garanti Durumu',
+        compute='_compute_garanti_durumu',
+        store=False,
+        readonly=True
+    )
+
+    def _compute_servis_form_no(self):
+        """Servis formunun form numarasını getir"""
+        for record in self:
+            record.servis_form_no = record.servis_kaydi_id.name if record.servis_kaydi_id else ''
+    
+    def _compute_garanti_durumu(self):
+        """Servis kaydındaki garanti durumunu getir - Garantisi Var / Garanti Yok"""
+        for record in self:
+            if record.servis_kaydi_id:
+                # Garanti bilgisi kontrol et
+                if record.servis_kaydi_id.garanti_durumu == 'devam':
+                    record.garanti_durumu = 'Garantisi Var'
+                else:
+                    record.garanti_durumu = 'Garanti Yok'
+            else:
+                record.garanti_durumu = ''
+
 
     def _get_kolon_listesi(self):
         """Dinamik alan değer listesi - özelleştirmeden isimleri al"""
