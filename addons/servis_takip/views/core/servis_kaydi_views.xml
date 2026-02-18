@@ -82,9 +82,9 @@
                     /* Bootstrap 5 seçicileri - Seçili tab butonu */
                     .o_notebook .nav-tabs .nav-link.active,
                     .o_notebook .nav-tabs .nav-link[aria-selected="true"] {
-                        background: #79c6ffa8 !important;
+                        background: #7d5170ad !important;
                         color: #000 !important;
-                        border: 1px solid #79c6ff !important;
+                        border: 1px solid #7d5170 !important;
                         padding: 8px 16px !important;
                         font-weight: 500 !important;
                         font-size: 13px !important;
