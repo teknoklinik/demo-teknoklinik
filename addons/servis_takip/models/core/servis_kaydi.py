@@ -137,15 +137,23 @@ class ServisKaydi(models.Model):
         store=False
     )
 
-    @api.depends()
-    def _compute_show_urun_parkina_aktar_button(self):
-        """Ayarlardan ürün parkı kayıt politikasını kontrol et"""
-        kayit_politikasi = self.env['ir.config_parameter'].sudo().get_param(
+    def _get_urun_parki_kayit_politikasi(self):
+        """Ayarlardan ürün parkı kayıt politikasını getir"""
+        return self.env['ir.config_parameter'].sudo().get_param(
             'servis_takip.urun_parki_kayit_politikasi',
             default='kayit_et'
         )
+
+    @api.depends('state')
+    def _compute_show_urun_parkina_aktar_button(self):
+        """Ayarlardan ürün parkı kayıt politikasını kontrol et
+        
+        Eğer ayarda 'kayit_etme' seçiliyse → Buton GÖRÜNSÜn
+        Eğer ayarda 'kayit_et' seçiliyse → Buton GÖRÜNMESİn
+        """
+        kayit_politikasi = self._get_urun_parki_kayit_politikasi()
         for record in self:
-            # Eğer 'kayit_etme' ise butonu göster
+            # Kayıt Etme seçiliyse butonu göster
             record.show_urun_parkina_aktar_button = (kayit_politikasi == 'kayit_etme')
 
     @api.depends()
