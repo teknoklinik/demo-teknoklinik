@@ -226,10 +226,10 @@
                     <group string="Etiket" colspan="1">
                         <field name="etiket_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" placeholder="Etiketler..." readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']"/>
                         <group>
-                            <!-- Ödeme, Fatura ve Ürün Parkına Aktar -->
-                            <div class="mt-2 mb-2" colspan="2" invisible="genel_toplam == 0" style="display: flex; align-items: stretch; width: 100%; gap: 12px;">
-                                <!-- Ödeme Kutusu -->
-                                <div style="display: flex; align-items: stretch; gap: 0;">
+                            <!-- Ödeme, Fatura ve Ürün Parkına Aktar - Aynı satırda -->
+                            <div class="mt-2 mb-2" colspan="2" style="display: flex; align-items: stretch; width: 100%; gap: 12px;">
+                                <!-- Ödeme ve Fatura Kutusu -->
+                                <div style="display: flex; align-items: stretch; gap: 0;" invisible="genel_toplam == 0">
                                     <div style="background: #f0f4ff; border-left: 3px solid #667eea; padding: 6px 15px; border-radius: 6px 0 0 6px; display: flex; flex-direction: column; justify-content: center; min-width: 120px;">
                                         <div style="font-size: 10px; color: #667eea; font-weight: 600; text-transform: uppercase; margin-bottom: -2px;">Ödeme</div>
                                         <div style="font-size: 18px; font-weight: bold; color: #667eea; white-space: nowrap;">
@@ -242,9 +242,9 @@
                                         <span>FATURA</span>
                                     </button>
                                 </div>
-                                
-                                <!-- Ürün Parkına Aktar Butonu (sağda, full genişlik) -->
-                                <button name="action_urun_parkina_aktar" type="object" invisible="not show_urun_parkina_aktar_button" style="margin-left: auto !important; border-radius: 6px !important; padding: 8px 40px !important; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #06B6D4; font-weight: bold; font-size: 14px; background-color: #E8F8FB; color: #0891B2; flex-shrink: 0; min-width: 200px;">
+
+                                <!-- Ürün Parkına Aktar Butonu (sağda, aynı yükseklikte) -->
+                                <button name="action_urun_parkina_aktar" type="object" invisible="not show_urun_parkina_aktar_button" style="border-radius: 6px; padding: 8px 40px; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #06B6D4; font-weight: bold; font-size: 14px; background-color: #E8F8FB; color: #0891B2; margin-left: auto;">
                                     <i class="fa fa-arrow-up" style="color: #06B6D4;"/>
                                     <span>Ürün Parkına Aktar</span>
                                 </button>
