@@ -117,47 +117,19 @@
         <field name="inherit_id" ref="product.product_template_tree_view"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='list_price']" position="after">
-                <field name="price_with_tax" optional="show"/>
-                <field name="custom_list_price" optional="show"/>
-                <field name="custom_list_price_display" optional="show"/>
+                <field name="price_with_tax" readonly="0" on_change="1"/>
+                <field name="custom_list_price" readonly="0" on_change="1"/>
+                <field name="custom_list_price_with_tax" readonly="0" on_change="1"/>
+            </xpath>
+            <xpath expr="//field[@name='standard_price']" position="attributes">
+                <attribute name="readonly">0</attribute>
+                <attribute name="on_change">1</attribute>
             </xpath>
             <xpath expr="//field[@name='standard_price']" position="after">
-                <field name="cost_with_tax" optional="show"/>
-                <field name="custom_cost_price" optional="show"/>
-                <field name="custom_cost_price_display" optional="show"/>
+                <field name="cost_with_tax" readonly="0" on_change="1"/>
+                <field name="custom_cost_price" readonly="0" on_change="1"/>
+                <field name="custom_cost_price_with_tax" readonly="0" on_change="1"/>
             </xpath>
-        </field>
-    </record>
-
-    <!-- Ürün Fiyatları - Editable List View (İnline Düzenleme İçin) -->
-    <record id="product_template_tree_editable_prices" model="ir.ui.view">
-        <field name="name">product.template.editable.prices</field>
-        <field name="model">product.template</field>
-        <field name="arch" type="xml">
-            <list string="Ürünler - Fiyat Düzenlemesi" editable="bottom">
-                <field name="name" string="Ürün Adı"/>
-                <field name="categ_id" string="Kategori" optional="hide"/>
-                <field name="list_price" string="Satış Fiyatı (TL)"/>
-                <field name="price_with_tax" string="Ver. Dahil Satış Fiyatı (TL)"/>
-                <field name="custom_list_price" string="Satış Fiyatı Döviz"/>
-                <field name="standard_price" string="Maliyet (TL)"/>
-                <field name="cost_with_tax" string="Ver. Dahil Maliyet (TL)"/>
-                <field name="custom_cost_price" string="Maliyet Döviz"/>
-            </list>
-        </field>
-    </record>
-
-    <!-- Action: Seçili Ürün Fiyatlarını Düzenle -->
-    <record id="product_template_action_edit_prices" model="ir.actions.act_window">
-        <field name="name">Ürün Fiyatlarını Düzenle</field>
-        <field name="res_model">product.template</field>
-        <field name="view_mode">tree,form</field>
-        <field name="view_id" ref="product_template_tree_editable_prices"/>
-        <field name="target">self</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Ürün fiyatlarını buradan düzenleyebilirsiniz.
-            </p>
         </field>
     </record>
 

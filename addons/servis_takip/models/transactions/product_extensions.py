@@ -44,6 +44,9 @@ class ProductTemplate(models.Model):
     price_with_tax = fields.Float(
         string='Vergiler Dahil Satış Fiyatı (TL)',
         digits=(12, 0),  # Tam sayıya yuvarla (virgülsüz)
+        compute='_compute_price_with_tax',
+        inverse='_inverse_price_with_tax',
+        store=True,
         help='Vergiler dahil toplam satış fiyatı'
     )
 
@@ -68,12 +71,18 @@ class ProductTemplate(models.Model):
     custom_list_price = fields.Float(
         string="Satış Fiyatı Döviz", 
         digits='Product Price',
+        compute='_compute_custom_list_price',
+        inverse='_inverse_custom_list_price',
+        store=True,
         help="Seçilen döviz cinsinden satış fiyatı"
     )
 
     custom_list_price_with_tax = fields.Float(
         string="Vergiler Dahil Satış Fiyatı Döviz",
         digits='Product Price',
+        compute='_compute_custom_list_price_with_tax',
+        inverse='_inverse_custom_list_price_with_tax',
+        store=True,
         help="Seçilen döviz cinsinden vergiler dahil satış fiyatı"
     )
 
@@ -108,12 +117,18 @@ class ProductTemplate(models.Model):
     custom_cost_price = fields.Float(
         string="Maliyet Döviz", 
         digits='Product Price',
+        compute='_compute_custom_cost_price',
+        inverse='_inverse_custom_cost_price',
+        store=True,
         help="Seçilen döviz cinsinden maliyet"
     )
 
     custom_cost_price_with_tax = fields.Float(
         string="Vergiler Dahil Maliyet Döviz",
         digits='Product Price',
+        compute='_compute_custom_cost_price_with_tax',
+        inverse='_inverse_custom_cost_price_with_tax',
+        store=True,
         help="Seçilen döviz cinsinden vergiler dahil maliyet"
     )
 
@@ -201,6 +216,25 @@ class ProductTemplate(models.Model):
 
     # ==================== COMPUTE METODLAR ====================
 
+    @api.depends('list_price', 'taxes_id')
+    def _compute_price_with_tax(self):
+        """Satış fiyatı + vergi = vergiler dahil satış fiyatı"""
+        for record in self:
+            record.price_with_tax = round(
+                record._calculate_tax_on_amount(
+                    record.list_price, 
+                    record.taxes_id
+                ), 0
+            )
+
+    def _inverse_price_with_tax(self):
+        """Vergiler dahil satış fiyatı değiştiğinde, satış fiyatı'nı geri hesapla"""
+        for record in self:
+            record.list_price = record._remove_tax_from_amount(
+                record.price_with_tax,
+                record.taxes_id
+            )
+
     @api.depends('standard_price', 'supplier_taxes_id')
     def _compute_cost_with_tax(self):
         """Maliyet + satınalma vergileri = vergiler dahil maliyet"""
@@ -217,6 +251,98 @@ class ProductTemplate(models.Model):
                 record.cost_with_tax,
                 record.supplier_taxes_id
             )
+
+    @api.depends('price_with_tax', 'custom_currency_id')
+    def _compute_custom_list_price_with_tax(self):
+        """Vergiler dahil satış fiyatını dövize dönüştür"""
+        for record in self:
+            if record.price_with_tax and record.custom_currency_id:
+                record.custom_list_price_with_tax = record._convert_currency(
+                    record.price_with_tax,
+                    record._get_company_currency(),
+                    record.custom_currency_id
+                )
+            else:
+                record.custom_list_price_with_tax = 0
+
+    def _inverse_custom_list_price_with_tax(self):
+        """Döviz cinsinden vergiler dahil fiyat değişirse, TL'ye çevir"""
+        for record in self:
+            if record.custom_list_price_with_tax and record.custom_currency_id:
+                record.price_with_tax = record._convert_currency(
+                    record.custom_list_price_with_tax,
+                    record.custom_currency_id,
+                    record._get_company_currency()
+                )
+
+    @api.depends('cost_with_tax', 'custom_cost_currency_id')
+    def _compute_custom_cost_price_with_tax(self):
+        """Vergiler dahil maliyeti dövize dönüştür"""
+        for record in self:
+            if record.cost_with_tax and record.custom_cost_currency_id:
+                record.custom_cost_price_with_tax = record._convert_currency(
+                    record.cost_with_tax,
+                    record._get_company_currency(),
+                    record.custom_cost_currency_id
+                )
+            else:
+                record.custom_cost_price_with_tax = 0
+
+    def _inverse_custom_cost_price_with_tax(self):
+        """Döviz cinsinden vergiler dahil maliyet değişirse, TL'ye çevir"""
+        for record in self:
+            if record.custom_cost_price_with_tax and record.custom_cost_currency_id:
+                record.cost_with_tax = record._convert_currency(
+                    record.custom_cost_price_with_tax,
+                    record.custom_cost_currency_id,
+                    record._get_company_currency()
+                )
+
+    @api.depends('list_price', 'custom_currency_id')
+    def _compute_custom_list_price(self):
+        """Satış fiyatını dövize dönüştür"""
+        for record in self:
+            if record.list_price and record.custom_currency_id:
+                record.custom_list_price = record._convert_currency(
+                    record.list_price,
+                    record._get_company_currency(),
+                    record.custom_currency_id
+                )
+            else:
+                record.custom_list_price = 0
+
+    def _inverse_custom_list_price(self):
+        """Döviz cinsinden satış fiyatı değişirse, TL'ye çevir"""
+        for record in self:
+            if record.custom_list_price and record.custom_currency_id:
+                record.list_price = record._convert_currency(
+                    record.custom_list_price,
+                    record.custom_currency_id,
+                    record._get_company_currency()
+                )
+
+    @api.depends('standard_price', 'custom_cost_currency_id')
+    def _compute_custom_cost_price(self):
+        """Maliyeti dövize dönüştür"""
+        for record in self:
+            if record.standard_price and record.custom_cost_currency_id:
+                record.custom_cost_price = record._convert_currency(
+                    record.standard_price,
+                    record._get_company_currency(),
+                    record.custom_cost_currency_id
+                )
+            else:
+                record.custom_cost_price = 0
+
+    def _inverse_custom_cost_price(self):
+        """Döviz cinsinden maliyet değişirse, TL'ye çevir"""
+        for record in self:
+            if record.custom_cost_price and record.custom_cost_currency_id:
+                record.standard_price = record._convert_currency(
+                    record.custom_cost_price,
+                    record.custom_cost_currency_id,
+                    record._get_company_currency()
+                )
 
     @api.depends('list_price', 'taxes_id')
     def _compute_price_with_tax_display(self):
