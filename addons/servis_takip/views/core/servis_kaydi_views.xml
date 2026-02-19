@@ -82,7 +82,7 @@
                     /* Bootstrap 5 seçicileri - Seçili tab butonu */
                     .o_notebook .nav-tabs .nav-link.active,
                     .o_notebook .nav-tabs .nav-link[aria-selected="true"] {
-                        background: #7d5170ad !important;
+                        background: #7d517073 !important;
                         color: #000 !important;
                         border: 1px solid #7d5170 !important;
                         padding: 8px 16px !important;
@@ -187,67 +187,72 @@
                 <button name="action_urun_aktar_wizard" string="ÜRÜN PARKINDAN AKTAR" type="object" icon="fa-arrow-circle-down" class="btn-primary py-3 px-4 shadow-sm font-weight-bold mb-3" style="background: linear-gradient(135deg, #004d99 0%, #007bff 100%); border: none; border-radius: 8px; text-transform: uppercase; letter-spacing: 1px;" invisible="state not in ['kayit_yapildi']" context="{'skip_required_check': True}"/>
 
                 <group>
-                    <group string="Müşteri Bilgileri">
+                    <group string="Müşteri Bilgileri" colspan="1">
                         <field name="musteri_tipi" readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']" style="border-bottom: 1px solid #ddd;"/>
                         <field name="musteri_id" readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']" context="{'default_is_company': musteri_tipi == 'sirket'}" style="border-bottom: 1px solid #ddd;"/>
                     </group>
-                    <group string="Servis Süresi">
-                        <field name="kayit_tarihi" string="Ürün Giriş Tarihi" readonly="1" style="border-bottom: 1px solid #ddd;"/>
-                        <field name="teslim_tarihi" string="Servis Çıkış Tarihi" invisible="state not in ['teslim_edildi', 'iptal']" style="border-bottom: 1px solid #ddd;"/>
-                        <field name="serviste_gecen_sure" string="Serviste Geçen Gün" readonly="1" style="border-bottom: 1px solid #ddd;"/>
+                    <group string="Teslimat Bilgileri" colspan="1">
+                        <field name="teslim_eden" readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']" style="border-bottom: 1px solid #ddd;"/>
+                        <field name="teslim_alan" readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']" style="border-bottom: 1px solid #ddd;"/>
                     </group>
-                    <group string="Ürün Bilgileri">
+                    <group string="Ürün Bilgileri" colspan="1">
                         <field name="urun_turu_id" readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']" style="border-bottom: 1px solid #ddd;"/>
                         <field name="urun_marka_id" domain="[('tur_id', '=', urun_turu_id)]" readonly="urun_turu_id == False or (formu_duzenle == False and state in ['teslim_edildi', 'iptal'])" style="border-bottom: 1px solid #ddd;"/>
                         <field name="urun_modeli_id" domain="[('marka_id', '=', urun_marka_id)]" readonly="urun_marka_id == False or (formu_duzenle == False and state in ['teslim_edildi', 'iptal'])" style="border-bottom: 1px solid #ddd;"/>
                         <field name="seri_no" readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']" style="border-bottom: 1px solid #ddd;"/>
                         <field name="barkod_no" readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']" style="border-bottom: 1px solid #ddd;"/>
-                        <div invisible="not show_urun_parkina_aktar_button" style="display: flex; align-items: center; gap: 8px; margin-top: 5px;">
-                            <button name="action_urun_parkina_aktar" type="object" style="all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; background-color: #E0F7FA; color: #0891B2; padding: 5px 12px; border: 1px solid #B2EBF2; border-radius: 6px; font-size: 11px; font-weight: 600; transition: all 0.2s ease;">
-                                <i class="fa fa-plus-circle" style="font-size: 13px; color: #06B6D4;"/>
-                                <span style="white-space: nowrap;">Ürün Parkına Aktar</span>
-                            </button>
+                    </group>
+                    <group string="Garanti" colspan="1">
+                        <field name="garanti_baslama" style="min-width: 100px !important; border-bottom: 1px solid #ddd;" readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']"/>
+                        <field name="garanti_suresi" style="border-bottom: 1px solid #ddd;" readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']"/>
+                        <field name="garanti_bitis" readonly="1" force_save="1" style="border-bottom: 1px solid #ddd;"/>
+                        <field name="garanti_durumu" invisible="1"/>
+                        <div colspan="2" class="mt-2 mb-2" invisible="garanti_durumu == 'belirsiz'">
+                            <div invisible="garanti_durumu != 'yok'" class="alert alert-danger shadow-sm d-flex align-items-center justify-content-center" style="font-size: 1.1em; font-weight: 700; border: 1.5px solid #dc3545; border-radius: 8px; padding: 8px; color: #721c24; background-color: #f8d7da; max-width: 350px; margin: 0 auto;">
+                                <i class="fa fa-exclamation-triangle mr-2" style="font-size: 1.2em;"/>
+                                <span>GARANTİSİ YOK</span>
+                            </div>
+                            <div invisible="garanti_durumu != 'devam'" class="alert alert-success shadow-sm d-flex align-items-center justify-content-center" style="font-size: 1.1em; font-weight: 700; border: 1.5px solid #28a745; border-radius: 8px; padding: 8px; color: #155724; background-color: #d4edda; max-width: 350px; margin: 0 auto;">
+                                <i class="fa fa-check-circle mr-2" style="font-size: 1.2em;"/>
+                                <span>GARANTİSİ DEVAM EDİYOR</span>
+                            </div>
                         </div>
                     </group>
-                    <group string="Garanti">
+                    <group string="Servis Süresi" colspan="1">
+                        <field name="kayit_tarihi" string="Ürün Giriş Tarihi" readonly="1" style="border-bottom: 1px solid #ddd;"/>
+                        <field name="teslim_tarihi" string="Servis Çıkış Tarihi" invisible="state not in ['teslim_edildi', 'iptal']" style="border-bottom: 1px solid #ddd;"/>
+                        <field name="serviste_gecen_sure" string="Serviste Geçen Gün" readonly="1" style="border-bottom: 1px solid #ddd;"/>
+                    </group>
+                    <group string="Etiket" colspan="1">
+                        <field name="etiket_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" placeholder="Etiketler..." readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']"/>
                         <group>
-                            <field name="garanti_baslama" style="min-width: 100px !important; border-bottom: 1px solid #ddd;" readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']"/>
-                            <field name="garanti_suresi" style="border-bottom: 1px solid #ddd;" readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']"/>
-                        </group>
-                        <group>
-                            <field name="garanti_bitis" readonly="1" force_save="1" style="border-bottom: 1px solid #ddd;"/>
-                            <field name="garanti_durumu" invisible="1"/>
-                            <div colspan="2" class="mt-2 mb-2" invisible="garanti_durumu == 'belirsiz'">
-                                <div invisible="garanti_durumu != 'yok'" class="alert alert-danger shadow-sm d-flex align-items-center justify-content-center" style="font-size: 1.1em; font-weight: 700; border: 1.5px solid #dc3545; border-radius: 8px; padding: 8px; color: #721c24; background-color: #f8d7da; max-width: 350px; margin: 0 auto;">
-                                    <i class="fa fa-exclamation-triangle mr-2" style="font-size: 1.2em;"/>
-                                    <span>GARANTİSİ YOK</span>
+                            <!-- Ödeme, Fatura ve Ürün Parkına Aktar -->
+                            <div class="mt-2 mb-2" colspan="2" invisible="genel_toplam == 0" style="display: flex; align-items: stretch; width: 100%; gap: 12px;">
+                                <!-- Ödeme Kutusu -->
+                                <div style="display: flex; align-items: stretch; gap: 0;">
+                                    <div style="background: #f0f4ff; border-left: 3px solid #667eea; padding: 6px 15px; border-radius: 6px 0 0 6px; display: flex; flex-direction: column; justify-content: center; min-width: 120px;">
+                                        <div style="font-size: 10px; color: #667eea; font-weight: 600; text-transform: uppercase; margin-bottom: -2px;">Ödeme</div>
+                                        <div style="font-size: 18px; font-weight: bold; color: #667eea; white-space: nowrap;">
+                                            <field name="genel_toplam" nolabel="1" widget="monetary" options="{'currency_field': 'company_currency_id'}" style="display: inline;"/>
+                                            <field name="currency_symbol" nolabel="1" readonly="1" style="font-size: 14px; display: inline; margin-left: 2px;"/>
+                                        </div>                                        
+                                    </div>
+                                    <button name="action_buton_fatura" type="object" class="btn-warning" style="margin: 0 !important; border-radius: 0 6px 6px 0 !important; padding: 0 20px !important; display: flex; align-items: center; gap: 8px; border: none; font-weight: bold; font-size: 14px; height: auto;">
+                                        <i class="fa fa-file-text-o"/>
+                                        <span>FATURA</span>
+                                    </button>
                                 </div>
-                                <div invisible="garanti_durumu != 'devam'" class="alert alert-success shadow-sm d-flex align-items-center justify-content-center" style="font-size: 1.1em; font-weight: 700; border: 1.5px solid #28a745; border-radius: 8px; padding: 8px; color: #155724; background-color: #d4edda; max-width: 350px; margin: 0 auto;">
-                                    <i class="fa fa-check-circle mr-2" style="font-size: 1.2em;"/>
-                                    <span>GARANTİSİ DEVAM EDİYOR</span>
-                                </div>
+                                
+                                <!-- Ürün Parkına Aktar Butonu (sağda, full genişlik) -->
+                                <button name="action_urun_parkina_aktar" type="object" invisible="not show_urun_parkina_aktar_button" style="margin-left: auto !important; border-radius: 6px !important; padding: 8px 40px !important; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #06B6D4; font-weight: bold; font-size: 14px; background-color: #E8F8FB; color: #0891B2; flex-shrink: 0; min-width: 200px;">
+                                    <i class="fa fa-arrow-up" style="color: #06B6D4;"/>
+                                    <span>Ürün Parkına Aktar</span>
+                                </button>
                             </div>
-                        </group>
-                        <group string="Etiket" colspan="2">
-                            <field name="etiket_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" placeholder="Etiketler..." readonly="formu_duzenle == False and state in ['teslim_edildi', 'iptal']"/>
-                        </group>
-                        <!-- Ödeme Kutusu -->
-                        <div class="mt-2 mb-2" colspan="2" invisible="genel_toplam == 0" style="display: flex; align-items: stretch; width: fit-content;">
-                            <div style="background: #f0f4ff; border-left: 3px solid #667eea; padding: 6px 15px; border-radius: 6px 0 0 6px; display: flex; flex-direction: column; justify-content: center; min-width: 120px;">
-                                <div style="font-size: 10px; color: #667eea; font-weight: 600; text-transform: uppercase; margin-bottom: -2px;">Ödeme</div>
-                                <div style="font-size: 18px; font-weight: bold; color: #667eea; white-space: nowrap;">
-                                    <field name="genel_toplam" nolabel="1" widget="monetary" options="{'currency_field': 'company_currency_id'}" style="display: inline;"/>
-                                    <field name="currency_symbol" nolabel="1" readonly="1" style="font-size: 14px; display: inline; margin-left: 2px;"/>
-                                </div>
-                            </div>
-
-                            <button name="action_buton_fatura" type="object" class="btn-warning" style="margin: 0 !important; border-radius: 0 6px 6px 0 !important; padding: 0 20px !important; display: flex; align-items: center; gap: 8px; border: none; font-weight: bold; font-size: 14px; height: auto;">
-                                <i class="fa fa-file-text-o"/>
-                                <span>FATURA</span>
-                            </button>
-                        </div>
+                    </group>
                     </group>
                 </group>
+                
 
                 <notebook class="o_notebook">
                     <page string="Durum Geçmişi" name="durum_gecmisi">
@@ -262,9 +267,10 @@
                                 <li invisible="urun_modeli_id">Ürün Modeli</li>
                                 <li invisible="seri_no">Seri No</li>
                                 <li invisible="ariza_detay_ids">En Az Bir Arıza Tipi</li>
+                                <li invisible="teslim_eden">Teslim Eden</li>
                             </ul>
                         </div>
-                        <div invisible="id != False or not musteri_id or not urun_turu_id or not urun_marka_id or not urun_modeli_id or not seri_no or not ariza_detay_ids" class="alert alert-info" role="alert">
+                        <div invisible="id != False or not musteri_id or not urun_turu_id or not urun_marka_id or not urun_modeli_id or not seri_no or not ariza_detay_ids or not teslim_eden" class="alert alert-info" role="alert">
                             <p>
                                 <strong>Tüm zorunlu alanlar dolduruldu. Devam etmek için aşağıdaki butona tıklayınız.</strong>
                             </p>
@@ -416,7 +422,7 @@
                     <div style="flex: 0 0 45%;">
                         <h5 style="color: #2C3E50; font-weight: 600; margin-bottom: 20px; font-size: 14px;">
                             BARKOD ETİKETİ
-                            <i class="fa fa-question-circle" style="margin-left: 8px; cursor: help; color: #3498db;" title="Barkod Etiketi için zorunlu alanları doldurmalısınız: Müşteri, Ürün Türü, Ürün Markası, Ürün Modeli, Seri No, Arıza Tipi"/>
+                            <i class="fa fa-question-circle" style="margin-left: 8px; cursor: help; color: #3498db;" title="Barkod Etiketi için zorunlu alanları doldurmalısınız: Müşteri, Teslim Eden, Ürün Türü, Ürün Markası, Ürün Modeli, Seri No, Arıza Tipi"/>
                         </h5>
                         <!-- Barkod Etiketi Butonu - Aktif -->
                         <button name="action_barkod_etiketi_preview" type="object" class="btn-warning" invisible="not barkod_etiketi_acilabilir" style="width: 100%; height: 100px; font-weight: bold; border-radius: 5px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;">
@@ -441,7 +447,7 @@
                     <div style="flex: 1;">
                         <h5 style="color: #2C3E50; font-weight: 600; margin-bottom: 20px; font-size: 14px;">
                             FORM İŞLEMLERİ
-                            <i class="fa fa-question-circle" style="margin-left: 8px; cursor: help; color: #3498db;" title="Form İşlemleri için zorunlu alanları doldurmalısınız: Müşteri, Ürün Türü, Ürün Markası, Ürün Modeli, Seri No, Arıza Tipi"/>
+                            <i class="fa fa-question-circle" style="margin-left: 8px; cursor: help; color: #3498db;" title="Form İşlemleri için zorunlu alanları doldurmalısınız: Müşteri, Teslim Eden, Ürün Türü, Ürün Markası, Ürün Modeli, Seri No, Arıza Tipi"/>
                         </h5>
                         <div style="display: flex; gap: 20px; align-items: flex-start;">
                         <div style="display: flex; flex-direction: column; align-items: center; width: 180px;">

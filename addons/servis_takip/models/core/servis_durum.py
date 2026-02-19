@@ -230,3 +230,14 @@ class ServisDurumSatiri(models.Model):
             result.append((record.id, name))
         return result
 
+    @api.onchange('state')
+    def _onchange_state_check_teslim_alan(self):
+        """State 'teslim_edildi' seçilirse parent'ın teslim_alan'ını kontrol et"""
+        if self.state == 'teslim_edildi' and self.servis_kaydi_id and not self.servis_kaydi_id.teslim_alan:
+            return {
+                'warning': {
+                    'title': _('Uyarı'),
+                    'message': _("Teslim edildi durumuna geçmek için lütfen ana forma dönüp 'Teslim Alan' alanını doldurunuz!")
+                }
+            }
+

@@ -132,6 +132,10 @@ class ServisKaydi(models.Model):
     kabul_musteri_imzasi = fields.Binary(string='Kabul Müşteri İmzası', copy=False)
     teslim_musteri_imzasi = fields.Binary(string='Teslim Müşteri İmzası', copy=False)
 
+    # --- Teslimat Bilgileri ---
+    teslim_eden = fields.Char(string='Teslim Eden', tracking=True)
+    teslim_alan = fields.Char(string='Teslim Alan', tracking=True)
+
     # --- Ayarlardan gelen değerler ---
     show_urun_parkina_aktar_button = fields.Boolean(
         string='Ürün Parkına Aktar Butonu Göster',
@@ -225,17 +229,18 @@ class ServisKaydi(models.Model):
             else:
                 record.garanti_durumu = 'devam'
 
-    @api.depends('musteri_id', 'urun_turu_id', 'urun_marka_id', 'urun_modeli_id', 'seri_no', 'ariza_detay_ids.ariza_tanimi_id')
+    @api.depends('musteri_id', 'urun_turu_id', 'urun_marka_id', 'urun_modeli_id', 'seri_no', 'teslim_eden','teslim_alan', 'ariza_detay_ids.ariza_tanimi_id')
     def _compute_barkod_etiketi_acilabilir(self):
         """Barkod Etiketinin tüm gerekli alanlar dolu ise açılabilir"""
         for record in self:
-            # 5 alanın kontrol edilmesi
+            # 6 alanın kontrol edilmesi
             temel_alanlar_ok = bool(
                 record.musteri_id and 
                 record.urun_turu_id and 
                 record.urun_marka_id and 
                 record.urun_modeli_id and 
-                record.seri_no
+                record.seri_no and
+                record.teslim_eden
             )
             
             # En az bir arıza tanımının dolu olması
@@ -249,6 +254,7 @@ class ServisKaydi(models.Model):
         for record in self:
             if record.garanti_baslama and record.garanti_baslama > date.today():
                 raise ValidationError(_("Garanti Başlama Tarihi bugünden ileri bir tarih olamaz!"))
+
 
     # 2. Garanti Bitiş Tarihi Hesaplama (Daha doğru ay hesabı ile)
     @api.depends('garanti_baslama', 'garanti_suresi')
@@ -1058,9 +1064,23 @@ class ServisKaydi(models.Model):
         """Ürün bilgilerini ürün parkına aktar veya kontrol et"""
         self.ensure_one()
         
-        # Gerekli ürün bilgilerinin tamamlandığını kontrol et
-        if not all([self.urun_turu_id, self.urun_marka_id, self.urun_modeli_id, self.seri_no]):
-            raise UserError(_('Ürün parkına aktar işlemi için lütfen Ürün Türü, Marka, Model ve Seri No bilgilerini doldurunuz.'))
+        # Gerekli alanların tamamlandığını kontrol et
+        required_fields = {
+            'musteri_id': 'Müşteri',
+            'urun_turu_id': 'Ürün Türü',
+            'urun_marka_id': 'Ürün Markası',
+            'urun_modeli_id': 'Ürün Modeli',
+            'seri_no': 'Seri No',
+            'teslim_eden': 'Teslim Eden'
+        }
+        missing_fields = [field_label for field, field_label in required_fields.items() if not getattr(self, field)]
+        
+        if missing_fields:
+            raise UserError(_('Ürün parkına aktar işlemi için lütfen aşağıdaki alanları doldurunuz:\n' + '\n'.join(missing_fields)))
+        
+        # Arıza tipi kontrol
+        if not self.ariza_detay_ids:
+            raise UserError(_('Ürün parkına aktar işlemi için lütfen en az bir arıza tipi seçiniz.'))
         
         # Ürün parkında arama yap
         urun_parki = self.env['servis.urun'].search([

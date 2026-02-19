@@ -1,4 +1,4 @@
-from . import kabul_rapor
-from . import teslim_rapor
+from . import kabul_formu
+from . import teslim_formu
 
 
