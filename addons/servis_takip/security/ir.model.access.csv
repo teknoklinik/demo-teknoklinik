@@ -11,6 +11,7 @@ access_servis_kaydi_aksesuar,Servis Kaydı Aksesuarları Erişimi,model_servis_k
 access_servis_aksesuar_system,Servis Aksesuarları Yönetici,model_servis_aksesuar,base.group_system,1,1,1,1
 access_servis_aksesuar,Servis Aksesuarları Erişimi,model_servis_aksesuar,base.group_user,1,0,0,0
 access_servis_kaydi_deger_okuma,Servis Kaydı Değer Okumaları Erişimi,model_servis_kaydi_deger_okuma,base.group_user,1,1,1,1
+access_servis_kaydi_kargolar,Servis Kaydı Kargolar Erişimi,model_servis_kaydi_kargolar,base.group_user,1,1,1,1
 access_deger_okuma_tanimi_system,Değer Okuma Tanımı Yönetici,model_deger_okuma_tanimi,base.group_system,1,1,1,1
 access_deger_okuma_tanimi,Değer Okuma Tanımı Erişimi,model_deger_okuma_tanimi,base.group_user,1,0,0,0
 access_servis_islem_tipi_system,Servis İşlem Tipi Yönetici,model_servis_islem_tipi,base.group_system,1,1,1,1
