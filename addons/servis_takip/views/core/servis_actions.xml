@@ -106,4 +106,24 @@
         <field name="target">new</field>
         <field name="context">{'default_servis_kaydi_id': active_id}</field>
     </record>
+
+    <!-- Dashboard Server Action -->
+    <record id="action_servis_dashboard_open" model="ir.actions.server">
+        <field name="name">Dashboard</field>
+        <field name="model_id" ref="model_servis_dashboard"/>
+        <field name="state">code</field>
+        <field name="code">
+# Dashboard TransientModel'ini sudosu ile aç
+dashboard = env['servis.dashboard'].sudo().create({})
+action = {
+    'type': 'ir.actions.act_window',
+    'view_mode': 'form',
+    'res_model': 'servis.dashboard',
+    'res_id': dashboard.id,
+    'target': 'current',
+    'view_id': env.ref('servis_takip.view_servis_dashboard_form').id,
+}
+        </field>
+    </record>
+
 </odoo>

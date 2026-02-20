@@ -1,6 +1,6 @@
 {
     'name': 'Servis Yönetimi',
-    'version': '19.0.1.0.4',
+    'version': '19.0.1.0.6',
     'summary': 'Müşteriye ait ürünlerin teknik servis ve onarım süreçlerini takip eder.',
     'description': """
 Servis Yönetimi Modülü
@@ -57,6 +57,9 @@ teslimatına kadar tüm teknik servis süreçlerini yönetmenizi sağlar.
         'views/core/servis_actions.xml',
         'views/core/servis_kaydi_views.xml',
         'views/core/servis_takip_views.xml',
+
+        # 5.5. VIEWS - DASHBOARD
+        'views/dashboard/dashboard_views.xml',
 
         # 6. VIEWS - FORMLAR
         'views/reports/kabul_rapor_views.xml',

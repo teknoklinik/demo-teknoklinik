@@ -44,3 +44,5 @@ access_servis_ozel_notebook_satiri,servis.ozel.notebook.satiri,model_servis_ozel
 access_kargo_firmasi_system,Kargo Firmasi Yönetici,model_kargo_firmasi,base.group_system,1,1,1,1
 access_kargo_firmasi_user,Kargo Firmasi Kullanıcı,model_kargo_firmasi,base.group_user,1,0,0,0
 access_res_config_settings_servis,Servis Ayarları Erişimi,model_res_config_settings,base.group_user,1,1,0,0
+access_servis_dashboard_system,Dashboard Yönetici,model_servis_dashboard,base.group_system,1,1,0,0
+access_servis_dashboard_user,Dashboard Kullanıcı Erişimi,model_servis_dashboard,base.group_user,1,1,0,0

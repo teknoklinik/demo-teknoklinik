@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Dashboard Form View -->
+    <record id="view_servis_dashboard_form" model="ir.ui.view">
+        <field name="name">servis.dashboard.form</field>
+        <field name="model">servis.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="Servis Yönetimi Dashboard">
+                <style>
+                    .dashboard_header {
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        color: white;
+                        padding: 30px 20px;
+                        border-radius: 8px;
+                        margin-bottom: 30px;
+                        text-align: center;
+                    }
+                    
+                    .dashboard_header h1 {
+                        margin: 0;
+                        font-size: 28px;
+                        font-weight: 300;
+                        letter-spacing: 1px;
+                    }
+                    
+                    .stat_card {
+                        background: white;
+                        border: 1px solid #e0e0e0;
+                        border-radius: 8px;
+                        padding: 20px;
+                        text-align: center;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+                        transition: all 0.3s ease;
+                    }
+                    
+                    .stat_card:hover {
+                        box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+                        transform: translateY(-2px);
+                    }
+                    
+                    .stat_card .stat_number {
+                        font-size: 32px;
+                        font-weight: 700;
+                        color: #2c3e50;
+                        margin: 10px 0;
+                    }
+                    
+                    .stat_card .stat_label {
+                        font-size: 12px;
+                        color: #7f8c8d;
+                        text-transform: uppercase;
+                        font-weight: 600;
+                        letter-spacing: 0.5px;
+                    }
+                    
+                    .stat_card.green .stat_number {
+                        color: #27ae60;
+                    }
+                    
+                    .stat_card.blue .stat_number {
+                        color: #3498db;
+                    }
+                    
+                    .stat_card.orange .stat_number {
+                        color: #f39c12;
+                    }
+                    
+                    .stat_card.red .stat_number {
+                        color: #e74c3c;
+                    }
+                    
+                    .stat_card.purple .stat_number {
+                        color: #9b59b6;
+                    }
+                    
+                    .section_title {
+                        font-size: 16px;
+                        font-weight: 600;
+                        color: #2c3e50;
+                        margin-top: 30px;
+                        margin-bottom: 15px;
+                        padding-bottom: 10px;
+                        border-bottom: 2px solid #e0e0e0;
+                    }
+                    
+                    .filter_section {
+                        background: #f8f9fa;
+                        padding: 15px;
+                        border-radius: 6px;
+                        margin-bottom: 20px;
+                    }
+                </style>
+
+                <div class="dashboard_header">
+                    <h1>Servis Yönetimi Dashboard</h1>
+                </div>
+
+                <!-- Tarih Filtreleri -->
+                <div class="filter_section">
+                    <group>
+                        <field name="date_from" string="Başlangıç"/>
+                        <field name="date_to" string="Bitiş"/>
+                    </group>
+                </div>
+
+                <!-- GENEL İSTATİSTİKLER BÖLÜMÜ -->
+                <div class="section_title">Genel İstatistikler</div>
+                <group>
+                    <group>
+                        <div class="stat_card blue">
+                            <div class="stat_label">Toplam Servis Kaydı</div>
+                            <field name="toplam_servis_kaydi" nolabel="1" readonly="1" class="stat_number"/>
+                        </div>
+                    </group>
+                    <group>
+                        <div class="stat_card green">
+                            <div class="stat_label">Aktif Servis</div>
+                            <field name="aktif_servis_sayisi" nolabel="1" readonly="1" class="stat_number"/>
+                        </div>
+                    </group>
+                    <group>
+                        <div class="stat_card orange">
+                            <div class="stat_label">Teslim Edilen</div>
+                            <field name="teslim_edilen_sayisi" nolabel="1" readonly="1" class="stat_number"/>
+                        </div>
+                    </group>
+                    <group>
+                        <div class="stat_card red">
+                            <div class="stat_label">İptal Edilen</div>
+                            <field name="iptal_edilen_sayisi" nolabel="1" readonly="1" class="stat_number"/>
+                        </div>
+                    </group>
+                </group>
+
+                <!-- GARANTİ İSTATİSTİKLERİ BÖLÜMÜ -->
+                <div class="section_title">Garanti İstatistikleri</div>
+                <group>
+                    <group>
+                        <div class="stat_card red">
+                            <div class="stat_label">Garantisi Yok</div>
+                            <field name="garanti_yok_sayisi" nolabel="1" readonly="1" class="stat_number"/>
+                        </div>
+                    </group>
+                    <group>
+                        <div class="stat_card green">
+                            <div class="stat_label">Garantisi Devam</div>
+                            <field name="garanti_devam_sayisi" nolabel="1" readonly="1" class="stat_number"/>
+                        </div>
+                    </group>
+                </group>
+
+                <!-- ÖDEME İSTATİSTİKLERİ BÖLÜMÜ -->
+                <div class="section_title">Ödeme İstatistikleri</div>
+                <group>
+                    <group>
+                        <div class="stat_card blue">
+                            <div class="stat_label">Toplam Tutar</div>
+                            <field name="toplam_tutar" nolabel="1" readonly="1" class="stat_number" widget="monetary"/>
+                        </div>
+                    </group>
+                    <group>
+                        <div class="stat_card green">
+                            <div class="stat_label">Ödenmiş Tutar</div>
+                            <field name="odenmis_tutar" nolabel="1" readonly="1" class="stat_number" widget="monetary"/>
+                        </div>
+                    </group>
+                    <group>
+                        <div class="stat_card red">
+                            <div class="stat_label">Ödenmemiş Tutar</div>
+                            <field name="odenmeyen_tutar" nolabel="1" readonly="1" class="stat_number" widget="monetary"/>
+                        </div>
+                    </group>
+                </group>
+
+                <!-- ZAMAN İSTATİSTİKLERİ BÖLÜMÜ -->
+                <div class="section_title">Zaman İstatistikleri</div>
+                <group>
+                    <group>
+                        <div class="stat_card purple">
+                            <div class="stat_label">Ort. Servis Süresi</div>
+                            <div class="stat_number">
+                                <field name="ortalama_servis_suresi" nolabel="1" readonly="1" style="display: inline;"/>
+                                <span style="font-size: 16px; color: #7f8c8d;">gün</span>
+                            </div>
+                        </div>
+                    </group>
+                    <group>
+                        <div class="stat_card red">
+                            <div class="stat_label">Süre Aşımı Olan</div>
+                            <field name="sure_asimi_sayisi" nolabel="1" readonly="1" class="stat_number"/>
+                        </div>
+                    </group>
+                </group>
+
+                <!-- MÜŞTERİ VE ÜRÜN İSTATİSTİKLERİ BÖLÜMÜ -->
+                <div class="section_title">Müşteri &amp; Ürün İstatistikleri</div>
+                <group>
+                    <group>
+                        <div class="stat_card blue">
+                            <div class="stat_label">Toplam Müşteri</div>
+                            <field name="toplam_musteri_sayisi" nolabel="1" readonly="1" class="stat_number"/>
+                        </div>
+                    </group>
+                    <group>
+                        <div class="stat_card green">
+                            <div class="stat_label">En Çok Servise Gelen Ürün</div>
+                            <field name="en_cok_servise_gelen_urun" nolabel="1" readonly="1" style="font-size: 16px; font-weight: 600; color: #27ae60; margin-top: 10px;"/>
+                        </div>
+                    </group>
+                </group>
+
+            </form>
+        </field>
+    </record>
+
+</odoo>
